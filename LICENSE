@@ -1,0 +1,33 @@
+Code under the directory shaders/shadertoy/ is covered by the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License <http://creativecommons.org/licenses/by-nc-sa/3.0/us/> unless stated otherwise in the code. All other code consitutes the project "RiftRay".
+
+Some portions of the RiftRay code contain copied sections from the publicly available Oculus SDK version 0.2.2 which is (C) Oculus VR, Inc. 2013. All Rights Reserved and licensed under <http://www.apache.org/licenses/LICENSE-2.0>.
+
+Images under the textures/ directory are provided by the shadertoy.com website and are probably licensed under CC BY-NC-SA 3.0 <http://creativecommons.org/licenses/by-nc-sa/3.0/us/>.
+
+The remaining whole or any part of the RiftRay project is covered by the Unlicense, reproduced below:
+
+-----------------------------------------------------------------------
+This is free and unencumbered software released into the public domain.
+
+Anyone is free to copy, modify, publish, use, compile, sell, or
+distribute this software, either in source code form or as a compiled
+binary, for any purpose, commercial or non-commercial, and by any
+means.
+
+In jurisdictions that recognize copyright laws, the author or authors
+of this software dedicate any and all copyright interest in the
+software to the public domain. We make this dedication for the benefit
+of the public at large and to the detriment of our heirs and
+successors. We intend this dedication to be an overt act of
+relinquishment in perpetuity of all present and future rights to this
+software under copyright law.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+For more information, please refer to <http://unlicense.org/>
