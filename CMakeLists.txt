@@ -135,15 +135,15 @@ ELSEIF( UNIX )
 
     SET( PLATFORM_LIBS
         -lovr
-        -lGLEW
-        -lGLU -lglfw3
+        -lGLEW -lGL
+        -lGLU -lglfw
         -pthread
         -ludev
         -lrt
         -lXinerama
         -lXrandr
         -lXxf86vm
-        -lXi
+        -lXi -lX11
         ${ANT_LIBS}
         )
 
