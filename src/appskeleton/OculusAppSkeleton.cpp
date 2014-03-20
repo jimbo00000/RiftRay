@@ -811,10 +811,6 @@ void OculusAppSkeleton::keyboard(int key, int action, int x, int y)
         m_displaySceneInControl = !m_displaySceneInControl;
         break;
 
-    case '`':
-        m_scene.ReloadShaders();
-        break;
-
     case GLFW_KEY_SPACE:
         if (m_keyStates[GLFW_KEY_LEFT_SHIFT] == GLFW_PRESS)
             PrevShader();

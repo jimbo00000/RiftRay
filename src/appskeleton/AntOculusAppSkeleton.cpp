@@ -271,6 +271,11 @@ void AntOculusAppSkeleton::MinimizeTweakbar()
     TwDefine(" TweakBar iconified=true ");
 }
 
+void AntOculusAppSkeleton::UnMinimizeTweakbar()
+{
+    TwDefine(" TweakBar iconified=false ");
+}
+
 #endif
 
 #ifdef USE_ANTTWEAKBAR

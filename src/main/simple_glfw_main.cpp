@@ -123,6 +123,21 @@ void handleMonitorConfigurationKeystrokes(int key)
         if (g_outStreams.size() >= 3)
             CycleOutputType(g_outStreams[2]);
         break;
+
+    case '`':
+        if (g_outStreams.size() == 1)
+        {
+            // Shrink primary display back to windowed mode
+            const int w = 1000;
+            const int h = 800;
+            OutputStream& os = g_outStreams[0];
+            glfwSetWindowPos(os.pWindow, 100, 100);
+            os.outtype = OVRkill::SingleEye;
+            glfwSetWindowSize(os.pWindow, w,h);
+            g_app.resize(w,h);
+            g_app.UnMinimizeTweakbar();
+        }
+        break;
     }
 }
 
