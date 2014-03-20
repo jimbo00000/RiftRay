@@ -6,7 +6,7 @@ import sys
 import stat
 import shutil
 
-version = "1.0"
+version = "1.0.1"
 
 # Create directory structure
 dirName = "RiftRay-" + version
