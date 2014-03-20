@@ -33,6 +33,11 @@ struct OutputStream {
     OVRkill::DisplayMode outtype;
 };
 
+std::vector<OutputStream> g_outStreams;
+
+Timer g_timer;
+
+
 void CycleOutputType(OutputStream& os)
 {
     if (os.outtype == OVRkill::SingleEye)
@@ -48,10 +53,6 @@ void CycleOutputType(OutputStream& os)
         os.outtype = OVRkill::SingleEye;
     }
 }
-
-std::vector<OutputStream> g_outStreams;
-
-Timer g_timer;
 
 void display()
 {
@@ -370,6 +371,12 @@ int main(int argc, char *argv[])
 
     g_app.initGL(argc, argv);
     g_app.initJoysticks();
+
+    // We can only set attributes after the TweakBar has been initialized.
+    if (g_outStreams.size() == 1)
+    {
+        g_app.MinimizeTweakbar();
+    }
 
     /// Main loop
     running = GL_TRUE;

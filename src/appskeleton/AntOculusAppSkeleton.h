@@ -46,6 +46,7 @@ public:
 
 #ifdef USE_ANTTWEAKBAR
     virtual void GetShaderParams();
+    virtual void MinimizeTweakbar();
 #endif
 
     virtual void displayTexSampler() const;

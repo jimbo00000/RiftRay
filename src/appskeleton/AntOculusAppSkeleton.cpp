@@ -265,6 +265,12 @@ void AntOculusAppSkeleton::_InitializeBar()
     TwSetParam(m_pBar, "HMD", "opened", TW_PARAM_INT32, 1, &opened);
     TwSetParam(m_pBar, "Camera", "opened", TW_PARAM_INT32, 1, &opened);
 }
+
+void AntOculusAppSkeleton::MinimizeTweakbar()
+{
+    TwDefine(" TweakBar iconified=true ");
+}
+
 #endif
 
 #ifdef USE_ANTTWEAKBAR
