@@ -2,20 +2,8 @@
 
 Oculus Rift enabled viewer for the worlds of [Shadertoy](https://shadertoy.com). Tested on Windows, Mac and Linux, NVIDIA and AMD.
 
-## Setup
-
-### Mirrored Display
-
-- Launch the executable from the bin/ directory.  
-- Maximize the app window  
-- Press F1 twice to enable Rift post-process distortion  
-
-### Extended Display
-
-![Desktop layout](doc/NvidiaSettings-crop.png)  
-
-- Set your monitor configuration as in the image above(1280x800+1920+0)  
-- Launch the executable from the bin/ directory.  
+## Instructions
+Just launch the executable from the **bin/** directory. 
 
 
 ## Controls  
@@ -55,6 +43,20 @@ Oculus Rift enabled viewer for the worlds of [Shadertoy](https://shadertoy.com).
 
 
 Performance tweaks are available via AntTweakBar. VSync controls are provided via the Glfw library and their effectiveness may vary with hardware support.
+
+
+## Setup
+
+### Mirrored Display
+No setup should be needed, output should be fullscreen with Rift distortion.
+
+### Extended Display
+
+Set your monitor configuration as in the image below(1280x800+1920+0): 
+
+![Desktop layout](doc/NvidiaSettings-crop.png)  
+ 
+
 
 ## Acknowledgments
 
