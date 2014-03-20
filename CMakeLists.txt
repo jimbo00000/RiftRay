@@ -23,12 +23,6 @@ IF( WIN32 )
     INCLUDE_DIRECTORIES( "${GLEW_ROOT}/include" )
     LINK_DIRECTORIES   ( "${GLEW_ROOT}/lib" )
     #ADD_DEFINITIONS( -DGLEW_STATIC )
-    
-    SET( OCULUSSDK_ROOT "${LIBS_HOME}/OculusSDK-0.2.2" )
-    INCLUDE_DIRECTORIES( "${OCULUSSDK_ROOT}/LibOVR/Include" )
-    INCLUDE_DIRECTORIES( "${OCULUSSDK_ROOT}/LibOVR/Src" )
-    LINK_DIRECTORIES   ( "${OCULUSSDK_ROOT}/LibOVR/Lib/Win32" )
-    SET( OVR_LIBS optimized libovr.lib debug libovrd.lib )
 
     IF( USE_ANTTWEAKBAR )
         SET( ANTTWEAKBAR_ROOT "${LIBS_HOME}/AntTweakBar_116/AntTweakBar" )
@@ -38,12 +32,26 @@ IF( WIN32 )
         ADD_DEFINITIONS( -DUSE_ANTTWEAKBAR )
     ENDIF( USE_ANTTWEAKBAR )
 
+    SET( OCULUSSDK_ROOT "${LIBS_HOME}/OculusSDK-0.2.2" )
+    INCLUDE_DIRECTORIES( "${OCULUSSDK_ROOT}/LibOVR/Include" )
+    INCLUDE_DIRECTORIES( "${OCULUSSDK_ROOT}/LibOVR/Src" )
+    LINK_DIRECTORIES   ( "${OCULUSSDK_ROOT}/LibOVR/Lib/Win32" )
+    SET( OVR_LIBS
+        optimized libovr.lib
+        debug libovrd.lib )
+
     IF( USE_HYDRA )
         SET( SIXENSE_ROOT "${LIBS_HOME}/SixenseSDK" )
         INCLUDE_DIRECTORIES( "${SIXENSE_ROOT}/include" )
         #LINK_DIRECTORIES   ( "${SIXENSE_ROOT}/lib/win32/debug_static" )
         LINK_DIRECTORIES   ( "${SIXENSE_ROOT}/lib/win32/debug_dll" )
-        SET( HYDRA_LIBS sixensed.lib sixense_utilsd.lib )
+        LINK_DIRECTORIES   ( "${SIXENSE_ROOT}/lib/win32/release_dll" )
+        SET( HYDRA_LIBS
+            optimized sixense.lib
+            debug     sixensed.lib
+            optimized sixense_utils.lib
+            debug     sixense_utilsd.lib
+            )
         ADD_DEFINITIONS( -DUSE_HYDRA )
     ENDIF( USE_HYDRA )
 
@@ -91,6 +99,7 @@ ELSEIF( APPLE )
     IF( USE_HYDRA )
         SET( SIXENSE_ROOT "${LIBS_HOME}/SixenseSDK" )
         INCLUDE_DIRECTORIES( "${SIXENSE_ROOT}/include" )
+        # TODO: Debug and Release builds
         LINK_DIRECTORIES   ( "${SIXENSE_ROOT}/lib/osx_x64/debug_dll" )
         SET( HYDRA_LIBS -lsixensed_x64 -lsixense_utilsd_x64  )
     ENDIF()
