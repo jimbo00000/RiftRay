@@ -31,7 +31,7 @@ textures = [t for t in textures if not t[0] == '.']
 print textures
 
 dlls = []
-debugDir = os.path.join("..", "build", "Debug")
+debugDir = os.path.join("..", "build", "Release")
 if os.path.exists(debugDir):
     dlls = os.listdir(debugDir)
 dlls = [d for d in dlls if d.find(".dll") > -1]
