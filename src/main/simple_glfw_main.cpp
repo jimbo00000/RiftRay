@@ -333,6 +333,22 @@ bool initGlfw(int argc, char **argv, bool fullScreen)
         g_outStreams[1].pWindow = pOculusWindow;
         g_outStreams[1].outtype = OVRkill::StereoWithDistortion;
     }
+    else if (!g_outStreams.empty())
+    {
+        // Only one screen found, set our single window to Oculus mode and maximize.
+        glfwSetWindowPos(pControlWindow, 0, 0);
+        g_outStreams[0].outtype = OVRkill::StereoWithDistortion;
+
+        const GLFWvidmode* pMode = glfwGetVideoMode(g_outStreams[0].pMonitor);
+        if (pMode != NULL)
+        {
+            glfwSetWindowSize(pControlWindow, pMode->width, pMode->height);
+        }
+    }
+    else
+    {
+        LOG_INFO("Completely out of luck as no monitors have been found.");
+    }
 
     /// If we are not sharing contexts between windows, make the appropriate one current here.
     //glfwMakeContextCurrent(g_pControlWindow);
