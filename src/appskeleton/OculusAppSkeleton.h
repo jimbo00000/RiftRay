@@ -48,6 +48,7 @@ public:
     virtual void timestep(float dt);
 
     void SetBufferScaleUp(float s) { m_bufferScaleUp = s; }
+    void SetBufferScaleUpMax(float s) { m_bufferScaleUpMax = s; }
     void ResetEyePosition()
     {
         EyePos = OVR::Vector3f(0.0f, m_standingHeight, -5.0f);
@@ -89,6 +90,7 @@ public:
     int GetOculusWidth() const { return m_ok.GetOculusWidth(); }
     int GetOculusHeight() const { return m_ok.GetOculusHeight(); }
     float GetBufferScaleUp() const { return m_bufferScaleUp; }
+    float GetBufferScaleUpMax() const { return m_bufferScaleUpMax; }
     float GetMegaPixelCount() const;
     const std::map<std::string, std::string>& GetVarMap() const { return m_varMap; }
 

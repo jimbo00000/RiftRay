@@ -68,6 +68,22 @@ static void TW_CALL GetBufferScaleCallback(void *value, void *clientData)
     }
 }
 
+static void TW_CALL SetBufferScaleMaxCallback(const void *value, void *clientData)
+{
+    if (clientData)
+    {
+        static_cast<AntOculusAppSkeleton *>(clientData)->SetBufferScaleUpMax( *(float *)value);
+    }
+}
+
+static void TW_CALL GetBufferScaleMaxCallback(void *value, void *clientData)
+{
+    if (clientData)
+    {
+        *(float *)value = static_cast<AntOculusAppSkeleton *>(clientData)->GetBufferScaleUpMax();
+    }
+}
+
 static void TW_CALL GetMegaPxCount(void *value, void *clientData)
 {
     *static_cast<float *>(value) = static_cast<const AntOculusAppSkeleton *>(clientData)->GetMegaPixelCount();
@@ -167,7 +183,11 @@ void AntOculusAppSkeleton::_InitializeBar()
 
     TwAddVarCB(m_pBar, "FBO x", TW_TYPE_FLOAT,
         SetBufferScaleCallback, GetBufferScaleCallback, this,
-        " min=0.125 max=16.0 step=0.01 group='Performance' ");
+        " min=0.125 max=8.0 step=0.01 group='Performance' ");
+
+    TwAddVarCB(m_pBar, "FBO x Max", TW_TYPE_FLOAT,
+        SetBufferScaleMaxCallback, GetBufferScaleMaxCallback, this,
+        " min=0.5 max=8.0 step=0.01 group='Performance' ");
 
     TwAddVarRW(m_pBar, "FBO gutter", TW_TYPE_FLOAT, &m_bufferGutterPctg,
         " min=0.0 max=0.495 step=0.01 group='Performance' ");
