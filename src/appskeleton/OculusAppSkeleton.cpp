@@ -47,6 +47,8 @@ OculusAppSkeleton::OculusAppSkeleton()
 , m_ok()
 , m_riftDist()
 , m_bufferScaleUp(1.0f)
+, m_bufferScaleUpMin(0.25f)
+, m_bufferScaleUpMax(2.0f)
 , m_bufferBoost(1.0f)
 , m_bufferGutterPctg(0.0f)
 , m_bufferGutterFocus(0.8f) ///< Set empirically on my DK1 and 64mm IPD
@@ -73,7 +75,7 @@ bool OculusAppSkeleton::initVR(bool fullScreen)
 {
     m_ok.InitOVR();
     m_ok.SetDisplayMode(OVRkill::StereoWithDistortion);
-    m_bufferScaleUp = 0.25f; // m_ok.GetRenderBufferScaleIncrease();
+    m_bufferScaleUp = m_bufferScaleUpMin; // m_ok.GetRenderBufferScaleIncrease();
 
     return true;
 }
@@ -294,7 +296,7 @@ void OculusAppSkeleton::HandleHydra()
 
     if (g_fm.WasJustPressed(FlyingMouse::Left, SIXENSE_BUTTON_JOYSTICK))
     {
-        SetBufferScaleUp(0.25f);
+        SetBufferScaleUp(m_bufferScaleUpMin);
         ResizeFbo();
     }
 
@@ -310,8 +312,8 @@ void OculusAppSkeleton::HandleHydra()
         const float incr = pow(2.0f, 1.0f/12.0f);
         const float joyPush = 0.95f * joyy;
         float newval = curScaleUp * pow(incr, joyPush);
-        newval = std::max(0.25f, newval);
-        newval = std::min(8.0f, newval);
+        newval = std::max(m_bufferScaleUpMin, newval);
+        newval = std::min(m_bufferScaleUpMax, newval);
         if (fabs(newval - curScaleUp) > 0.01f)
         {
             SetBufferScaleUp(newval);
@@ -528,8 +530,8 @@ void OculusAppSkeleton::HandleGlfwJoystick()
             const float curScaleUp = GetBufferScaleUp();
             const float incr = 1.05946309436f;
             float newval = curScaleUp * pow(incr, (float)-1);
-            newval = std::max(0.25f, newval);
-            newval = std::min(8.0f, newval);
+            newval = std::max(m_bufferScaleUpMin, newval);
+            newval = std::min(m_bufferScaleUpMax, newval);
             SetBufferScaleUp(newval);
             ResizeFbo();
         }
@@ -538,8 +540,8 @@ void OculusAppSkeleton::HandleGlfwJoystick()
             const float curScaleUp = GetBufferScaleUp();
             const float incr = 1.05946309436f;
             float newval = curScaleUp * pow(incr, (float)1);
-            newval = std::max(0.25f, newval);
-            newval = std::min(8.0f, newval);
+            newval = std::max(m_bufferScaleUpMin, newval);
+            newval = std::min(m_bufferScaleUpMax, newval);
             SetBufferScaleUp(newval);
             ResizeFbo();
         }
@@ -765,8 +767,8 @@ void OculusAppSkeleton::mouseWheel(int x, int y)
         const float curScaleUp = GetBufferScaleUp();
         const float incr = 1.05946309436f;
         float newval = curScaleUp * pow(incr, (float)y);
-        newval = std::max(0.25f, newval);
-        newval = std::min(8.0f, newval);
+        newval = std::max(m_bufferScaleUpMin, newval);
+        newval = std::min(m_bufferScaleUpMax, newval);
         SetBufferScaleUp(newval);
         ResizeFbo();
 #endif

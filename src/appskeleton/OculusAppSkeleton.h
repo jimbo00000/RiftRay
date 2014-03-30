@@ -152,6 +152,8 @@ protected:
     OVRkill m_ok;
     RiftDistortionParams  m_riftDist;
     float m_bufferScaleUp;
+    float m_bufferScaleUpMin;
+    float m_bufferScaleUpMax;
     float m_bufferBoost;
     float m_bufferGutterPctg;
     float m_bufferGutterFocus;
