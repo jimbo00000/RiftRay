@@ -306,7 +306,8 @@ void OculusAppSkeleton::HandleHydra()
     const float joyy = cd.joystick_y;
     const float trigL = cd.trigger;
 
-    // Incremental adjustment by pushing stick up/down
+    // Incremental adjustment by pushing stick up/down with bumper pressed
+    if (g_fm.IsPressed(FlyingMouse::Left, SIXENSE_BUTTON_BUMPER))
     {
         const float curScaleUp = GetBufferScaleUp();
         const float incr = pow(2.0f, 1.0f/12.0f);
