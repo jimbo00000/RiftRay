@@ -33,6 +33,9 @@ Just launch the executable from the **bin/** directory.
 - **WASD QE** - Navigate forward, back, strafe left, right, rise, fall  
 - **Space** - Next shader  
 - **Shift+Space**, **Backspace** - Previous shader  
+- **F1** - Toggle display mode(Normal, side-by-side, Barrel distortion) for primary window  
+- **F2** - Toggle display mode for secondary window(if applicable)  
+- **`(Backtick)** - Shrink primary window from fullscreen to windowed mode  
 
 ### Mouse
 - **Right click & drag** - Move avatar  
