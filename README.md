@@ -3,6 +3,10 @@
 Oculus Rift DK2 enabled viewer for the worlds of [Shadertoy](https://shadertoy.com).  
 
 
+## Instructions  
+Tap the side of the Rift with one finger to dismiss the Health and Safety Warning and recenter your view. Look at the pictures in the gallery, and tap the Rift to be transported. Tap again to return to the gallery.  
+
+
 ## Features  
 - Adaptive performance scaling  
 - Tracking volume display(on when near the boundary)  
