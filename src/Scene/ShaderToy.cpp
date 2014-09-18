@@ -40,9 +40,9 @@ void ShaderToy::CompileShader()
 
     const GLuint vertSrc = loadShaderFile(vs.c_str(), GL_VERTEX_SHADER);
     const std::string shaderToyDir = "../shaders/";
-    const std::string src1 = GetShaderSourceFromFile("rwwtt_header.glsl");
+    const std::string src1 = GetShaderSourceFromTable("rwwtt_header.glsl");
     const std::string src2 = GetShaderSourceFromFile(m_sourceFile.c_str(), shaderToyDir);
-    const std::string src3 = GetShaderSourceFromFile("rwwtt_footer.glsl");
+    const std::string src3 = GetShaderSourceFromTable("rwwtt_footer.glsl");
 
     GLuint fragSrc = 0;
     GLuint shaderId = glCreateShader(GL_FRAGMENT_SHADER);
