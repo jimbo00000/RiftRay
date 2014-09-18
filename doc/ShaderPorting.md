@@ -25,6 +25,6 @@
 	
 	Texture filenames can be extracted from Chrome's developer console. Be sure to copy them in the right order. Copies of the image files from shadertoy reside in the textures/ directory.
 
-- Save as a .glsl file in **shaders/shadertoy/**
+- Save as a .glsl file in **shaders/**
 
 The shader should still work in shadertoy, but will hopefully be drop-in compatible with RiftRay. The goal here is to keep it all in one text file of annotated frag shader source. (unless there's a cleaner way to do it)
