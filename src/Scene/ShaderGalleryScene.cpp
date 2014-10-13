@@ -3,6 +3,9 @@
 #include "ShaderGalleryScene.h"
 #include "ShaderPane.h"
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 ShaderGalleryScene::ShaderGalleryScene()
 {
 }
@@ -49,8 +52,6 @@ Pane* ShaderGalleryScene::AddShaderPane(ShaderToy* pSt)
 
 void ShaderGalleryScene::RearrangePanes()
 {
-    const int count = static_cast<int>(m_panes.size());
-
     int idx = 0;
     for (std::vector<Pane*>::iterator it = m_panes.begin();
         it != m_panes.end();
@@ -58,21 +59,23 @@ void ShaderGalleryScene::RearrangePanes()
     {
         Pane* pP = *it;
 
-        // Rows of 5
+        // Lay the panes out in cylindrical rows in front of the viewer.
         const int rowsz = 5;
-        const int rownum = idx / 5;
-        const int rowpos = idx % 5;
+        const int rownum = idx / rowsz;
+        const int rowpos = idx % rowsz;
         const float colstep = 1.1f;
-        const float rowstep = 1.1f;
+        const float radstep = static_cast<float>(M_PI) / 10.0f;
+        const float rads = static_cast<float>(rowpos-2) * radstep;
+        const float radius = 4.0f;
 
         const glm::vec3 pos(
-            -2.0f*rowstep + rowstep*static_cast<float>(rowpos),
+            radius*sin(rads),
             0.8f + colstep * static_cast<float>(rownum),
-            -2.0f);
+            2.0f - radius*cos(rads));
         pP->m_tx.SetPosition(pos);
         pP->m_tx.SetDefaultPosition(pos);
 
-        const glm::mat4 ori = glm::mat4(1.0f);
+        const glm::mat4 ori = glm::rotate(glm::mat4(1.0f), -rads, glm::vec3(0,1,0));
         pP->m_tx.SetDefaultOrientation(ori);
         pP->m_tx.SetOrientation(ori);
     }
