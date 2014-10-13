@@ -40,7 +40,7 @@ void allocateFBO(FBO& f, int w, int h)
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-        glTexParameteri( GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_INTENSITY );
+        //glTexParameteri( GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_INTENSITY ); //deprecated, out in 3.1
         glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
                      w, h, 0,
                      GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL );
@@ -92,11 +92,14 @@ void deallocateFBO(FBO& f)
 #endif
 }
 
+///@note This hack is to get around lack of glPushAttrib
+static GLint s_vp[4];
+
 // Set viewport here, then restore it in unbind
 void bindFBO(const FBO& f, float fboScale)
 {
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, f.id);
-    glPushAttrib(GL_VIEWPORT_BIT);
+    glGetIntegerv(GL_VIEWPORT, &s_vp[0]);
 
     // Add 1 to the viewport sizes here to mitigate the edge effects on the render buffer -
     // this way we render all the way out to the borders rather than leaving an unsightly gap.
@@ -108,6 +111,7 @@ void bindFBO(const FBO& f, float fboScale)
 
 void unbindFBO()
 {
-    glPopAttrib(); // GL_VIEWPORT_BIT - if this is not misused!
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    ///@warning We hope here that the FBO being unbound is the last one that was bound.
+    glViewport(s_vp[0], s_vp[1], s_vp[2], s_vp[3]);
 }
