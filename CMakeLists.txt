@@ -100,10 +100,6 @@ IF( WIN32 )
 
     ADD_DEFINITIONS( /W4 )
 
-    # Silence some linker warnings on VS2010
-    SET( CMAKE_EXE_LINKER_FLAGS /NODEFAULTLIB:\"libcmt.lib\" )
-    SET( CMAKE_EXE_LINKER_FLAGS_DEBUG /NODEFAULTLIB:\"msvcrt.lib\" )
-
     # Copy DLLs of the included libraries into build/Debug/ and Release/
     # TODO: pass in respective SDK root directories for finding DLLs to copy.
     INCLUDE(cmake_modules/CopyDLLsToBuild.cmake)
