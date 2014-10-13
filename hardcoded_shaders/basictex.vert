@@ -1,9 +1,10 @@
 // basictex.vert
+#version 330
 
-attribute vec3 vPosition;
-attribute vec2 vTexCoord;
+in vec3 vPosition;
+in vec2 vTexCoord;
 
-varying vec2 vfTexCoord;
+out vec2 vfTexCoord;
 
 uniform mat4 mvmtx;
 uniform mat4 prmtx;

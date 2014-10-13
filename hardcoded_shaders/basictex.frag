@@ -1,10 +1,12 @@
 // basictex.frag
+#version 330
 
-varying vec2 vfTexCoord;
+in vec2 vfTexCoord;
+out vec4 fragColor;
 
 uniform sampler2D texImage;
 
 void main()
 {
-    gl_FragColor = texture2D(texImage, vfTexCoord);
+    fragColor = texture2D(texImage, vfTexCoord);
 }

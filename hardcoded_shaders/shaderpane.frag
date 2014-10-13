@@ -1,11 +1,13 @@
 // shaderpane.frag
+#version 330
 
-varying vec2 vfTexCoord;
+in vec2 vfTexCoord;
+out vec4 fragColor;
 
 uniform sampler2D texImage;
 uniform float u_brightness;
 
 void main()
 {
-    gl_FragColor = u_brightness * texture2D(texImage, vfTexCoord);
+    fragColor = u_brightness * texture2D(texImage, vfTexCoord);
 }
