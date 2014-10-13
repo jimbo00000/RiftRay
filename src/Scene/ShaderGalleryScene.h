@@ -24,6 +24,7 @@ public:
 
     virtual void InitPanesGL();
     virtual Pane* AddShaderPane(ShaderToy* pSt);
+    virtual void RearrangePanes();
     virtual ShaderToy* GetFocusedShader() const;
 
 private: // Disallow copy ctor and assignment operator

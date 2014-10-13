@@ -669,6 +669,7 @@ void StartShaderLoadThread()
     /// which would make the VR experience unacceptably uncomfortable.
     g_app.LoadTexturesFromFile();
     g_app.CompileShaders();
+    g_app.m_paneScene.RearrangePanes();
     g_app.RenderThumbnails();
 
 #if 0
