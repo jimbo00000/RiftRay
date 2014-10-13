@@ -721,15 +721,8 @@ int main(void)
     const ovrVector2i pos = g_app.getHmdWindowPos();
 
     l_Window = glfwCreateWindow(sz.w, sz.h, "GLFW Oculus Rift Test", NULL, NULL);
-    // According to the OVR SDK 0.3.2 Overview, WindowsPos will be set to (0,0)
-    // if not supported. This will also be the case if the Rift DK1 display is
-    // cloned/duplicated to the main(convenient for debug).
-    if ((pos.x == 0) && (pos.y == 0))
-    {
-        // Windowed mode
-        ///@todo Handle resizes in the app
-    }
-    else
+
+    if (g_app.UsingDebugHmd() == false)
     {
         glfwSetWindowPos(l_Window, pos.x, pos.y);
         g_renderMode.outputType = RenderingMode::OVR_SDK;

@@ -29,6 +29,7 @@
 
 RiftAppSkeleton::RiftAppSkeleton()
 : m_Hmd(NULL)
+, m_usingDebugHmd(false)
 , m_hmdRo(0.0f)
 , m_hmdRd(0.0f)
 
@@ -217,6 +218,7 @@ void RiftAppSkeleton::initHMD()
     if (m_Hmd == NULL)
     {
         m_Hmd = ovrHmd_CreateDebug(ovrHmd_DK1);
+        m_usingDebugHmd = true;
     }
 
     m_ovrScene.SetHmdPointer(m_Hmd);
