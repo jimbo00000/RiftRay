@@ -702,12 +702,24 @@ int main(void)
         exit(EXIT_FAILURE);
     }
 
+#ifdef USE_CORE_CONTEXT
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+#if defined(_MACOS)
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+#else
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+#endif
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+
+    glfwWindowHint(GLFW_SAMPLES, 0);
+
     // This call assumes the Rift display is in extended mode.
     g_app.initHMD();
     const ovrSizei sz = g_app.getHmdResolution();
     const ovrVector2i pos = g_app.getHmdWindowPos();
 
-    glfwWindowHint(GLFW_SAMPLES, 0);
     l_Window = glfwCreateWindow(sz.w, sz.h, "GLFW Oculus Rift Test", NULL, NULL);
     // According to the OVR SDK 0.3.2 Overview, WindowsPos will be set to (0,0)
     // if not supported. This will also be the case if the Rift DK1 display is
@@ -757,7 +769,11 @@ int main(void)
 #endif
 
 #ifdef USE_ANTTWEAKBAR
+  #ifdef USE_CORE_CONTEXT
+    TwInit(TW_OPENGL_CORE, NULL);
+  #else
     TwInit(TW_OPENGL, NULL);
+  #endif
     InitializeBar();
 #endif
 

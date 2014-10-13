@@ -12,6 +12,11 @@ SET( GL_FRAMEWORK "GLFW" CACHE STRING "Which OpenGL windowing framework to use" 
 SET( USE_ANTTWEAKBAR TRUE CACHE BOOL "Use AntTweakBar" )
 SET( USE_SIXENSE TRUE CACHE BOOL "Use Sixense" )
 
+SET( USE_CORE_CONTEXT FALSE CACHE BOOL "Use Core Context" )
+IF( USE_CORE_CONTEXT )
+    ADD_DEFINITIONS(-DUSE_CORE_CONTEXT)
+ENDIF()
+
 #
 # Platform-dependent section
 #
