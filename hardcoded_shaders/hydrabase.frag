@@ -1,6 +1,8 @@
 // hydrabase.frag
+#version 330
 
-varying vec3 vfColor;
+in vec3 vfColor;
+out vec4 fragColor;
 
 void main()
 {
@@ -13,5 +15,5 @@ void main()
     float band = smoothstep(mid-halfthick, mid, mincomp) * (1.0-smoothstep(mid, mid+halfthick, mincomp));
     vec3 col = vec3(0.0, 1.0, 0.0);
 
-    gl_FragColor = vec4(band*col, 1.0);
+    fragColor = vec4(band*col, 1.0);
 }

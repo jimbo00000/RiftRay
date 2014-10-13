@@ -1,8 +1,10 @@
 // basic.frag
+#version 330
 
-varying vec3 vfColor;
+in vec3 vfColor;
+out vec4 fragColor;
 
 void main()
 {
-    gl_FragColor = vec4(vfColor, 1.0);
+    fragColor = vec4(vfColor, 1.0);
 }

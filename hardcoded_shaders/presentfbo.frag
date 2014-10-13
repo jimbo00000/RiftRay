@@ -1,11 +1,13 @@
 // presentfbo.frag
+#version 330
 
-varying vec2 vfTex;
+in vec2 vfTex;
+out vec4 fragColor;
 
 uniform float fboScale;
 uniform sampler2D fboTex;
 
 void main()
 {
-    gl_FragColor = texture2D(fboTex, vfTex * fboScale);
+    fragColor = texture(fboTex, vfTex * fboScale);
 }

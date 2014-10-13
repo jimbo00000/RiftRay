@@ -1,6 +1,7 @@
 // ucolor.vert
+#version 330
 
-attribute vec4 vPosition;
+in vec4 vPosition;
 
 uniform mat4 mvmtx;
 uniform mat4 prmtx;

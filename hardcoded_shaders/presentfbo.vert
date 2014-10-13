@@ -1,9 +1,10 @@
 // presentfbo.vert
+#version 330
 
-attribute vec2 vPosition;
-attribute vec2 vTex;
+in vec2 vPosition;
+in vec2 vTex;
 
-varying vec2 vfTex;
+out vec2 vfTex;
 
 uniform mat4 mvmtx;
 uniform mat4 prmtx;

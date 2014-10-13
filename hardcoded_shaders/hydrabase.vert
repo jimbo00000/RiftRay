@@ -1,9 +1,10 @@
 // hydrabase.vert
+#version 330
 
-attribute vec4 vPosition;
-attribute vec4 vColor;
+in vec4 vPosition;
+in vec4 vColor;
 
-varying vec3 vfColor;
+out vec3 vfColor;
 
 uniform mat4 mvmtx;
 uniform mat4 prmtx;

@@ -1,17 +1,18 @@
 // presentmesh.vert
+#version 330
 
 uniform vec2 EyeToSourceUVScale;
 uniform vec2 EyeToSourceUVOffset;
 
-attribute vec4 vPosition;
-attribute vec2 vTexR;
-attribute vec2 vTexG;
-attribute vec2 vTexB;
+in vec4 vPosition;
+in vec2 vTexR;
+in vec2 vTexG;
+in vec2 vTexB;
 
-varying vec2 vfTexR;
-varying vec2 vfTexG;
-varying vec2 vfTexB;
-varying float vfColor;
+out vec2 vfTexR;
+out vec2 vfTexG;
+out vec2 vfTexB;
+out float vfColor;
 
 void main()
 {
