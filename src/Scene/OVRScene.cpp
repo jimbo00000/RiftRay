@@ -183,9 +183,7 @@ void OVRScene::RenderForOneEye(const float* pMview, const float* pPersp) const
 
         glm::mat4 ogmat = glm::make_mat4(&camMtx.Transposed().M[0][0]);
 
-        glLineWidth(3.0f);
         DrawScene(modelview * ogmat, projection);
-        glLineWidth(1.0f);
     }
 }
 
