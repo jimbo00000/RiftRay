@@ -53,6 +53,7 @@ def generateSourceFile():
 			print >>outStream, "\n" + decl + varname + " = "
 			for l in lines:
 				if l != "":
+					l = l.replace('"', '\\"')
 					print >>outStream, tab + quote + l + newline + quote
 			print >>outStream, ";"
 
