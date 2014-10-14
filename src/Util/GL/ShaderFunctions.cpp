@@ -132,8 +132,8 @@ const std::string GetShaderSource(const char* filename)
     /// garbage characters in the shader source string.
     ///@todo Why does loading shaders in Linux yield extra garbage characters?
     const std::string fileSrc = "";
-#elif defined(_MACOS)
-    const std::string fileSrc = "";
+//#elif defined(_MACOS)
+//    const std::string fileSrc = "";
 #else
     const std::string fileSrc = GetShaderSourceFromFile(filename);
 #endif

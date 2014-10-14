@@ -34,7 +34,9 @@ RiftAppSkeleton::RiftAppSkeleton()
 , m_hmdRd(0.0f)
 
 , m_scene()
+#ifdef USE_SIXENSE
 , m_hydraScene()
+#endif
 , m_ovrScene()
 , m_raymarchScene()
 , m_shaderToyScene()
@@ -67,7 +69,9 @@ RiftAppSkeleton::RiftAppSkeleton()
     // provided they all do forward rendering. Per-scene deferred render passes will
     // take a little bit more work.
     m_scenes.push_back(&m_scene);
+#ifdef USE_SIXENSE
     m_scenes.push_back(&m_hydraScene);
+#endif
     m_scenes.push_back(&m_ovrScene);
     //m_scenes.push_back(&m_raymarchScene);
     m_scenes.push_back(&m_shaderToyScene);
@@ -79,9 +83,11 @@ RiftAppSkeleton::RiftAppSkeleton()
     m_paneScene.SetHmdDirectionPointer(&m_hmdRd);
 
     // Give this scene a pointer to get live Hydra data for display
+#ifdef USE_SIXENSE
     m_hydraScene.SetFlyingMousePointer(&m_fm);
 
-    m_hyif.AddTransformation(m_raymarchScene.GetTransformationPointer());
+    m_hydraScene.AddTransformation(m_raymarchScene.GetTransformationPointer());
+#endif
 
     ResetAllTransformations();
 

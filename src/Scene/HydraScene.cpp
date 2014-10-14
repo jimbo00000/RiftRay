@@ -1,5 +1,5 @@
 // HydraScene.cpp
-
+#ifdef USE_SIXENSE
 #include "HydraScene.h"
 
 #define _USE_MATH_DEFINES
@@ -254,3 +254,4 @@ void HydraScene::RenderForOneEye(const float* pMview, const float* pPersp) const
 
     DrawScene(modelview, projection);
 }
+#endif

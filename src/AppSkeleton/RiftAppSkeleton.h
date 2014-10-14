@@ -21,7 +21,9 @@
 
 #include "FBO.h"
 #include "Scene.h"
+#ifdef USE_SIXENSE
 #include "HydraScene.h"
+#endif
 #include "OVRScene.h"
 #include "RaymarchShaderScene.h"
 #include "ShaderToyScene.h"
@@ -117,7 +119,9 @@ protected:
 public:
     // This public section is for exposing state variables to AntTweakBar
     Scene m_scene;
+#ifdef USE_SIXENSE
     HydraScene m_hydraScene;
+#endif
     OVRScene m_ovrScene;
     RaymarchShaderScene m_raymarchScene;
     ShaderToyScene m_shaderToyScene;

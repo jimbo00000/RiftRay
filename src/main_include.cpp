@@ -72,7 +72,7 @@ void InitializeBar()
 
     TwAddVarRW(g_pTweakbar, "Draw Scene", TW_TYPE_BOOLCPP, &g_app.m_scene.m_bDraw,
                "  group='Scene' ");
-
+#ifdef USE_SIXENSE
     TwAddVarRW(g_pTweakbar, "Draw HydraScene", TW_TYPE_BOOLCPP, &g_app.m_hydraScene.m_bDraw,
                "  group='HydraScene' ");
     TwAddVarRW(g_pTweakbar, "Hydra Location x", TW_TYPE_FLOAT, &g_app.m_fm.m_baseOffset.x,
@@ -81,7 +81,7 @@ void InitializeBar()
                " min=-10 max=10 step=0.05 group='HydraScene' ");
     TwAddVarRW(g_pTweakbar, "Hydra Location z", TW_TYPE_FLOAT, &g_app.m_fm.m_baseOffset.z,
                " min=-10 max=10 step=0.05 group='HydraScene' ");
-
+#endif
     TwAddVarRW(g_pTweakbar, "Draw RaymarchScene", TW_TYPE_BOOLCPP, &g_app.m_raymarchScene.m_bDraw,
                "  group='RaymarchScene' ");
 
