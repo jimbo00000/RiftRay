@@ -60,13 +60,14 @@ void ShaderGalleryScene::RearrangePanes()
         Pane* pP = *it;
 
         // Lay the panes out in cylindrical rows in front of the viewer.
-        const int rowsz = 5;
+        const int numrows = 3;
+        const int rowsz = 1 + static_cast<int>(m_panes.size()) / numrows;
         const int rownum = idx / rowsz;
         const int rowpos = idx % rowsz;
         const float colstep = 1.1f;
-        const float radstep = static_cast<float>(M_PI) / 10.0f;
-        const float rads = static_cast<float>(rowpos-2) * radstep;
-        const float radius = 4.0f;
+        const float radstep = static_cast<float>(M_PI) / 16.0f;
+        const float rads = static_cast<float>(rowpos-rowsz/2) * radstep;
+        const float radius = 6.0f;
 
         const glm::vec3 pos(
             radius*sin(rads),
