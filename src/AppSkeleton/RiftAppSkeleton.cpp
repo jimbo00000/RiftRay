@@ -85,8 +85,7 @@ RiftAppSkeleton::RiftAppSkeleton()
     // Give this scene a pointer to get live Hydra data for display
 #ifdef USE_SIXENSE
     m_hydraScene.SetFlyingMousePointer(&m_fm);
-
-    m_hydraScene.AddTransformation(m_raymarchScene.GetTransformationPointer());
+    m_hyif.AddTransformation(m_raymarchScene.GetTransformationPointer());
 #endif
 
     ResetAllTransformations();
