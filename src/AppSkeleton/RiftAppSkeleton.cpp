@@ -622,7 +622,7 @@ void RiftAppSkeleton::_DrawScenes(
 
 void RiftAppSkeleton::DiscoverShaders()
 {
-    const std::vector<std::string> shadernames = GetListOfFilesFromDirectory("../shaders/");
+    const std::vector<std::string> shadernames = GetListOfFilesFromDirectory(ShaderToy::s_shaderDir);
     for (std::vector<std::string>::const_iterator it = shadernames.begin();
         it != shadernames.end();
         ++it)

@@ -74,7 +74,7 @@ std::string slurp(std::ifstream& in)
     return sstr.str();
 }
 
-/// Return the contents of a given filename in the ../shaders/ directory.
+/// Return the contents of a given filename in the given directory.
 const std::string GetShaderSourceFromFile(const char* filename, const std::string path)
 {
     std::cout << "<<file>> ";
