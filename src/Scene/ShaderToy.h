@@ -34,6 +34,8 @@ public:
     glm::vec3 GetHeadPos() const;
     float GetHeadSize() const;
 
+    static std::string s_shaderDir;
+
 protected:
     virtual void _ParseVariableMap();
 
