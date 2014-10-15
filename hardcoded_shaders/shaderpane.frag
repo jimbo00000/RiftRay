@@ -9,5 +9,5 @@ uniform float u_brightness;
 
 void main()
 {
-    fragColor = u_brightness * texture2D(texImage, vfTexCoord);
+    fragColor = u_brightness * texture(texImage, vfTexCoord);
 }

@@ -1,7 +1,8 @@
 // raymarch.frag
 #version 330
 
-varying vec2 vfFragCoord;
+in vec2 vfFragCoord;
+out vec4 fragColor;
 
 // ShaderToy Inputs:
 uniform vec3 iResolution;
@@ -224,5 +225,5 @@ void main()
     float ndcDepth = -p10 + -p11 / eyeHitZ;
 
     gl_FragDepth = ((gl_DepthRange.diff * ndcDepth) + gl_DepthRange.near + gl_DepthRange.far) / 2.0;
-    gl_FragColor = vec4(col, 1.0);
+    fragColor = vec4(col, 1.0);
 }

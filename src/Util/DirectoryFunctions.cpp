@@ -9,6 +9,10 @@
 #  include <dirent.h>
 #endif
 
+#ifdef __APPLE__
+#include <sys/stat.h>
+#endif
+
 #include <algorithm>
 
 #include "DirectoryFunctions.h"

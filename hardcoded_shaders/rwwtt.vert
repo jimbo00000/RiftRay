@@ -1,9 +1,9 @@
 // rwwtt.vert
+#version 330
+in vec2 vPos;
+in vec2 vTex;
 
-attribute vec2 vPos;
-attribute vec2 vTex;
-
-varying vec2 vfFragCoord;
+out vec2 vfFragCoord;
 
 void main()
 {

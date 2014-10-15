@@ -2,10 +2,14 @@
 // Designed to be as compatible as possible with ShaderToy
 // http://shadertoy.com
 // Huge Thanks to Inigo Quilez for all the open code and tutorials!
-#version 120
+#version 330
 #define RIFTRAY
+#define texture2D texture
+#define gl_FragColor fragColor
 
-varying vec2 vfFragCoord;
+
+in vec2 vfFragCoord;
+out vec4 fragColor;
 
 
 // ShaderToy Inputs:

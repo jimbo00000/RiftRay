@@ -60,7 +60,9 @@ RiftAppSkeleton::RiftAppSkeleton()
 , m_joystickYaw(0.0f)
 , m_mouseDeltaYaw(0.0f)
 , m_cinemaScopeFactor(0.0f)
+#ifdef USE_ANTTWEAKBAR
 , m_pTweakbar(NULL)
+#endif
 {
     m_eyeOri = OVR::Quatf();
 
