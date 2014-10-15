@@ -1,5 +1,7 @@
 // ShaderToy.cpp
 
+#include "GL/glew.h"
+
 #include "ShaderToy.h"
 #include "ShaderFunctions.h"
 #include "StringFunctions.h"
