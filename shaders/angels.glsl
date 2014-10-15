@@ -7,6 +7,7 @@
 // @var url https://www.shadertoy.com/view/lssGRM
 
 // @var headSize 0.02
+// @var eyePos 0.0 0.0 -10.0
 
 float hash( float n )
 {
