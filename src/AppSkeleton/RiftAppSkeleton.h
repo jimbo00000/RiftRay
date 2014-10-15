@@ -127,6 +127,8 @@ public:
     ShaderToyScene m_shaderToyScene;
     ShaderGalleryScene m_paneScene;
 
+    ovrVector3f m_chassisPos;
+
 protected:
     std::vector<IScene*> m_scenes;
     FBO m_renderBuffer;
@@ -135,7 +137,6 @@ protected:
     ShaderWithVariables m_presentDistMeshL;
     ShaderWithVariables m_presentDistMeshR;
 
-    ovrVector3f m_chassisPos;
     float m_chassisYaw;
 
     VirtualTrackball m_hyif;

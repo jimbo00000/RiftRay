@@ -64,9 +64,14 @@ void InitializeBar()
 
     TwAddButton(g_pTweakbar, "Reset Timer", ResetTimerCB, &g_app.m_shaderToyScene,
         " label='Reset Timer' group='Shader' ");
-
-    TwAddVarRW(g_pTweakbar, "head Size", TW_TYPE_FLOAT, &g_app.m_headSize,
-               " label='head Size' precision=4 min=0.0001 step=0.001 group='Shader' ");
+    TwAddVarRW(g_pTweakbar, "headSize", TW_TYPE_FLOAT, &g_app.m_headSize,
+               " label='headSize' precision=4 min=0.0001 step=0.001 group='Shader' ");
+    TwAddVarRW(g_pTweakbar, "eyePos.x", TW_TYPE_FLOAT, &g_app.m_chassisPos.x,
+               " label='eyePos.x' step=0.001 group='Shader' ");
+    TwAddVarRW(g_pTweakbar, "eyePos.y", TW_TYPE_FLOAT, &g_app.m_chassisPos.y,
+               " label='eyePos.y' step=0.001 group='Shader' ");
+    TwAddVarRW(g_pTweakbar, "eyePos.z", TW_TYPE_FLOAT, &g_app.m_chassisPos.z,
+               " label='eyePos.z' step=0.001 group='Shader' ");
 
 
 
