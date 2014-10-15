@@ -374,7 +374,7 @@ float softshadow( in vec3 ro, in vec3 rd, float k, float l )
     return clamp(res,0.0,1.0);
 }
 
-vec4 lpos[7];
+vec4 lpos[7] = vec4[](vec4(0.0),vec4(0.0),vec4(0.0),vec4(0.0),vec4(0.0),vec4(0.0),vec4(0.0));
 
 
 vec3 shade( in vec3 pos, in vec3 nor, in vec3 rd, float matID, in vec3 uvw, in float info, in vec3 sunDirection )

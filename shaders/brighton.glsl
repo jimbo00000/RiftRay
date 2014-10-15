@@ -18,7 +18,7 @@
 //#define VARY_SIZE
 
 vec3 sunLight  = normalize( vec3(  0.35, 0.3,  0.6 ) );
-vec3 cameraPos;
+vec3 cameraPos = vec3(0.0);
 vec3 sunColour = vec3(1.0, .8, .7);
 const mat2 rotate2D = mat2(1.932, 1.623, -1.623, 1.952);
 

@@ -20,7 +20,7 @@ vec3 lightdir=normalize(vec3(0.,-0.3,-1.));
 float ot=0.;
 float det=0.;
 
-float hitfloor;
+float hitfloor=0.;
 
 float de(vec3 pos) {
 	hitfloor=0.;

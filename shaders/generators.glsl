@@ -52,7 +52,7 @@ float vibration=sin(iGlobalTime*60.)*.0013;
 float vibration=0.;
 #endif
 float det=0.0;
-vec3 pth1;
+vec3 pth1=vec3(0.0);
 
 
 mat2 rot(float a) {
