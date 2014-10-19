@@ -9,10 +9,10 @@ SET( GL_FRAMEWORK "GLFW" CACHE STRING "Which OpenGL windowing framework to use" 
 # Control linking to AntTweakBar and Sixense libraries by toggling a config flag.
 # @todo Write or find a "FindXXX.cmake" script to search typical install locations
 # on the build machine and link the libraries in.
-SET( USE_ANTTWEAKBAR TRUE CACHE BOOL "Use AntTweakBar" )
-SET( USE_SIXENSE TRUE CACHE BOOL "Use Sixense" )
+SET( USE_ANTTWEAKBAR FALSE CACHE BOOL "Use AntTweakBar" )
+SET( USE_SIXENSE FALSE CACHE BOOL "Use Sixense" )
 
-SET( USE_CORE_CONTEXT FALSE CACHE BOOL "Use Core Context" )
+SET( USE_CORE_CONTEXT TRUE CACHE BOOL "Use Core Context" )
 IF( USE_CORE_CONTEXT )
     ADD_DEFINITIONS(-DUSE_CORE_CONTEXT)
 ENDIF()
@@ -148,10 +148,10 @@ ELSEIF( APPLE )
 
     IF( USE_SIXENSE )
         MESSAGE("Using Sixense SDK.")
-        SET( SIXENSE_ROOT "${LIBS_HOME}/sixenseSDK_linux_OSX" CACHE STRING "SixenseSDK root" )
+        SET( SIXENSE_ROOT "${LIBS_HOME}/sixenseSDK" CACHE STRING "SixenseSDK root" )
         INCLUDE_DIRECTORIES( "${SIXENSE_ROOT}/include" )
-        LINK_DIRECTORIES   ( "${SIXENSE_ROOT}/lib/linux_x64/debug" )
-        SET( HYDRA_LIBS -lsixense_x64 -lsixense_utils_x64 )
+        LINK_DIRECTORIES   ( "${SIXENSE_ROOT}/lib/osx_x64/debug" )
+        SET( HYDRA_LIBS -lsixensed_x64 -lsixense_utilsd_x64 )
         ADD_DEFINITIONS( -DUSE_SIXENSE )
     ENDIF( USE_SIXENSE )
 
@@ -283,9 +283,9 @@ ADD_LIBRARY( Scene       ${SCENE_SOURCE_FILES} )
 ADD_LIBRARY( FlyingMouse ${FLYINGMOUSE_SOURCE_FILES} )
 
 IF( GL_FRAMEWORK STREQUAL "GLFW" )
-    ADD_EXECUTABLE( ${PROJECT_NAME} src/glfw_main.cpp )
+    ADD_EXECUTABLE( ${PROJECT_NAME} MACOSX_BUNDLE WIN32 src/glfw_main.cpp )
 ELSEIF( GL_FRAMEWORK STREQUAL "SDL" )
-    ADD_EXECUTABLE( ${PROJECT_NAME} src/sdl_main.cpp )
+    ADD_EXECUTABLE( ${PROJECT_NAME} MACOSX_BUNDLE WIN32 src/sdl_main.cpp )
 ENDIF()
 
 TARGET_LINK_LIBRARIES( ${PROJECT_NAME}
@@ -295,3 +295,25 @@ TARGET_LINK_LIBRARIES( ${PROJECT_NAME}
     FlyingMouse
     ${PLATFORM_LIBS}
     )
+
+IF ( APPLE )
+    SET(APPS "\${CMAKE_INSTALL_PREFIX}/RiftRay2.app")
+
+    INSTALL(TARGETS RiftRay2 
+        BUNDLE DESTINATION . COMPONENT Runtime
+        RUNTIME DESTINATION bin COMPONENT Runtime
+        )
+    INSTALL(DIRECTORY "hardcoded_shaders" DESTINATION "RiftRay2.app/Contents/Resources" COMPONENT Runtime)
+    INSTALL(DIRECTORY "hardcoded_shaders" DESTINATION "RiftRay2.app/Contents" COMPONENT Runtime)
+    INSTALL(DIRECTORY "shaders" DESTINATION "RiftRay2.app/Contents" COMPONENT Runtime)
+    INSTALL(DIRECTORY "textures" DESTINATION "RiftRay2.app/Contents" COMPONENT Runtime)
+
+    INSTALL(CODE "
+        include(BundleUtilities)
+        fixup_bundle(\"${APPS}\" \"\" \"\")
+        " COMPONENT Runtime)
+
+    # To Create a package, one can run "cpack -G DragNDrop CPackConfig.cmake" on Mac OS X
+    set(CPACK_BINARY_DRAGNDROP ON)
+    include(CPack)
+ENDIF()

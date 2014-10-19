@@ -38,6 +38,10 @@
 #include "FPSTimer.h"
 #include "Logger.h"
 
+#ifdef __APPLE__
+#include "CoreFoundation/CoreFoundation.h"
+#endif
+
 RiftAppSkeleton g_app;
 RenderingMode g_renderMode;
 Timer g_timer;
@@ -703,6 +707,18 @@ int main(void)
         exit(EXIT_FAILURE);
     }
 
+#ifdef __APPLE__
+    // Set the working directory to the Resources dir of the .app bundle
+    CFBundleRef mainBundle = CFBundleGetMainBundle();
+    CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
+    char path[PATH_MAX];
+    CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)path, PATH_MAX);
+    CFRelease(resourcesURL);
+    
+    chdir(path);
+#endif
+    
+    
 #ifdef USE_CORE_CONTEXT
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 #if defined(_MACOS)
