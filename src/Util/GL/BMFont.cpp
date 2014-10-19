@@ -54,9 +54,8 @@ void BMFont::LoadFromBinary(const std::string& fntFileName)
 
         case 3:
             {
-                char* pPageNames = new char[block.blockSize];
-                fntFile.read(pPageNames, block.blockSize);
-                delete pPageNames;
+                std::vector<char> pageNames(block.blockSize);
+                fntFile.read(&pageNames[0], block.blockSize);
             }
             break;
 
