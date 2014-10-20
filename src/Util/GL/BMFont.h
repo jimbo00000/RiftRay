@@ -13,8 +13,11 @@
 #endif
 #include <GL/glew.h>
 
+#include <glm/glm.hpp>
+
 #include <string>
 #include <vector>
+#include "ShaderWithVariables.h"
 
 // http://www.angelcode.com/products/bmfont/doc/file_format.html#bin
 
@@ -88,7 +91,10 @@ public:
     virtual ~BMFont();
 
     void initGL();
-    void DrawString(const std::string& text, int x, int y);
+    void DrawString(const std::string& text,
+        int x, int y,
+        const glm::mat4& modelview,
+        const glm::mat4& projection) const;
 
 protected:
     void LoadFromBinary(const std::string& fntFileName);
@@ -97,6 +103,9 @@ protected:
     std::vector<kerningPair> m_kerningPairs;
     std::vector<std::string> m_pageNames;
     std::vector<GLuint> m_texturePages;
+    unsigned int m_pageSzx;
+    unsigned int m_pageSzy;
+    ShaderWithVariables m_fontRender;
 
 private: // Disallow default, copy ctor and assignment operator
     BMFont();

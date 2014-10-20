@@ -20,6 +20,7 @@ void ShaderPane::initGL()
     glBindVertexArray(0);
 
     allocateFBO(m_paneRenderBuffer, 600, 600);
+    m_font.initGL();
 }
 
 ///@brief Highlight pane when it's being pointed at.

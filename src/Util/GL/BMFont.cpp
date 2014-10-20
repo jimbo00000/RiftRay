@@ -3,6 +3,7 @@
 #include "BMFont.h"
 #include <fstream>
 #include <iostream>
+#include <glm/gtc/type_ptr.hpp>
 #include "StringFunctions.h"
 #include "TextureFunctions.h"
 
@@ -11,6 +12,8 @@ BMFont::BMFont(const std::string& sourceFile)
 , m_kerningPairs()
 , m_pageNames()
 , m_texturePages()
+, m_pageSzx(0)
+, m_pageSzy(0)
 {
     LoadFromBinary(sourceFile);
 }
@@ -53,6 +56,8 @@ void BMFont::LoadFromBinary(const std::string& fntFileName)
         case 2:
             fontCommon comm;
             fntFile.read(reinterpret_cast<char*>(&comm), block.blockSize);
+            m_pageSzx = comm.scaleW;
+            m_pageSzy = comm.scaleH;
             break;
 
         case 3:
@@ -118,17 +123,113 @@ void BMFont::initGL()
             m_texturePages.push_back(texId);
         }
     }
+    
+    m_fontRender.initProgram("basictex");
+    m_fontRender.bindVAO();
+
+    GLuint vertVbo = 0;
+    glGenBuffers(1, &vertVbo);
+    m_fontRender.AddVbo("vPosition", vertVbo);
+
+    glEnableVertexAttribArray(m_fontRender.GetAttrLoc("vPosition"));
+    glEnableVertexAttribArray(m_fontRender.GetAttrLoc("vTexCoord"));
+
+    GLuint triVbo = 0;
+    glGenBuffers(1, &triVbo);
+    m_fontRender.AddVbo("elements", triVbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, triVbo);
+
+    glBindVertexArray(0);
 }
 
-void BMFont::DrawString(const std::string& text, int x, int y)
+void BMFont::DrawString(
+    const std::string& text,
+    int x,
+    int y,
+    const glm::mat4& modelview,
+    const glm::mat4& projection) const
 {
     if (text.empty())
         return;
+    if (m_texturePages.empty())
+        return;
 
+    std::vector<float> verts;
+    std::vector<unsigned int> indxs;
     for (std::string::const_iterator it = text.begin();
         it != text.end();
         ++it)
     {
-        char c = *it;
+        char id = *it;
+
+        // Let's assume we are in glOrtho with pixel coordinates.
+        const fontChar& c = m_chars[id];
+        const float texX = static_cast<float>(c.x) / static_cast<float>(m_pageSzx);
+        const float texY = static_cast<float>(c.y) / static_cast<float>(m_pageSzy);
+        const float texX2 = static_cast<float>(c.x + c.width) / static_cast<float>(m_pageSzx);
+        const float texY2 = static_cast<float>(c.y + c.height) / static_cast<float>(m_pageSzy);
+        const int x2 = x + c.width;
+        const int y2 = y + c.height;
+
+        verts.push_back(x);
+        verts.push_back(y);
+        verts.push_back(0.0f);
+        verts.push_back(texX);
+        verts.push_back(texY);
+        indxs.push_back(indxs.size());
+
+        verts.push_back(x2);
+        verts.push_back(y);
+        verts.push_back(0.0f);
+        verts.push_back(texX2);
+        verts.push_back(texY);
+        indxs.push_back(indxs.size());
+
+        verts.push_back(x2);
+        verts.push_back(y2);
+        verts.push_back(0.0f);
+        verts.push_back(texX2);
+        verts.push_back(texY2);
+        indxs.push_back(indxs.size());
+
+        verts.push_back(x);
+        verts.push_back(y2);
+        verts.push_back(0.0f);
+        verts.push_back(texX);
+        verts.push_back(texY2);
+        indxs.push_back(indxs.size());
+
+        x += c.xadvance;
     }
+
+    const GLuint prog = m_fontRender.prog();
+    glUseProgram(prog);
+    {
+        glUniformMatrix4fv(m_fontRender.GetUniLoc("mvmtx"), 1, false, glm::value_ptr(modelview));
+        glUniformMatrix4fv(m_fontRender.GetUniLoc("prmtx"), 1, false, glm::value_ptr(projection));
+
+        ///@todo Support multiple font pages
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_texturePages[0]);
+        glUniform1i(m_fontRender.GetUniLoc("texImage"), 0);
+
+        m_fontRender.bindVAO();
+        {
+            glBindBuffer(GL_ARRAY_BUFFER, m_fontRender.GetVboLoc("vPosition"));
+            glBufferData(GL_ARRAY_BUFFER, verts.size()*sizeof(float), &verts[0], GL_STATIC_DRAW);
+            glVertexAttribPointer(m_fontRender.GetAttrLoc("vPosition"), 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), NULL);
+            glVertexAttribPointer(m_fontRender.GetAttrLoc("vTexCoord"), 2, GL_FLOAT, GL_FALSE, 5*sizeof(float),
+                (void*)(3*sizeof(float)));
+
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_fontRender.GetVboLoc("elements"));
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indxs.size()*sizeof(unsigned int), &indxs[0], GL_STATIC_DRAW);
+
+            glDrawElements(GL_QUADS,
+                           indxs.size(),
+                           GL_UNSIGNED_INT,
+                           0);
+        }
+        glBindVertexArray(0);
+    }
+    glUseProgram(0);
 }

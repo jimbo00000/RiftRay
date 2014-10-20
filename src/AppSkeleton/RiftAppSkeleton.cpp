@@ -708,6 +708,9 @@ void RiftAppSkeleton::RenderThumbnails()
             m_shaderToyScene.SetShaderToy(NULL);
         }
 
+        ///@todo Pass in shader information
+        pP->DrawTextOverlay();
+
         unbindFBO();
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, bound_fbo);
     }

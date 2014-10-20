@@ -16,6 +16,7 @@
 #include "ShaderWithVariables.h"
 #include "FBO.h"
 #include "VirtualTrackball.h"
+#include "BMFont.h"
 
 ///@brief 
 class Pane
@@ -45,6 +46,7 @@ public:
 
     virtual void DrawPane() const;
     virtual void DrawCursor() const;
+    virtual void DrawTextOverlay() const;
     virtual void DrawToFBO() const;
     virtual void DrawInScene(
         const glm::mat4& modelview,
@@ -59,6 +61,7 @@ protected:
     ShaderWithVariables m_plane;
 
 public:
+    BMFont m_font;
     FBO m_paneRenderBuffer;
     bool m_cursorInPane;
     glm::vec2 m_pointerCoords;

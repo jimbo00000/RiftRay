@@ -8,6 +8,7 @@
 
 Pane::Pane()
 : m_plane()
+, m_font("../textures/arial.fnt")
 , m_cursorShader()
 , m_paneRenderBuffer()
 , m_cursorInPane(false)
@@ -38,6 +39,7 @@ void Pane::initGL()
     glBindVertexArray(0);
 
     allocateFBO(m_paneRenderBuffer, 600, 600);
+    m_font.initGL();
 }
 
 void Pane::_InitPointerAttributes()
@@ -126,6 +128,25 @@ void Pane::DrawCursor() const
     glUseProgram(prog);
 }
 
+
+void Pane::DrawTextOverlay() const
+{
+    const glm::mat4 modelview(1.0f);
+    const glm::mat4 projection = glm::ortho(
+        0.0f,
+        static_cast<float>(m_paneRenderBuffer.w),
+        static_cast<float>(m_paneRenderBuffer.h),
+        0.0f,
+        -1.0f,
+        1.0f);
+
+    m_font.DrawString(
+        "Pack my box with six dozen liquor jugs.",
+        30,30,
+        modelview, projection
+        );
+}
+
 void Pane::DrawPane() const
 {
     glActiveTexture(GL_TEXTURE0);
@@ -148,6 +169,7 @@ void Pane::DrawToFBO() const
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     DrawCursor();
+    DrawTextOverlay();
 }
 
 
