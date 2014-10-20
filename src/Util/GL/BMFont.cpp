@@ -3,6 +3,8 @@
 #include "BMFont.h"
 #include <fstream>
 #include <iostream>
+#include "StringFunctions.h"
+#include "TextureFunctions.h"
 
 BMFont::BMFont(const std::string& sourceFile)
 : m_chars()
@@ -82,5 +84,19 @@ void BMFont::LoadFromBinary(const std::string& fntFileName)
 
 void BMFont::initGL()
 {
-    //m_texturePages
+    for (std::vector<std::string>::const_iterator it = m_pageNames.begin();
+        it != m_pageNames.end();
+        ++it)
+    {
+        const std::string& tf = *it;
+        const std::string fp = "../textures/" + tf;
+        if (hasEnding(tf, ".png"))
+        {
+            GLuint width = 0;
+            GLuint height = 0;
+            const GLuint texId = LoadTextureFromPng(fp.c_str(), &width, &height);
+            ///@todo check width/height
+            m_texturePages.push_back(texId);
+        }
+    }
 }
