@@ -46,7 +46,10 @@ public:
 
     virtual void DrawPane() const;
     virtual void DrawCursor() const;
-    virtual void DrawTextOverlay() const;
+    virtual void DrawTextOverlay(
+        const std::string text,
+        int x,
+        int y) const;
     virtual void DrawToFBO() const;
     virtual void DrawInScene(
         const glm::mat4& modelview,

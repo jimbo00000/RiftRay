@@ -129,7 +129,10 @@ void Pane::DrawCursor() const
 }
 
 
-void Pane::DrawTextOverlay() const
+void Pane::DrawTextOverlay(
+    const std::string text,
+    int x,
+    int y) const
 {
     const glm::mat4 modelview(1.0f);
     const glm::mat4 projection = glm::ortho(
@@ -140,11 +143,7 @@ void Pane::DrawTextOverlay() const
         -1.0f,
         1.0f);
 
-    m_font.DrawString(
-        "Pack my box with six dozen liquor jugs.",
-        30,30,
-        modelview, projection
-        );
+    m_font.DrawString(text, x, y, modelview, projection);
 }
 
 void Pane::DrawPane() const
@@ -169,7 +168,6 @@ void Pane::DrawToFBO() const
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     DrawCursor();
-    DrawTextOverlay();
 }
 
 
