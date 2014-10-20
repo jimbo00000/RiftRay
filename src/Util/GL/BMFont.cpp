@@ -20,6 +20,7 @@ BMFont::BMFont(const std::string& sourceFile)
 
 BMFont::~BMFont()
 {
+    glDeleteTextures(m_texturePages.size(), &m_texturePages[0]);
 }
 
 void BMFont::LoadFromBinary(const std::string& fntFileName)
