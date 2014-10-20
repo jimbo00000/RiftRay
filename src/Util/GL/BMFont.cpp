@@ -3,11 +3,12 @@
 #include "BMFont.h"
 #include <fstream>
 #include <iostream>
-#include <sstream>
 
 BMFont::BMFont(const std::string& sourceFile)
 : m_chars()
 , m_kerningPairs()
+, m_pageNames()
+, m_texturePages()
 {
     LoadFromBinary(sourceFile);
 }
@@ -54,8 +55,15 @@ void BMFont::LoadFromBinary(const std::string& fntFileName)
 
         case 3:
             {
-                std::vector<char> pageNames(block.blockSize);
-                fntFile.read(&pageNames[0], block.blockSize);
+                std::vector<char> pageStrings(block.blockSize);
+                fntFile.read(&pageStrings[0], block.blockSize);
+
+                // http://stackoverflow.com/questions/7243723/simple-way-to-split-a-sequence-of-null-separated-strings-in-c
+                const char* p = &pageStrings[0];
+                do {
+                    m_pageNames.push_back(std::string(&pageStrings[0]));
+                    p += m_pageNames.back().size() + 1;
+                } while ((p - &pageStrings[0]) < block.blockSize);
             }
             break;
 
@@ -70,4 +78,9 @@ void BMFont::LoadFromBinary(const std::string& fntFileName)
             break;
         }
     }
+}
+
+void BMFont::initGL()
+{
+    //m_texturePages
 }

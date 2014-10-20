@@ -11,6 +11,7 @@
 #  define NOMINMAX
 #  include <windows.h>
 #endif
+#include <GL/glew.h>
 
 #include <string>
 #include <vector>
@@ -86,11 +87,15 @@ public:
     BMFont(const std::string& sourceFile);
     virtual ~BMFont();
 
+    void initGL();
+
 protected:
     void LoadFromBinary(const std::string& fntFileName);
 
     std::vector<fontChar> m_chars;
     std::vector<kerningPair> m_kerningPairs;
+    std::vector<std::string> m_pageNames;
+    std::vector<GLuint> m_texturePages;
 
 private: // Disallow default, copy ctor and assignment operator
     BMFont();
