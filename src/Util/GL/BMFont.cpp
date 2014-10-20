@@ -124,8 +124,8 @@ void BMFont::initGL()
             m_texturePages.push_back(texId);
         }
     }
-    
-    m_fontRender.initProgram("basictex");
+
+    m_fontRender.initProgram("fontrender");
     m_fontRender.bindVAO();
 
     GLuint vertVbo = 0;
