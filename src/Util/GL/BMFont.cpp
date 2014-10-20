@@ -100,3 +100,16 @@ void BMFont::initGL()
         }
     }
 }
+
+void BMFont::DrawString(const std::string& text, int x, int y)
+{
+    if (text.empty())
+        return;
+
+    for (std::string::const_iterator it = text.begin();
+        it != text.end();
+        ++it)
+    {
+        char c = *it;
+    }
+}

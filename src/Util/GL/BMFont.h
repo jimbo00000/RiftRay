@@ -88,6 +88,7 @@ public:
     virtual ~BMFont();
 
     void initGL();
+    void DrawString(const std::string& text, int x, int y);
 
 protected:
     void LoadFromBinary(const std::string& fntFileName);
