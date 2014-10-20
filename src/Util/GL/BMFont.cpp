@@ -70,8 +70,27 @@ void BMFont::LoadFromBinary(const std::string& fntFileName)
             break;
 
         case 4:
-            m_chars.resize(block.blockSize / sizeof(fontChar));
-            fntFile.read(reinterpret_cast<char*>(&m_chars[0]), block.blockSize);
+            {
+                std::vector<fontChar> chars;
+                chars.resize(block.blockSize / sizeof(fontChar));
+                fntFile.read(reinterpret_cast<char*>(&chars[0]), block.blockSize);
+                size_t maxidx = 0;
+                for (std::vector<fontChar>::const_iterator it = chars.begin();
+                    it != chars.end();
+                    ++it)
+                {
+                    const fontChar& fc = *it;
+                    maxidx = std::max(maxidx, fc.id);
+                }
+                m_chars.resize(maxidx+1);
+                for (std::vector<fontChar>::const_iterator it = chars.begin();
+                    it != chars.end();
+                    ++it)
+                {
+                    const fontChar& fc = *it;
+                    m_chars[fc.id] = fc;
+                }
+            }
             break;
 
         case 5:
