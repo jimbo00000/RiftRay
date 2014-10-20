@@ -169,10 +169,10 @@ void BMFont::DrawString(
         const float texY = static_cast<float>(c.y) / static_cast<float>(m_pageSzy);
         const float texX2 = static_cast<float>(c.x + c.width) / static_cast<float>(m_pageSzx);
         const float texY2 = static_cast<float>(c.y + c.height) / static_cast<float>(m_pageSzy);
-        const int x1 = x + c.xoffset;
-        const int y1 = y + c.yoffset;
-        const int x2 = x1 + c.width;
-        const int y2 = y1 + c.height;
+        const float x1 = static_cast<float>(x + c.xoffset);
+        const float y1 = static_cast<float>(y + c.yoffset);
+        const float x2 = static_cast<float>(x1 + c.width);
+        const float y2 = static_cast<float>(y1 + c.height);
 
         verts.push_back(x1);
         verts.push_back(y1);
