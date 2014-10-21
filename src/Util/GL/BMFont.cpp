@@ -3,6 +3,7 @@
 #include "BMFont.h"
 #include <fstream>
 #include <iostream>
+#include <assert.h>
 #include <glm/gtc/type_ptr.hpp>
 #include "StringFunctions.h"
 #include "TextureFunctions.h"
@@ -154,6 +155,7 @@ void BMFont::DrawString(
         return;
     if (m_texturePages.empty())
         return;
+    assert(m_texturePages.size() == 1);
 
     std::vector<float> verts;
     std::vector<unsigned int> indxs;
