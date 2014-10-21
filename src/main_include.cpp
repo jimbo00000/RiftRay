@@ -102,6 +102,7 @@ void InitializeBar()
 // Depends on globals g_fps, g_app, g_fpsSmoothingFactor, g_fpsDeltaThreshold, and g_targetFPS.
 void DynamicallyScaleFBO()
 {
+#ifndef APPLE
     // Emergency condition: if we drop below a hard lower limit in any two successive frames,
     // immediately drop the FBO resolution to minimum.
     if (g_fps.GetInstantaneousFPS() < 45.0f)
@@ -109,7 +110,7 @@ void DynamicallyScaleFBO()
         g_app.SetFBOScale(0.0f); // bounds checks will choose minimum resolution
         return;
     }
-
+#endif
     const float targetFPS = static_cast<float>(g_targetFPS);
     const float fps = g_fps.GetFPS();
     if (fabs(fps-targetFPS) < g_fpsDeltaThreshold)
