@@ -714,7 +714,7 @@ int main(void)
     char path[PATH_MAX];
     CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)path, PATH_MAX);
     CFRelease(resourcesURL);
-    
+    strcat( path, "/shaders" );
     chdir(path);
 #endif
     
