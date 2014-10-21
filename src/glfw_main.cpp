@@ -40,6 +40,7 @@
 
 #ifdef __APPLE__
 #include "CoreFoundation/CoreFoundation.h"
+#include <sys/stat.h>
 #endif
 
 RiftAppSkeleton g_app;
@@ -715,7 +716,9 @@ int main(void)
     CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)path, PATH_MAX);
     CFRelease(resourcesURL);
     strcat( path, "/shaders" );
-    chdir(path);
+    struct stat sb;
+    if (stat(path, &sb) == 0 && S_ISDIR(sb.st_mode))
+        chdir(path);
 #endif
     
     

@@ -271,12 +271,24 @@ FILE( GLOB_RECURSE FLYINGMOUSE_SOURCE_FILES
     )
 
 IF(APPLE)
-  # set how it shows up in the Info.plist file
-  SET(MACOSX_BUNDLE_ICON_FILE RiftRay.icns) 
-  # set where in the bundle to put the icns file
-  SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_SOURCE_DIR}/RiftRay.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
-  # include the icns file in the target
-  #SET(APPSKELETON_SOURCE_FILES ${APPSKELETON_SOURCE_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/RiftRay.icns)
+
+file(GLOB SHADER_FILES 
+        shaders/*
+    ) 
+file(GLOB TEXTURES_FILES 
+        textures/*
+    ) 
+file(GLOB HARDCODED_SHADERS 
+        hardcoded_shaders/*
+    ) 
+
+# set how it shows up in the Info.plist file
+SET(MACOSX_BUNDLE_ICON_FILE RiftRay.icns) 
+# set where in the bundle to put the icns file
+SET_SOURCE_FILES_PROPERTIES(RiftRay.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+SET_SOURCE_FILES_PROPERTIES(${SHADER_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION Resources/shaders)
+SET_SOURCE_FILES_PROPERTIES(${TEXTURES_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION Resources/textures)
+SET_SOURCE_FILES_PROPERTIES(${HARDCODED_SHADERS} PROPERTIES MACOSX_PACKAGE_LOCATION Resources/hardcoded_shaders)
 ENDIF(APPLE)
 
 INCLUDE_DIRECTORIES("src/Util")
@@ -292,7 +304,7 @@ ADD_LIBRARY( Scene       ${SCENE_SOURCE_FILES} )
 ADD_LIBRARY( FlyingMouse ${FLYINGMOUSE_SOURCE_FILES} )
 
 IF (APPLE)
-    SET( APP_ICON RiftRay.icns)
+    SET( APP_ICON RiftRay.icns ${SHADER_FILES} ${TEXTURES_FILES} ${HARDCODED_SHADERS})
 ELSE()
     SET( APP_ICON "" )
 ENDIF()
@@ -318,10 +330,6 @@ IF ( APPLE )
         BUNDLE DESTINATION . COMPONENT Runtime
         RUNTIME DESTINATION bin COMPONENT Runtime
         )
-
-    INSTALL(DIRECTORY "hardcoded_shaders" DESTINATION "RiftRay2.app/Contents/Resources" COMPONENT Runtime)
-    INSTALL(DIRECTORY "shaders" DESTINATION "RiftRay2.app/Contents/Resources" COMPONENT Runtime)
-    INSTALL(DIRECTORY "textures" DESTINATION "RiftRay2.app/Contents/Resources" COMPONENT Runtime)
 
     INSTALL(CODE "
         include(BundleUtilities)
