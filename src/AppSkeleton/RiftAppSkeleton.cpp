@@ -708,8 +708,10 @@ void RiftAppSkeleton::RenderThumbnails()
             m_shaderToyScene.SetShaderToy(NULL);
         }
 
-        pP->DrawTextOverlay(pSt->GetSourceFile(), 30, 30);
-        pP->DrawTextOverlay(pSt->GetAuthor(), 30, 70);
+        const int lineh = 55;
+        int txh = 30;
+        pP->DrawTextOverlay(pSt->GetSourceFile(), 30, txh);
+        pP->DrawTextOverlay(pSt->GetStringByName("author"), 30, txh += lineh);
 
         unbindFBO();
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, bound_fbo);
@@ -755,7 +757,7 @@ static void TW_CALL GoToURLCB(void *clientData)
     if (pST == NULL)
         return;
 
-    const std::string url = pST->GetURL();
+    const std::string url = pST->GetStringByName("url");
     if (url.empty())
         return;
 
@@ -807,7 +809,7 @@ void RiftAppSkeleton::ToggleShaderWorld()
 
 #ifdef USE_ANTTWEAKBAR
         const std::string titleStr = "title: " + pST->GetSourceFile();
-        const std::string authorStr = "author: " + pST->GetAuthor();
+        const std::string authorStr = "author: " + pST->GetStringByName("author");
 
         std::stringstream ss;
         // Assemble a string to pass into help here

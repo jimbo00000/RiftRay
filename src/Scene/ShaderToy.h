@@ -29,8 +29,7 @@ public:
     GLuint prog() const { return m_prog; }
     const std::string GetSourceFile() const { return m_sourceFile; }
     const std::string GetTextureFilenameAtChannel(int idx) const;
-    const std::string GetAuthor() const;
-    const std::string GetURL() const;
+    const std::string GetStringByName(const char* key) const;
     glm::vec3 GetHeadPos() const;
     float GetHeadSize() const;
 

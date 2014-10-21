@@ -132,18 +132,9 @@ const std::string ShaderToy::GetTextureFilenameAtChannel(int idx) const
     return it->second;
 }
 
-const std::string ShaderToy::GetAuthor() const
+const std::string ShaderToy::GetStringByName(const char* key) const
 {
-    const std::map<std::string, std::string>::const_iterator it = m_varMap.find("author");
-    if (it == m_varMap.end()) // key not found
-        return "";
-
-    return it->second;
-}
-
-const std::string ShaderToy::GetURL() const
-{
-    const std::map<std::string, std::string>::const_iterator it = m_varMap.find("url");
+    const std::map<std::string, std::string>::const_iterator it = m_varMap.find(key);
     if (it == m_varMap.end()) // key not found
         return "";
 
