@@ -1,9 +1,12 @@
 // BMFont.cpp
 
+#include <GL/glew.h>
+
 #include "BMFont.h"
 #include <fstream>
 #include <iostream>
 #include <assert.h>
+#include <algorithm>
 #include <glm/gtc/type_ptr.hpp>
 #include "StringFunctions.h"
 #include "TextureFunctions.h"
@@ -87,7 +90,7 @@ void BMFont::LoadFromBinary(const std::string& fntFileName)
                     ++it)
                 {
                     const fontChar& fc = *it;
-                    maxidx = std::max(maxidx, fc.id);
+                    maxidx = std::max(maxidx, (size_t)fc.id);
                 }
                 m_chars.resize(maxidx+1);
                 for (std::vector<fontChar>::const_iterator it = chars.begin();

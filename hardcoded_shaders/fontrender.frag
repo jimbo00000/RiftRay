@@ -8,7 +8,7 @@ uniform sampler2D texImage;
 
 void main()
 {
-    float texLum = texture2D(texImage, vfTexCoord);
+    float texLum = texture(texImage, vfTexCoord).r;
     if (texLum < 0.5)
         discard;
     fragColor = vec4(vec3(texLum),1.0);
