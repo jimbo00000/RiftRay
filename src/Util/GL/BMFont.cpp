@@ -176,6 +176,7 @@ void BMFont::DrawString(
         const float x2 = static_cast<float>(x1 + c.width);
         const float y2 = static_cast<float>(y1 + c.height);
 
+        // 0
         verts.push_back(x1);
         verts.push_back(y1);
         verts.push_back(0.0f);
@@ -183,6 +184,7 @@ void BMFont::DrawString(
         verts.push_back(texY);
         indxs.push_back(indxs.size());
 
+        // 1
         verts.push_back(x2);
         verts.push_back(y1);
         verts.push_back(0.0f);
@@ -190,6 +192,7 @@ void BMFont::DrawString(
         verts.push_back(texY);
         indxs.push_back(indxs.size());
 
+        // 2
         verts.push_back(x2);
         verts.push_back(y2);
         verts.push_back(0.0f);
@@ -197,6 +200,24 @@ void BMFont::DrawString(
         verts.push_back(texY2);
         indxs.push_back(indxs.size());
 
+
+        // 0
+        verts.push_back(x1);
+        verts.push_back(y1);
+        verts.push_back(0.0f);
+        verts.push_back(texX);
+        verts.push_back(texY);
+        indxs.push_back(indxs.size());
+
+        // 2
+        verts.push_back(x2);
+        verts.push_back(y2);
+        verts.push_back(0.0f);
+        verts.push_back(texX2);
+        verts.push_back(texY2);
+        indxs.push_back(indxs.size());
+
+        // 3
         verts.push_back(x1);
         verts.push_back(y2);
         verts.push_back(0.0f);
@@ -229,7 +250,7 @@ void BMFont::DrawString(
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_fontRender.GetVboLoc("elements"));
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, indxs.size()*sizeof(unsigned int), &indxs[0], GL_STATIC_DRAW);
 
-            glDrawElements(GL_QUADS,
+            glDrawElements(GL_TRIANGLES,
                            indxs.size(),
                            GL_UNSIGNED_INT,
                            0);
