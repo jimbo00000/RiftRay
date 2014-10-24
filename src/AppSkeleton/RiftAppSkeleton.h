@@ -72,9 +72,9 @@ public:
 
     void display_raw() const;
     void display_buffered(bool setViewport=true) const;
-    void display_stereo_undistorted();// const;
-    void display_sdk();// const;
-    void display_client();// const;
+    void display_stereo_undistorted() const;
+    void display_sdk() const;
+    void display_client() const;
     void timestep(float dt);
 
     void resize(int w, int h);
@@ -97,7 +97,7 @@ protected:
     void _resetGLState() const;
     void _drawSceneMono() const;
     void _DrawScenes(const float* pMview, const float* pPersp, const ovrRecti& rvp, const float* pScaledMview=NULL) const;
-    void _StoreHmdPose(const ovrPosef& eyePose);
+    void _StoreHmdPose(const ovrPosef& eyePose) const;
 
     ovrHmd m_Hmd;
     ovrFovPort m_EyeFov[2];
@@ -110,11 +110,11 @@ protected:
     ovrRecti m_RenderViewports[2];
     ovrVector2f m_uvScaleOffsetOut[4];
     ovrDistortionMesh m_DistMeshes[2];
-    ovrQuatf m_eyeOri;
+    mutable ovrQuatf m_eyeOri;
 
-    // For eye ray tracking
-    glm::vec3 m_hmdRo;
-    glm::vec3 m_hmdRd;
+    // For eye ray tracking - set during draw function
+    mutable glm::vec3 m_hmdRo;
+    mutable glm::vec3 m_hmdRd;
 
 public:
     // This public section is for exposing state variables to AntTweakBar

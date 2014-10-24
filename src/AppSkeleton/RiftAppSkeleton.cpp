@@ -833,7 +833,8 @@ void RiftAppSkeleton::ToggleShaderWorld()
 
 // Store HMD position and direction for gaze tracking in timestep.
 // OVR SDK requires head pose be queried between ovrHmd_BeginFrameTiming and ovrHmd_EndFrameTiming.
-void RiftAppSkeleton::_StoreHmdPose(const ovrPosef& eyePose)
+// Don't worry - we're just writing to _mutable_ members, it's still const!
+void RiftAppSkeleton::_StoreHmdPose(const ovrPosef& eyePose) const
 {
     m_hmdRo.x = eyePose.Position.x + m_chassisPos.x;
     m_hmdRo.y = eyePose.Position.y + m_chassisPos.y;
@@ -860,9 +861,11 @@ void RiftAppSkeleton::_drawSceneMono() const
     const glm::vec3 LookVec(0.0f, 0.0f, -1.0f);
     const glm::vec3 up(0.0f, 1.0f, 0.0f);
 
-    ovrPosef eyePose;
-    eyePose.Orientation = OVR::Quatf();
-    eyePose.Position = OVR::Vector3f();
+    const ovrPosef eyePose = {
+        OVR::Quatf(),
+        OVR::Vector3f()
+    };
+    _StoreHmdPose(eyePose);
     const OVR::Matrix4f view = _MakeModelviewMatrix(
         eyePose,
         OVR::Vector3f(0.0f),
@@ -925,7 +928,7 @@ void RiftAppSkeleton::display_buffered(bool setViewport) const
 ///@todo Even though this function shares most of its code with client rendering,
 /// which appears to work fine, it is non-convergable. It appears that the projection
 /// matrices for each eye are too far apart? Could be modelview...
-void RiftAppSkeleton::display_stereo_undistorted() //const
+void RiftAppSkeleton::display_stereo_undistorted() const
 {
     ovrHmd hmd = m_Hmd;
     if (hmd == NULL)
@@ -997,7 +1000,7 @@ void RiftAppSkeleton::display_stereo_undistorted() //const
     ovrHmd_EndFrameTiming(hmd);
 }
 
-void RiftAppSkeleton::display_sdk() //const
+void RiftAppSkeleton::display_sdk() const
 {
     ovrHmd hmd = m_Hmd;
     if (hmd == NULL)
@@ -1064,7 +1067,7 @@ void RiftAppSkeleton::display_sdk() //const
     glUseProgram(0);
 }
 
-void RiftAppSkeleton::display_client() //const
+void RiftAppSkeleton::display_client() const
 {
     ovrHmd hmd = m_Hmd;
     if (hmd == NULL)
