@@ -139,7 +139,15 @@ void PaneScene::timestep(float dt)
         if (pP == NULL)
             continue;
 
-        pP->m_cursorInPane = _GetFlyingMouseRightHandPaneRayIntersectionCoordinates(pP, pP->m_pointerCoords);
+        pP->m_cursorInPane = false;
+
+        glm::vec2 fmPt(0.0f);
+        bool fmInPane = _GetFlyingMouseRightHandPaneRayIntersectionCoordinates(pP, fmPt);
+        if (fmInPane)
+        {
+            pP->m_pointerCoords = fmPt;
+            pP->m_cursorInPane = true;
+        }
 
         glm::vec2 hmdPt(0.0f);
         bool hmdInPane = _GetHmdViewRayIntersectionCoordinates(pP, hmdPt);
