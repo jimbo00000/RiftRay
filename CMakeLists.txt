@@ -198,12 +198,13 @@ ELSEIF( UNIX )
         MESSAGE("Unknown GL_FRAMEWORK: choose GLFW or SDL.")
     ENDIF()
 
-    MESSAGE("Building against OVR SDK 0.3.2 - Linux version not available as of release." )
-    SET( OCULUSSDK_ROOT "${LIBS_HOME}/OculusSDK-0.3.2" CACHE STRING "OculusSDK root" )
+    SET( OCULUSSDK_ROOT "${LIBS_HOME}/ovr_sdk_linux_0.4.3" CACHE STRING "OculusSDK root" )
     INCLUDE_DIRECTORIES( "${OCULUSSDK_ROOT}/LibOVR/Include" )
     INCLUDE_DIRECTORIES( "${OCULUSSDK_ROOT}/LibOVR/Src" )
-    LINK_DIRECTORIES   ( "${OCULUSSDK_ROOT}/LibOVR/Lib/Linux/Debug/x86_64" )
+    LINK_DIRECTORIES   ( "${OCULUSSDK_ROOT}/LibOVR/Lib/Linux/Release/x86_64" )
     ADD_DEFINITIONS( -DOVR_OS_LINUX )
+    SET( OVR_LIBS -lovr -ludev -lXinerama )
+    ADD_DEFINITIONS( -DUSE_OCULUSSDK )
 
     IF( USE_SIXENSE )
         MESSAGE("Using Sixense SDK.")
@@ -224,8 +225,7 @@ ELSEIF( UNIX )
     ENDIF( USE_ANTTWEAKBAR )
 
     find_package(OpenGL REQUIRED)
-    find_package(GLUT REQUIRED)
-    include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} )
+    include_directories( ${OPENGL_INCLUDE_DIRS} )
 
     SET( PLATFORM_LIBS
         -lovr
