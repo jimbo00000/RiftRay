@@ -6,7 +6,9 @@
 #  include <windows.h>
 #  include "win/dirent.h"
 #else
+#  include <unistd.h>
 #  include <dirent.h>
+#  include <features.h>
 #endif
 
 #ifdef __APPLE__
@@ -28,8 +30,11 @@ std::vector<std::string> GetListOfFilesFromDirectory(const std::string& d)
     {
         while ((ent = readdir (dir)) != NULL)
         {
+#ifndef _LINUX
+            ///@todo Find out where the S_ISDIR macro lives on Linux and how to use it correctly.
             if (S_ISDIR(ent->d_type))
                 continue;
+#endif
             std::string s(ent->d_name);
             names.push_back(s);
         }
@@ -38,7 +43,6 @@ std::vector<std::string> GetListOfFilesFromDirectory(const std::string& d)
     else
     {
         // could not open directory
-        perror ("");
     }
 
     std::sort(names.begin(), names.end());
@@ -61,11 +65,13 @@ std::vector<std::string> GetListOfFilesFromDirectoryAndSubdirs(const std::string
                 continue;
             if (!s.compare(".."))
                 continue;
+#ifndef _LINUX
             if (S_ISDIR(ent->d_type))
             {
                 directories.push_back(s);
                 continue;
             }
+#endif
             names.push_back(s);
         }
         closedir(dir);
@@ -73,7 +79,6 @@ std::vector<std::string> GetListOfFilesFromDirectoryAndSubdirs(const std::string
     else
     {
         // could not open directory
-        perror ("");
     }
 
     // Scan all subdirectories(only one level deep, not recursion)
