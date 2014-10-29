@@ -8,7 +8,7 @@
 #else
 #  include <unistd.h>
 #  include <dirent.h>
-#  include <features.h>
+//#  include <features.h>
 #endif
 
 #ifdef __APPLE__
