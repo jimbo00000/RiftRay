@@ -30,8 +30,6 @@
 #include <string.h>
 #include <sstream>
 
-#include <pthread.h>
-
 #include "RiftAppSkeleton.h"
 #include "RenderingMode.h"
 #include "Timer.h"
@@ -72,8 +70,6 @@ int g_targetFPS = 100;
 #ifdef USE_ANTTWEAKBAR
 TwBar* g_pTweakbar = NULL;
 #endif
-
-pthread_t g_shaderLoadThread;
 
 GLFWwindow* initializeAuxiliaryWindow(GLFWwindow* pRiftWindow);
 void destroyAuxiliaryWindow(GLFWwindow* pAuxWindow);
@@ -655,16 +651,7 @@ void destroyAuxiliaryWindow(GLFWwindow* pAuxWindow)
     g_AuxWindow = NULL;
 }
 
-void *ThreadFunction(void* pArg)
-{
-    GLFWwindow* pThreadWindow = reinterpret_cast<GLFWwindow*>(pArg);
-    glfwMakeContextCurrent(pThreadWindow);
-
-    pthread_exit(NULL);
-    return NULL;
-}
-
-void StartShaderLoadThread()
+void StartShaderLoad()
 {
     g_app.DiscoverShaders();
 
@@ -817,7 +804,7 @@ int main(void)
     glfwMakeContextCurrent(l_Window);
     g_pHMDWindow = l_Window;
 
-    StartShaderLoadThread();
+    StartShaderLoad();
 
     while (!glfwWindowShouldClose(l_Window))
     {

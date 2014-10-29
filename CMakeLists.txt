@@ -82,11 +82,6 @@ IF( WIN32 )
         ADD_DEFINITIONS( -DUSE_ANTTWEAKBAR )
     ENDIF( USE_ANTTWEAKBAR )
 
-    # TODO: use c++11 or Boost threads
-    SET( PTHREADS_ROOT "${LIBS_HOME}/pthreads/Pre-built.2" )
-    INCLUDE_DIRECTORIES( "${PTHREADS_ROOT}/include" )
-    LINK_DIRECTORIES   ( "${PTHREADS_ROOT}/lib/x86" )
-
     SET( PLATFORM_LIBS
         ${FRAMEWORK_LIBS}
         opengl32.lib glu32.lib glew32s.lib
@@ -95,7 +90,6 @@ IF( WIN32 )
         ws2_32.lib
         ${HYDRA_LIBS}
         ${ANT_LIBS}
-        pthreadVCE2.lib
         )
 
     ADD_DEFINITIONS( /W4 )
