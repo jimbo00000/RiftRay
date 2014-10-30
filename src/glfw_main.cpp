@@ -671,10 +671,12 @@ void LoadConfigFile()
         const std::string& t = toks[0];
         if (!t.compare("DynamicallyScaleFBO"))
         {
+            const int v = atoi(toks[1].c_str());
+            g_dynamicallyScaleFBO = (v != 0);
         }
         else if (!t.compare("LoadShadertoysRecursively"))
         {
-            int v = atoi(toks[1].c_str());
+            const int v = atoi(toks[1].c_str());
             g_loadShadertoysRecursive = (v != 0);
         }
     }
