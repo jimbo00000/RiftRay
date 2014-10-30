@@ -1,6 +1,6 @@
 # RiftRay
 
-Oculus Rift DK2 enabled viewer for the worlds of [Shadertoy](https://shadertoy.com).  
+[Oculus Rift DK2](http://www.oculus.com/) enabled viewer for the worlds of [Shadertoy](https://shadertoy.com).  
 
 
 ## Instructions  
@@ -21,24 +21,26 @@ Gamepad and Hydra are supported, but optional. You can get by with only the HMD 
 
 To highlight a shader's thumbnail in the gallery, look straight at it or point the right Hydra controller at it.  
 
-### Keyboard and HMD:  
+#### HMD:  
+- Tap on Headset - select shader/return to gallery  
+
+#### Keyboard and HMD:  
 - WASD - movement  
 - Space bar - recenter  
 - Enter - select shader/return to gallery  
-- Tap on HMD - select shader/return to gallery  
 
-### Mouse
+#### Mouse
 - Wheel -adjust vertical FOV
 - Right click & drag - movement in horizontal plane  
 - Left click & drag - yaw  
 
-### Gamepad:  
+#### Gamepad:  
 - Right hand buttons - movement  
 - Shoulder buttons - height adjustment/speed boost  
 - "Start" button - select shader/return to gallery  
 - Hold "select" and press Left Shoulder buttons - adjust vertical FOV  
 
-### Hydra:  
+#### Hydra:  
 - Right stick - movement  
   - Press in and move stick for vertical movement
 - Trigger - speed boost  
