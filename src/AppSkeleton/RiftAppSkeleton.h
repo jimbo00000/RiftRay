@@ -153,6 +153,7 @@ public:
     float m_joystickYaw;
     float m_mouseDeltaYaw;
     float m_cinemaScopeFactor;
+    float m_fboMinScale;
 #ifdef USE_ANTTWEAKBAR
     TwBar* m_pTweakbar;
 #endif

@@ -60,6 +60,7 @@ RiftAppSkeleton::RiftAppSkeleton()
 , m_joystickYaw(0.0f)
 , m_mouseDeltaYaw(0.0f)
 , m_cinemaScopeFactor(0.0f)
+, m_fboMinScale(0.05f)
 #ifdef USE_ANTTWEAKBAR
 , m_pTweakbar(NULL)
 #endif
@@ -484,7 +485,7 @@ void RiftAppSkeleton::resize(int w, int h)
 void RiftAppSkeleton::SetFBOScale(float s)
 {
     m_fboScale = s;
-    m_fboScale = std::max(0.05f, m_fboScale);
+    m_fboScale = std::max(m_fboMinScale, m_fboScale);
     m_fboScale = std::min(1.0f, m_fboScale);
 }
 

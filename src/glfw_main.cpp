@@ -679,6 +679,11 @@ void LoadConfigFile()
             const int v = atoi(toks[1].c_str());
             g_loadShadertoysRecursive = (v != 0);
         }
+        else if (!t.compare("FboMinimumScale"))
+        {
+            const float v = static_cast<float>(atof(toks[1].c_str()));
+            g_app.m_fboMinScale = v;
+        }
     }
     file.close();
 }
