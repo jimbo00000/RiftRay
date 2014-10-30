@@ -35,6 +35,7 @@
 #include "Timer.h"
 #include "FPSTimer.h"
 #include "Logger.h"
+#include "StringFunctions.h"
 
 #ifdef __APPLE__
 #include "CoreFoundation/CoreFoundation.h"
@@ -66,6 +67,7 @@ float g_fpsSmoothingFactor = 0.02f;
 float g_fpsDeltaThreshold = 5.0f;
 bool g_dynamicallyScaleFBO = true;
 int g_targetFPS = 100;
+bool g_loadShadertoysRecursive = true;
 
 #ifdef USE_ANTTWEAKBAR
 TwBar* g_pTweakbar = NULL;
@@ -651,9 +653,37 @@ void destroyAuxiliaryWindow(GLFWwindow* pAuxWindow)
     g_AuxWindow = NULL;
 }
 
+void LoadConfigFile()
+{
+    const std::string cgfFile = "../RiftRay.cfg";
+
+    std::ifstream file;
+    file.open(cgfFile.c_str(), std::ios::in);
+    if (!file.is_open())
+        return;
+
+    std::string line;
+    while (std::getline(file,line))
+    {
+        const std::vector<std::string> toks = split(line, '=');
+        if (toks.size() < 2)
+            continue;
+        const std::string& t = toks[0];
+        if (!t.compare("DynamicallyScaleFBO"))
+        {
+        }
+        else if (!t.compare("LoadShadertoysRecursively"))
+        {
+            int v = atoi(toks[1].c_str());
+            g_loadShadertoysRecursive = (v != 0);
+        }
+    }
+    file.close();
+}
+
 void StartShaderLoad()
 {
-    g_app.DiscoverShaders();
+    g_app.DiscoverShaders(g_loadShadertoysRecursive);
 
     ///@todo It would save some time to compile all these shaders in parallel on
     /// a multicore machine. Even cooler would be compiling them in a background thread
@@ -685,6 +715,7 @@ void StartShaderLoad()
 int main(void)
 {
     ///@todo Command line options
+    LoadConfigFile();
 
     GLFWwindow* l_Window = NULL;
 
@@ -707,8 +738,8 @@ int main(void)
     if (stat(path, &sb) == 0 && S_ISDIR(sb.st_mode))
         chdir(path);
 #endif
-    
-    
+
+
 #ifdef USE_CORE_CONTEXT
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 #if defined(_MACOS)

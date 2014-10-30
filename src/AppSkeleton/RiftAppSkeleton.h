@@ -79,7 +79,7 @@ public:
 
     void resize(int w, int h);
 
-    void DiscoverShaders();
+    void DiscoverShaders(bool recurse=true);
     void CompileShaders();
     void RenderThumbnails();
     void LoadTexturesFromFile();
