@@ -270,7 +270,7 @@ void RiftAppSkeleton::_initPresentDistMesh(ShaderWithVariables& shader, int eyeI
     // Init left and right VAOs separately
     shader.bindVAO();
 
-    const ovrDistortionMesh& mesh = m_DistMeshes[eyeIdx];
+    ovrDistortionMesh& mesh = m_DistMeshes[eyeIdx];
     GLuint vertVbo = 0;
     glGenBuffers(1, &vertVbo);
     shader.AddVbo("vPosition", vertVbo);
@@ -305,14 +305,16 @@ void RiftAppSkeleton::_initPresentDistMesh(ShaderWithVariables& shader, int eyeI
         glEnableVertexAttribArray(a_texB);
     }
 
-
     GLuint elementVbo = 0;
     glGenBuffers(1, &elementVbo);
     shader.AddVbo("elements", elementVbo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementVbo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.IndexCount * sizeof(GLushort), &mesh.pIndexData[0], GL_STATIC_DRAW);
 
-
+    // We have copies of the mesh in GL, but keep a count of indices around for the GL draw call.
+    const unsigned int tmp = mesh.IndexCount;
+    ovrHmd_DestroyDistortionMesh(&mesh);
+    mesh.IndexCount = tmp;
 
     glBindVertexArray(0);
 }
@@ -344,11 +346,6 @@ int RiftAppSkeleton::ConfigureSDKRendering()
 
     const int l_DistortionCaps = ovrDistortionCap_Chromatic | ovrDistortionCap_TimeWarp;
     ovrHmd_ConfigureRendering(m_Hmd, &m_Cfg.Config, l_DistortionCaps, m_EyeFov, m_EyeRenderDesc);
-
-    // Reset this state before rendering anything else or we get a black screen.
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glUseProgram(0);
 
     l_EyeTexture[0].OGL.Header.API = ovrRenderAPI_OpenGL;
     l_EyeTexture[0].OGL.Header.TextureSize.w = l_TextureSize.w;
@@ -413,12 +410,6 @@ int RiftAppSkeleton::ConfigureClientRendering()
             m_EyeRenderDesc[eyeNum].Fov,
             distortionCaps,
             &m_DistMeshes[eyeNum]);
-
-        ovrHmd_GetRenderScaleAndOffset(
-            m_EyeRenderDesc[eyeNum].Fov,
-            l_TextureSize,
-            m_RenderViewports[eyeNum],
-            &m_uvScaleOffsetOut[2*eyeNum]);
     }
     return 0;
 }
@@ -1021,10 +1012,22 @@ void RiftAppSkeleton::display_sdk() const
     ovrPosef renderPose[2];
     ovrTexture eyeTexture[2];
 
+    ovrVector3f e2v[2];
+    e2v[0] = m_EyeRenderDesc[0].HmdToEyeViewOffset;
+    e2v[1] = m_EyeRenderDesc[1].HmdToEyeViewOffset;
+    ovrTrackingState outHmdTrackingState;
+    ovrPosef outEyePoses[2];
+    ovrHmd_GetEyePoses(
+        hmd,
+        0,
+        e2v,
+        outEyePoses,
+        &outHmdTrackingState);
+
     for (int eyeIndex=0; eyeIndex<ovrEye_Count; eyeIndex++)
     {
         const ovrEyeType eye = hmd->EyeRenderOrder[eyeIndex];
-        const ovrPosef eyePose = ovrHmd_GetHmdPosePerEye(m_Hmd, eye);
+        const ovrPosef eyePose = outEyePoses[eyeIndex];
         m_eyeOri = eyePose.Orientation; // cache this for movement direction
         _StoreHmdPose(eyePose);
 
@@ -1043,13 +1046,13 @@ void RiftAppSkeleton::display_sdk() const
 
         const OVR::Matrix4f view = _MakeModelviewMatrix(
             eyePose,
-            -OVR::Vector3f(m_EyeRenderDesc[eye].HmdToEyeViewOffset), // not sure why negative...
+            OVR::Vector3f(0.0f),
             m_chassisYaw,
             m_chassisPos);
 
         const OVR::Matrix4f scaledView = _MakeModelviewMatrix(
             eyePose,
-            -OVR::Vector3f(m_EyeRenderDesc[eye].HmdToEyeViewOffset), // not sure why negative...
+            OVR::Vector3f(0.0f),
             m_chassisYaw,
             m_chassisPos,
             m_headSize);
@@ -1072,7 +1075,7 @@ void RiftAppSkeleton::display_sdk() const
 
 void RiftAppSkeleton::display_client() const
 {
-    ovrHmd hmd = m_Hmd;
+    const ovrHmd hmd = m_Hmd;
     if (hmd == NULL)
         return;
 
@@ -1084,10 +1087,22 @@ void RiftAppSkeleton::display_client() const
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    ovrVector3f e2v[2];
+    e2v[0] = m_EyeRenderDesc[0].HmdToEyeViewOffset;
+    e2v[1] = m_EyeRenderDesc[1].HmdToEyeViewOffset;
+    ovrTrackingState outHmdTrackingState;
+    ovrPosef outEyePoses[2];
+    ovrHmd_GetEyePoses(
+        hmd,
+        0,
+        e2v,
+        outEyePoses,
+        &outHmdTrackingState);
+
     for (int eyeIndex = 0; eyeIndex < ovrEye_Count; eyeIndex++)
     {
         const ovrEyeType eye = hmd->EyeRenderOrder[eyeIndex];
-        const ovrPosef eyePose = ovrHmd_GetHmdPosePerEye(hmd, eye);
+        const ovrPosef eyePose = outEyePoses[eyeIndex];
         m_eyeOri = eyePose.Orientation; // cache this for movement direction
         _StoreHmdPose(eyePose);
 
@@ -1150,12 +1165,15 @@ void RiftAppSkeleton::display_client() const
         {
             const ovrDistortionMesh& mesh = m_DistMeshes[eyeNum];
 
-            ovrVector2f uvoff =
-                m_uvScaleOffsetOut[2*eyeNum + 1];
-                //DistortionData.UVScaleOffset[eyeNum][0];
-            ovrVector2f uvscale =
-                m_uvScaleOffsetOut[2*eyeNum + 0];
-                //DistortionData.UVScaleOffset[eyeNum][1];
+            ovrVector2f uvScaleOffsetOut[2];
+            ovrHmd_GetRenderScaleAndOffset(
+                m_EyeFov[eyeNum],
+                l_EyeTexture[eyeNum].Texture.Header.TextureSize,
+                l_EyeTexture[eyeNum].OGL.Header.RenderViewport,
+                uvScaleOffsetOut );
+
+            const ovrVector2f uvscale = uvScaleOffsetOut[0];
+            const ovrVector2f uvoff = uvScaleOffsetOut[1];
 
             glUniform2f(eyeShader.GetUniLoc("EyeToSourceUVOffset"), uvoff.x, uvoff.y);
             glUniform2f(eyeShader.GetUniLoc("EyeToSourceUVScale"), uvscale.x, uvscale.y);
