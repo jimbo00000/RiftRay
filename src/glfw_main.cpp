@@ -148,14 +148,19 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
             break;
 
         case '`':
-            if (g_AuxWindow == NULL)
+            ///@todo Is there a way to create an auxiliary window in Direct to rift mode?
+            /// The call to glfwCreateWindow crashes the app in Win7.
+            if (g_app.UsingDirectMode() == false)
             {
-                g_AuxWindow = initializeAuxiliaryWindow(g_pHMDWindow);
-            }
-            else
-            {
-                destroyAuxiliaryWindow(g_AuxWindow);
-                glfwMakeContextCurrent(g_pHMDWindow);
+                if (g_AuxWindow == NULL)
+                {
+                    g_AuxWindow = initializeAuxiliaryWindow(g_pHMDWindow);
+                }
+                else
+                {
+                    destroyAuxiliaryWindow(g_AuxWindow);
+                    glfwMakeContextCurrent(g_pHMDWindow);
+                }
             }
             break;
 
@@ -174,6 +179,18 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
         case GLFW_KEY_ESCAPE:
             if (g_AuxWindow == NULL)
             {
+                // Clear the frame before calling all the destructors - even a few
+                // frames worth of frozen video is enough to cause discomfort!
+                ///@note This does not seem to work in Direct mode.
+                glClearColor(58.f/255.f, 110.f/255.f, 165.f/255.f, 1.f); // Win7 default desktop color
+                glClear(GL_COLOR_BUFFER_BIT);
+                glfwSwapBuffers(g_pHMDWindow);
+                glClear(GL_COLOR_BUFFER_BIT);
+                glfwSwapBuffers(g_pHMDWindow);
+
+                g_app.exitVR();
+                glfwDestroyWindow(g_pHMDWindow);
+                glfwTerminate();
                 exit(0);
             }
             else
@@ -765,7 +782,32 @@ int main(void)
     const ovrSizei sz = g_app.getHmdResolution();
     const ovrVector2i pos = g_app.getHmdWindowPos();
 
-    l_Window = glfwCreateWindow(sz.w, sz.h, "GLFW Oculus Rift Test", NULL, NULL);
+    if (g_app.UsingDirectMode())
+    {
+        printf("Using Direct to Rift mode...\n");
+        LOG_INFO("Using Direct to Rift mode...\n");
+        const GLFWmonitor* pPrimary = glfwGetPrimaryMonitor();
+        int monitorCount = 0;
+        GLFWmonitor** ppMonitors = glfwGetMonitors(&monitorCount);
+        for (int i=0; i<monitorCount; ++i)
+        {
+            GLFWmonitor* pCur = ppMonitors[i];
+            if (pCur == pPrimary)
+                continue;
+            const GLFWvidmode* mode = glfwGetVideoMode(pCur);
+        }
+
+        l_Window = glfwCreateWindow(sz.w, sz.h, "RiftRay", NULL, NULL);
+        glfwSetWindowPos(l_Window, pos.x, pos.y);
+
+        g_app.AttachToWindow((void*)glfwGetWin32Window(l_Window));
+    }
+    else
+    {
+        glfwWindowHint(GLFW_DECORATED, 0);
+        l_Window = glfwCreateWindow(sz.w, sz.h, "RiftRay", NULL, NULL);
+        glfwWindowHint(GLFW_DECORATED, 1);
+    }
 
     if (g_app.UsingDebugHmd() == false)
     {
