@@ -105,7 +105,7 @@ protected:
     ovrFovPort m_EyeFov[2];
     ovrGLConfig m_Cfg;
     ovrEyeRenderDesc m_EyeRenderDesc[2];
-    ovrGLTexture l_EyeTexture[2];
+    ovrGLTexture m_EyeTexture[2];
     bool m_usingDebugHmd;
     bool m_directHmdMode;
 
