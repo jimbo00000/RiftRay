@@ -1,7 +1,8 @@
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 PROJECT( RiftRay2 )
 
-INCLUDE(cmake_modules/HardcodeShaders.cmake)
+INCLUDE(cmake_modules/InvokePython.cmake)
+INVOKEPYTHON( "tools/hardcode_shaders.py" )
 
 # GLFW, SDL
 SET( GL_FRAMEWORK "GLFW" CACHE STRING "Which OpenGL windowing framework to use" )
@@ -96,7 +97,7 @@ IF( WIN32 )
 
     # Copy DLLs of the included libraries into build/Debug/ and Release/
     # TODO: pass in respective SDK root directories for finding DLLs to copy.
-    INCLUDE(cmake_modules/CopyDLLsToBuild.cmake)
+    INVOKEPYTHON( "tools/copyDLLs.py" "." ${PROJECT_BINARY_DIR} ${LIBS_HOME} )
 ELSEIF( APPLE )
     ADD_DEFINITIONS( -D_MACOS )
 
