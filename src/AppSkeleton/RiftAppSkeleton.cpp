@@ -354,8 +354,11 @@ int RiftAppSkeleton::ConfigureSDKRendering()
     m_Cfg.OGL.Header.API = ovrRenderAPI_OpenGL;
     m_Cfg.OGL.Header.Multisample = 0;
 
-    const int l_DistortionCaps = ovrDistortionCap_Chromatic | ovrDistortionCap_TimeWarp;
-    ovrHmd_ConfigureRendering(m_Hmd, &m_Cfg.Config, l_DistortionCaps, m_EyeFov, m_EyeRenderDesc);
+    const int distortionCaps =
+        ovrDistortionCap_Chromatic |
+        ovrDistortionCap_TimeWarp |
+        ovrDistortionCap_Vignette;
+    ovrHmd_ConfigureRendering(m_Hmd, &m_Cfg.Config, distortionCaps, m_EyeFov, m_EyeRenderDesc);
 
     l_EyeTexture[0].OGL.Header.API = ovrRenderAPI_OpenGL;
     l_EyeTexture[0].OGL.Header.TextureSize.w = l_TextureSize.w;
@@ -573,8 +576,7 @@ OVR::Matrix4f _MakeModelviewMatrix(
         * OVR::Matrix4f(OVR::Quatf(eyePose.Orientation));
 
     const OVR::Matrix4f view =
-        OVR::Matrix4f::Translation(OVR::Vector3f(viewAdjust) * headScale)
-        * eyePoseMatrix.Inverted()
+        eyePoseMatrix.Inverted()
         * OVR::Matrix4f::RotationY(chassisYaw)
         * OVR::Matrix4f::Translation(-OVR::Vector3f(chassisPos));
 
@@ -588,10 +590,11 @@ void RiftAppSkeleton::_DrawScenes(
     const float* pScaledMview) const
 {
     // Clip off top and bottom letterboxes
-    glEnable(GL_SCISSOR_TEST);
+    ///@todo Fix for SDK render path
+    //glEnable(GL_SCISSOR_TEST);
     const float factor = m_cinemaScopeFactor;
     const int yoff = static_cast<int>(static_cast<float>(rvp.Size.h) * factor);
-    glScissor(rvp.Pos.x, rvp.Pos.y+yoff/2, rvp.Size.w, rvp.Size.h-yoff);
+   // glScissor(rvp.Pos.x, rvp.Pos.y+yoff/2, rvp.Size.w, rvp.Size.h-yoff);
 
     // Special case for the ShaderToyScene: if it is on, make it the only one.
     // This is because shadertoys typically don't write to the depth buffer.
@@ -1018,40 +1021,44 @@ void RiftAppSkeleton::display_sdk() const
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // For passing to EndFrame once rendering is done
-    ovrPosef renderPose[2];
-    ovrTexture eyeTexture[2];
+    ovrVector3f e2v[2] = {
+        OVR::Vector3f(m_EyeRenderDesc[0].HmdToEyeViewOffset) * m_headSize,
+        OVR::Vector3f(m_EyeRenderDesc[1].HmdToEyeViewOffset) * m_headSize,
+    };
 
-    ovrVector3f e2v[2];
-    e2v[0] = m_EyeRenderDesc[0].HmdToEyeViewOffset;
-    e2v[1] = m_EyeRenderDesc[1].HmdToEyeViewOffset;
     ovrTrackingState outHmdTrackingState;
     ovrPosef outEyePoses[2];
     ovrHmd_GetEyePoses(
         hmd,
         0,
-        e2v,
+        e2v, // could this parameter be const?
         outEyePoses,
         &outHmdTrackingState);
 
+    // For passing to EndFrame once rendering is done
+    ovrPosef renderPose[2];
+    ovrTexture eyeTexture[2];
     for (int eyeIndex=0; eyeIndex<ovrEye_Count; eyeIndex++)
     {
-        const ovrEyeType eye = hmd->EyeRenderOrder[eyeIndex];
-        const ovrPosef eyePose = outEyePoses[eyeIndex];
+        const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
+
+        const ovrPosef eyePose = outEyePoses[e];
+        renderPose[e] = eyePose;
+        eyeTexture[e] = l_EyeTexture[e].Texture;
         m_eyeOri = eyePose.Orientation; // cache this for movement direction
         _StoreHmdPose(eyePose);
 
-        const ovrGLTexture& otex = l_EyeTexture[eye];
+        const ovrGLTexture& otex = l_EyeTexture[e];
         const ovrRecti& rvp = otex.OGL.Header.RenderViewport;
         glViewport(
-            rvp.Pos.x,
-            rvp.Pos.y,
-            rvp.Size.w,
-            rvp.Size.h
+            static_cast<int>(m_fboScale * rvp.Pos.x),
+            static_cast<int>(m_fboScale * rvp.Pos.y),
+            static_cast<int>(m_fboScale * rvp.Size.w),
+            static_cast<int>(m_fboScale * rvp.Size.h)
             );
 
         const OVR::Matrix4f proj = ovrMatrix4f_Projection(
-            m_EyeRenderDesc[eye].Fov,
+            m_EyeRenderDesc[e].Fov,
             0.01f, 10000.0f, true);
 
         const OVR::Matrix4f view = _MakeModelviewMatrix(
@@ -1070,12 +1077,18 @@ void RiftAppSkeleton::display_sdk() const
         _resetGLState();
 
         _DrawScenes(&view.Transposed().M[0][0], &proj.Transposed().M[0][0], rvp, &scaledView.Transposed().M[0][0]);
-
-        renderPose[eyeIndex] = eyePose;
-        eyeTexture[eyeIndex] = l_EyeTexture[eye].Texture;
     }
     unbindFBO();
 
+    // Inform SDK of downscaled texture target size(performance scaling)
+    for (int i=0; i<ovrEye_Count; ++i)
+    {
+        const ovrSizei& ts = l_EyeTexture[i].Texture.Header.TextureSize;
+        ovrRecti& rr = eyeTexture[i].Header.RenderViewport;
+        rr.Size.w = static_cast<int>(static_cast<float>(ts.w/2) * m_fboScale);
+        rr.Size.h = static_cast<int>(static_cast<float>(ts.h) * m_fboScale);
+        rr.Pos.x = i * rr.Size.w;
+    }
     ovrHmd_EndFrame(m_Hmd, renderPose, eyeTexture);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -1097,9 +1110,11 @@ void RiftAppSkeleton::display_client() const
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    ovrVector3f e2v[2];
-    e2v[0] = m_EyeRenderDesc[0].HmdToEyeViewOffset;
-    e2v[1] = m_EyeRenderDesc[1].HmdToEyeViewOffset;
+    ovrVector3f e2v[2] = {
+        OVR::Vector3f(m_EyeRenderDesc[0].HmdToEyeViewOffset) * m_headSize,
+        OVR::Vector3f(m_EyeRenderDesc[1].HmdToEyeViewOffset) * m_headSize,
+    };
+
     ovrTrackingState outHmdTrackingState;
     ovrPosef outEyePoses[2];
     ovrHmd_GetEyePoses(
@@ -1111,12 +1126,13 @@ void RiftAppSkeleton::display_client() const
 
     for (int eyeIndex = 0; eyeIndex < ovrEye_Count; eyeIndex++)
     {
-        const ovrEyeType eye = hmd->EyeRenderOrder[eyeIndex];
-        const ovrPosef eyePose = outEyePoses[eyeIndex];
+        const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
+
+        const ovrPosef eyePose = outEyePoses[e];
         m_eyeOri = eyePose.Orientation; // cache this for movement direction
         _StoreHmdPose(eyePose);
 
-        const ovrGLTexture& otex = l_EyeTexture[eye];
+        const ovrGLTexture& otex = l_EyeTexture[e];
         const ovrRecti& rvp = otex.OGL.Header.RenderViewport;
         const ovrRecti rsc = {
             static_cast<int>(m_fboScale * rvp.Pos.x),
@@ -1127,7 +1143,7 @@ void RiftAppSkeleton::display_client() const
         glViewport(rsc.Pos.x, rsc.Pos.y, rsc.Size.w, rsc.Size.h);
 
         const OVR::Matrix4f proj = ovrMatrix4f_Projection(
-            m_EyeRenderDesc[eye].Fov,
+            m_EyeRenderDesc[e].Fov,
             0.01f, 10000.0f, true);
 
         ///@todo Should we be using this variable?
@@ -1135,13 +1151,13 @@ void RiftAppSkeleton::display_client() const
 
         const OVR::Matrix4f view = _MakeModelviewMatrix(
             eyePose,
-            m_EyeRenderDesc[eye].HmdToEyeViewOffset,
+            m_EyeRenderDesc[e].HmdToEyeViewOffset,
             m_chassisYaw,
             m_chassisPos);
 
         const OVR::Matrix4f scaledView = _MakeModelviewMatrix(
             eyePose,
-            m_EyeRenderDesc[eye].HmdToEyeViewOffset,
+            m_EyeRenderDesc[e].HmdToEyeViewOffset,
             m_chassisYaw,
             m_chassisPos,
             m_headSize);
