@@ -3,6 +3,8 @@ PROJECT( RiftRay2 )
 
 INCLUDE(cmake_modules/InvokePython.cmake)
 INVOKEPYTHON( "tools/hardcode_shaders.py" )
+# Python script will dump generated headers to autogen/
+INCLUDE_DIRECTORIES("autogen/")
 
 # GLFW, SDL
 SET( GL_FRAMEWORK "GLFW" CACHE STRING "Which OpenGL windowing framework to use" )
@@ -131,6 +133,7 @@ ELSEIF( APPLE )
     INCLUDE_DIRECTORIES( "${OCULUSSDK_ROOT}/LibOVR/Src" )
     LINK_DIRECTORIES   ( "${OCULUSSDK_ROOT}/LibOVR/Lib/Mac/Debug/" )
     ADD_DEFINITIONS( -DOVR_OS_MAC )
+    ADD_DEFINITIONS( -DUSE_OCULUSSDK )
 
     FIND_LIBRARY(COCOA_LIBRARY Cocoa)
     FIND_LIBRARY(IOKIT_LIBRARY IOKit)
