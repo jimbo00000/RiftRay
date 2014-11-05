@@ -167,11 +167,11 @@ GLuint makeShaderFromSource(
     const char* frag,
     const char* geom)
 {
-    std::cout << "  vs-";
+    std::cout << "vs-";
     GLuint vertSrc = loadShaderFile(vert, GL_VERTEX_SHADER);
     printShaderInfoLog(vertSrc);
 
-    std::cout << "  fs-";
+    std::cout << "fs";
     GLuint fragSrc = loadShaderFile(frag, GL_FRAGMENT_SHADER);
     printShaderInfoLog(fragSrc);
 
@@ -206,17 +206,14 @@ GLuint makeShaderFromSource(
     // Initialize Geometry shader state after creation, before linking.
     if (geomSrc)
     {
-        std::cout << "  gs-";
+        std::cout << "gs-";
         printShaderInfoLog(geomSrc);
         glCompileShader(geomSrc);
         glAttachShader (program, geomSrc);
     }
 
     glLinkProgram(program);
-    std::cout << "  prog: ";
     printProgramInfoLog(program);
-
-    std::cout << std::endl;
 
     glUseProgram(0);
     return program;

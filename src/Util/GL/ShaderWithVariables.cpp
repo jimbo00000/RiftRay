@@ -55,11 +55,10 @@ void ShaderWithVariables::initProgram(const char* shadername)
     glGenVertexArrays(1, &m_vao);
 
     std::cout
-        << std::endl
         << "Shader ["
         << shadername
         << "] "
-        << std::endl;
+        ;
 
     std::string vs = shadername;
     std::string fs = shadername;
@@ -70,10 +69,9 @@ void ShaderWithVariables::initProgram(const char* shadername)
     if (m_program == 0)
         return;
 
-    std::cout << "  vars: " << "vs-";
+    std::cout << "  vars: ";
     const std::string vsrc = GetShaderSource(vs.c_str());
     findVariables(vsrc.c_str());
-    std::cout << " fs-";
     const std::string fsrc = GetShaderSource(fs.c_str());
     findVariables(fsrc.c_str());
 
