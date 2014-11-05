@@ -36,6 +36,11 @@ std::vector<std::string> GetListOfFilesFromDirectory(const std::string& d)
                 continue;
 #endif
             std::string s(ent->d_name);
+            if (!s.compare("."))
+                continue;
+            if (!s.compare(".."))
+                continue;
+
             names.push_back(s);
         }
         closedir(dir);
