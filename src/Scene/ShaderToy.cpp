@@ -36,11 +36,8 @@ void ShaderToy::CompileShader()
 
     std::cout
         << std::endl
-        << "==========================================================================="
-        << std::endl
-        << "Assembling Shader: "
         << m_sourceFile
-        << std::endl;
+        ;
 
     const GLuint vertSrc = loadShaderFile(vs.c_str(), GL_VERTEX_SHADER);
     const std::string src1 = GetShaderSourceFromTable("rwwtt_header.glsl");

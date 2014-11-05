@@ -46,7 +46,6 @@ void printShaderInfoLog(GLuint obj)
     {
         std::cout << " NOT FOUND" << std::endl;
     }
-    else std::cout << "OK ";
 }
 
 // Got this from http://www.lighthouse3d.com/opengl/glsl/index.php?oglinfo
@@ -64,7 +63,6 @@ void printProgramInfoLog(GLuint obj)
         std::cout << std::endl << infoLog << std::endl;
         delete [] infoLog;
     }
-    else std::cout << "OK ";
 }
 
 std::string slurp(std::ifstream& in)
@@ -77,8 +75,6 @@ std::string slurp(std::ifstream& in)
 /// Return the contents of a given filename in the given directory.
 const std::string GetShaderSourceFromFile(const char* filename, const std::string path)
 {
-    std::cout << "<<file>> ";
-
     std::string shaderName = filename;
     std::string fullShaderName = path + shaderName; ///@todo Check parent paths
 
@@ -101,8 +97,6 @@ const std::string GetShaderSourceFromFile(const char* filename, const std::strin
 /// @note Memory is allocated using new, delete [] it when done.
 const GLchar* GetShaderSourceFromTable(const char* filename)
 {
-    std::cout << "  <<table>> ";
-
     if (g_shaderMap.empty())
     {
         initShaderList();

@@ -228,6 +228,7 @@ void RiftAppSkeleton::initHMD()
     {
         m_Hmd = ovrHmd_CreateDebug(ovrHmd_DK1);
         m_usingDebugHmd = true;
+        m_directHmdMode = false;
     }
 
     ///@todo Why does ovrHmd_GetEnabledCaps always return 0 when querying the caps
@@ -664,7 +665,11 @@ void RiftAppSkeleton::CompileShaders()
         Timer t;
         pSt->CompileShader();
 
-        std::cout << "Shader compiled in " << t.seconds() << " seconds." << std::endl;
+        std::cout
+            << "\t\t "
+            << t.seconds()
+            << "s"
+            ;
     }
 }
 
