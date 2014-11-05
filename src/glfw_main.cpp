@@ -718,6 +718,10 @@ void StartShaderLoad()
     g_app.m_paneScene.RearrangePanes();
     g_app.RenderThumbnails();
 
+    std::cout
+        << std::endl
+        << std::endl;
+
 #if 0
     // Create a context sharing data with our main window.
     glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
@@ -797,7 +801,10 @@ int main(void)
             const GLFWvidmode* mode = glfwGetVideoMode(pCur);
         }
 
+        ///@note Without decorations, we pull <1 FPS on NVIDIA Win7 344.60
+        //glfwWindowHint(GLFW_DECORATED, 0);
         l_Window = glfwCreateWindow(sz.w, sz.h, "RiftRay", NULL, NULL);
+        //glfwWindowHint(GLFW_DECORATED, 1);
         glfwSetWindowPos(l_Window, pos.x, pos.y);
 
 #if defined(_WIN32)
@@ -806,9 +813,7 @@ int main(void)
     }
     else
     {
-        glfwWindowHint(GLFW_DECORATED, 0);
         l_Window = glfwCreateWindow(sz.w, sz.h, "RiftRay", NULL, NULL);
-        glfwWindowHint(GLFW_DECORATED, 1);
     }
 
     if (g_app.UsingDebugHmd() == false)
