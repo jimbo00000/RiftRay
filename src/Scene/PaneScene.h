@@ -42,6 +42,7 @@ public:
     virtual void SetHmdDirectionPointer(glm::vec3* pRd) { m_pHmdRd = pRd; }
 
 protected:
+    virtual void _InitPlaneAttributes();
     virtual void DrawScene(
         const glm::mat4& modelview,
         const glm::mat4& projection) const;
@@ -52,9 +53,11 @@ protected:
     FlyingMouse* m_pFm;
     glm::vec3* m_pHmdRo;
     glm::vec3* m_pHmdRd;
+    ShaderWithVariables m_paneShader;
 
 public:
     std::vector<Pane*> m_panes;
+    std::vector<glm::vec3> m_panePts;
 
 private: // Disallow copy ctor and assignment operator
     PaneScene(const PaneScene&);

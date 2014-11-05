@@ -45,6 +45,7 @@ public:
     virtual bool GetPaneRayIntersectionCoordinates(glm::vec3 origin3, glm::vec3 dir3, glm::vec2& planePt);
 
     virtual void DrawPane() const;
+    virtual void DrawPaneWithShader(const ShaderWithVariables& sh) const {}
     virtual void DrawCursor() const;
     virtual void DrawTextOverlay(
         const std::string text,

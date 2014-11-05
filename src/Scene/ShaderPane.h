@@ -20,7 +20,7 @@ public:
     virtual ~ShaderPane();
 
     virtual void initGL();
-    virtual void DrawPane() const;
+    virtual void DrawPaneWithShader(const ShaderWithVariables& sh) const;
 
     ShaderToy* m_pShadertoy;
 

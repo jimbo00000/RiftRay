@@ -30,12 +30,46 @@ PaneScene::PaneScene()
 : m_pFm(NULL)
 , m_pHmdRo(NULL)
 , m_pHmdRd(NULL)
+, m_paneShader()
 , m_panes()
+, m_panePts()
 {
+    m_panePts.push_back(glm::vec3(-0.5f, -0.5f, 0.0f));
+    m_panePts.push_back(glm::vec3(0.5f, -0.5f, 0.0f));
+    m_panePts.push_back(glm::vec3(0.5f, 0.5f, 0.0f));
+    m_panePts.push_back(glm::vec3(-0.5f, 0.5f, 0.0f));
+
 }
 
 PaneScene::~PaneScene()
 {
+}
+
+///@brief While the basic VAO is bound, gen and bind all buffers and attribs.
+void PaneScene::_InitPlaneAttributes()
+{
+    GLuint vertVbo = 0;
+    glGenBuffers(1, &vertVbo);
+    m_paneShader.AddVbo("vPosition", vertVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vertVbo);
+    glBufferData(GL_ARRAY_BUFFER, m_panePts.size()*sizeof(glm::vec3), &m_panePts[0].x, GL_STATIC_DRAW);
+    glVertexAttribPointer(m_paneShader.GetAttrLoc("vPosition"), 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+    const float texs[] = {
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+        0.0f, 1.0f,
+    };
+    GLuint colVbo = 0;
+    glGenBuffers(1, &colVbo);
+    m_paneShader.AddVbo("vTexCoord", colVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, colVbo);
+    glBufferData(GL_ARRAY_BUFFER, 4*2*sizeof(GLfloat), texs, GL_STATIC_DRAW);
+    glVertexAttribPointer(m_paneShader.GetAttrLoc("vTexCoord"), 2, GL_FLOAT, GL_FALSE, 0, NULL);
+
+    glEnableVertexAttribArray(m_paneShader.GetAttrLoc("vPosition"));
+    glEnableVertexAttribArray(m_paneShader.GetAttrLoc("vTexCoord"));
 }
 
 void PaneScene::initGL()
@@ -49,6 +83,12 @@ void PaneScene::initGL()
             continue;
         pP->initGL();
     }
+
+    m_paneShader.initProgram("shaderpane");
+    m_paneShader.bindVAO();
+    _InitPlaneAttributes();
+    glBindVertexArray(0);
+
 }
 
 /// Draw the scene(matrices have already been set up).
@@ -75,8 +115,16 @@ void PaneScene::DrawScene(
         unbindFBO();
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, bound_fbo);
 #endif
+        const glm::mat4 object = pP->m_tx.GetMatrix();
 
-        pP->DrawInScene(modelview, projection, pP->m_tx.GetMatrix());
+        glUseProgram(m_paneShader.prog());
+        {
+            const glm::mat4 objectMatrix = modelview * object;
+            glUniformMatrix4fv(m_paneShader.GetUniLoc("mvmtx"), 1, false, glm::value_ptr(objectMatrix));
+            glUniformMatrix4fv(m_paneShader.GetUniLoc("prmtx"), 1, false, glm::value_ptr(projection));
+            pP->DrawPaneWithShader(m_paneShader);
+        }
+        glUseProgram(0);
     }
 }
 
