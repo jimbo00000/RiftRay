@@ -591,11 +591,11 @@ void RiftAppSkeleton::_DrawScenes(
     const float* pScaledMview) const
 {
     // Clip off top and bottom letterboxes
-    ///@todo Fix for SDK render path
-    //glEnable(GL_SCISSOR_TEST);
+    glEnable(GL_SCISSOR_TEST);
     const float factor = m_cinemaScopeFactor;
     const int yoff = static_cast<int>(static_cast<float>(rvp.Size.h) * factor);
-   // glScissor(rvp.Pos.x, rvp.Pos.y+yoff/2, rvp.Size.w, rvp.Size.h-yoff);
+    // Assume side-by-side single render texture
+    glScissor(0, yoff/2, rvp.Pos.x+rvp.Size.w, rvp.Size.h-yoff);
 
     // Special case for the ShaderToyScene: if it is on, make it the only one.
     // This is because shadertoys typically don't write to the depth buffer.
