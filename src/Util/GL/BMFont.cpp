@@ -147,21 +147,14 @@ void BMFont::initGL()
     glBindVertexArray(0);
 }
 
-void BMFont::DrawString(
+// Arrays are passed by reference to avoid a copy on return.
+void BMFont::PopulateArrays(
     const std::string& text,
     int x,
     int y,
-    const glm::mat4& modelview,
-    const glm::mat4& projection) const
+    std::vector<float>& verts,
+    std::vector<unsigned int>& indxs) const
 {
-    if (text.empty())
-        return;
-    if (m_texturePages.empty())
-        return;
-    assert(m_texturePages.size() == 1);
-
-    std::vector<float> verts;
-    std::vector<unsigned int> indxs;
     for (std::string::const_iterator it = text.begin();
         it != text.end();
         ++it)
@@ -230,6 +223,24 @@ void BMFont::DrawString(
 
         x += c.xadvance;
     }
+}
+
+void BMFont::DrawString(
+    const std::string& text,
+    int x,
+    int y,
+    const glm::mat4& modelview,
+    const glm::mat4& projection) const
+{
+    if (text.empty())
+        return;
+    if (m_texturePages.empty())
+        return;
+    assert(m_texturePages.size() == 1);
+
+    std::vector<float> verts;
+    std::vector<unsigned int> indxs;
+    PopulateArrays(text, x, y, verts, indxs);
 
     const GLuint prog = m_fontRender.prog();
     glUseProgram(prog);

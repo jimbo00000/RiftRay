@@ -98,6 +98,12 @@ public:
 
 protected:
     void LoadFromBinary(const std::string& fntFileName);
+    void PopulateArrays(
+        const std::string& text,
+        int x,
+        int y,
+        std::vector<float>& verts,
+        std::vector<unsigned int>& indxs) const;
 
     std::vector<fontChar> m_chars;
     std::vector<kerningPair> m_kerningPairs;
