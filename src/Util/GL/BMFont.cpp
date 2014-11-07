@@ -232,6 +232,8 @@ void BMFont::DrawString(
     const glm::mat4& modelview,
     const glm::mat4& projection) const
 {
+    const ShaderWithVariables& sh = m_fontRender;
+
     if (text.empty())
         return;
     if (m_texturePages.empty())
@@ -242,26 +244,26 @@ void BMFont::DrawString(
     std::vector<unsigned int> indxs;
     PopulateArrays(text, x, y, verts, indxs);
 
-    const GLuint prog = m_fontRender.prog();
+    const GLuint prog = sh.prog();
     glUseProgram(prog);
     {
-        glUniformMatrix4fv(m_fontRender.GetUniLoc("mvmtx"), 1, false, glm::value_ptr(modelview));
-        glUniformMatrix4fv(m_fontRender.GetUniLoc("prmtx"), 1, false, glm::value_ptr(projection));
+        glUniformMatrix4fv(sh.GetUniLoc("mvmtx"), 1, false, glm::value_ptr(modelview));
+        glUniformMatrix4fv(sh.GetUniLoc("prmtx"), 1, false, glm::value_ptr(projection));
 
         ///@todo Support multiple font pages
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_texturePages[0]);
-        glUniform1i(m_fontRender.GetUniLoc("texImage"), 0);
+        glUniform1i(sh.GetUniLoc("texImage"), 0);
 
-        m_fontRender.bindVAO();
+        sh.bindVAO();
         {
-            glBindBuffer(GL_ARRAY_BUFFER, m_fontRender.GetVboLoc("vPosition"));
+            glBindBuffer(GL_ARRAY_BUFFER, sh.GetVboLoc("vPosition"));
             glBufferData(GL_ARRAY_BUFFER, verts.size()*sizeof(float), &verts[0], GL_STATIC_DRAW);
-            glVertexAttribPointer(m_fontRender.GetAttrLoc("vPosition"), 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), NULL);
-            glVertexAttribPointer(m_fontRender.GetAttrLoc("vTexCoord"), 2, GL_FLOAT, GL_FALSE, 5*sizeof(float),
+            glVertexAttribPointer(sh.GetAttrLoc("vPosition"), 3, GL_FLOAT, GL_FALSE, 5*sizeof(float), NULL);
+            glVertexAttribPointer(sh.GetAttrLoc("vTexCoord"), 2, GL_FLOAT, GL_FALSE, 5*sizeof(float),
                 (void*)(3*sizeof(float)));
 
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_fontRender.GetVboLoc("elements"));
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sh.GetVboLoc("elements"));
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, indxs.size()*sizeof(unsigned int), &indxs[0], GL_STATIC_DRAW);
 
             glDrawElements(GL_TRIANGLES,
