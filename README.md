@@ -4,7 +4,7 @@
 
 
 ## Instructions  
-Tap the side of the Rift with one finger to dismiss the Health and Safety Warning and recenter your view. Look at the pictures in the gallery, and tap the Rift to be transported. Tap again to return to the gallery.  
+Tap the side of the Rift with one finger to dismiss the Health and Safety Warning and recenter your view. Gaze at a picture in the gallery and tap the Rift to be transported. Tap again to return to the gallery.  
 
 
 ## Features  
@@ -17,20 +17,18 @@ Tap the side of the Rift with one finger to dismiss the Health and Safety Warnin
 
 
 ## Controls  
-Gamepad and Hydra are supported, but optional. You can get by with only the HMD for input by tapping on it to select a shader in the gallery.  
-
-To highlight a shader's thumbnail in the gallery, look straight at it or point the right Hydra controller at it.  
+Gamepad and Hydra are supported, but optional. You can get by with only the HMD for input by tapping on it to select a shader in the gallery. To highlight a shader's thumbnail in the gallery, look straight at it or point the right Hydra controller at it.  
 
 #### HMD:  
 - Tap on Headset - select shader/return to gallery  
 
-#### Keyboard and HMD:  
+#### Keyboard:  
 - WASD - movement  
 - Space bar - recenter  
 - Enter - select shader/return to gallery  
 
 #### Mouse
-- Wheel -adjust vertical FOV
+- Wheel - adjust vertical FOV
 - Right click & drag - movement in horizontal plane  
 - Left click & drag - yaw  
 
