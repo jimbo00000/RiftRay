@@ -128,23 +128,6 @@ void BMFont::initGL()
             m_texturePages.push_back(texId);
         }
     }
-
-    m_fontRender.initProgram("fontrender");
-    m_fontRender.bindVAO();
-
-    GLuint vertVbo = 0;
-    glGenBuffers(1, &vertVbo);
-    m_fontRender.AddVbo("vPosition", vertVbo);
-
-    glEnableVertexAttribArray(m_fontRender.GetAttrLoc("vPosition"));
-    glEnableVertexAttribArray(m_fontRender.GetAttrLoc("vTexCoord"));
-
-    GLuint triVbo = 0;
-    glGenBuffers(1, &triVbo);
-    m_fontRender.AddVbo("elements", triVbo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, triVbo);
-
-    glBindVertexArray(0);
 }
 
 // Arrays are passed by reference to avoid a copy on return.
@@ -230,9 +213,10 @@ void BMFont::DrawString(
     int x,
     int y,
     const glm::mat4& modelview,
-    const glm::mat4& projection) const
+    const glm::mat4& projection,
+    const ShaderWithVariables& sh
+    ) const
 {
-    const ShaderWithVariables& sh = m_fontRender;
 
     if (text.empty())
         return;

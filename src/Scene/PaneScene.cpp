@@ -31,6 +31,7 @@ PaneScene::PaneScene()
 , m_pHmdRo(NULL)
 , m_pHmdRd(NULL)
 , m_paneShader()
+, m_fontShader()
 , m_panes()
 , m_panePts()
 {
@@ -89,6 +90,23 @@ void PaneScene::initGL()
     _InitPlaneAttributes();
     glBindVertexArray(0);
 
+    // Font Shader
+    m_fontShader.initProgram("fontrender");
+    m_fontShader.bindVAO();
+
+    GLuint vertVbo = 0;
+    glGenBuffers(1, &vertVbo);
+    m_fontShader.AddVbo("vPosition", vertVbo);
+
+    glEnableVertexAttribArray(m_fontShader.GetAttrLoc("vPosition"));
+    glEnableVertexAttribArray(m_fontShader.GetAttrLoc("vTexCoord"));
+
+    GLuint triVbo = 0;
+    glGenBuffers(1, &triVbo);
+    m_fontShader.AddVbo("elements", triVbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, triVbo);
+
+    glBindVertexArray(0);
 }
 
 /// Draw the scene(matrices have already been set up).

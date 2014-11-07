@@ -723,9 +723,12 @@ void RiftAppSkeleton::RenderThumbnails()
         const int lineh = 62;
         const int margin = 22;
         int txh = pP->m_paneRenderBuffer.h - 3*lineh - margin;
-        pP->DrawTextOverlay(pSt->GetSourceFile(), margin, txh);
-        pP->DrawTextOverlay(pSt->GetStringByName("author"), margin, txh += lineh);
-        pP->DrawTextOverlay(pSt->GetStringByName("license"), margin, txh += lineh);
+        const ShaderWithVariables& fsh = m_paneScene.GetFontShader();
+        // Twisting together 3 strands of ownership: ShaderPane's function
+        // taking ShaderToy's data and ShaderGalleryScene's shader.
+        pP->DrawTextOverlay(pSt->GetSourceFile(), margin, txh, fsh);
+        pP->DrawTextOverlay(pSt->GetStringByName("author"), margin, txh += lineh, fsh);
+        pP->DrawTextOverlay(pSt->GetStringByName("license"), margin, txh += lineh, fsh);
 
         unbindFBO();
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, bound_fbo);

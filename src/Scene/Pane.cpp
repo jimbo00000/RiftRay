@@ -132,7 +132,8 @@ void Pane::DrawCursor() const
 void Pane::DrawTextOverlay(
     const std::string text,
     int x,
-    int y) const
+    int y,
+    const ShaderWithVariables& sh) const
 {
     const glm::mat4 modelview(1.0f);
     const glm::mat4 projection = glm::ortho(
@@ -143,7 +144,7 @@ void Pane::DrawTextOverlay(
         -1.0f,
         1.0f);
 
-    m_font.DrawString(text, x, y, modelview, projection);
+    m_font.DrawString(text, x, y, modelview, projection, sh);
 }
 
 void Pane::DrawPane() const

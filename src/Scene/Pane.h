@@ -50,7 +50,8 @@ public:
     virtual void DrawTextOverlay(
         const std::string text,
         int x,
-        int y) const;
+        int y,
+        const ShaderWithVariables& sh) const;
     virtual void DrawToFBO() const;
     virtual void DrawInScene(
         const glm::mat4& modelview,

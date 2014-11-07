@@ -94,7 +94,8 @@ public:
     void DrawString(const std::string& text,
         int x, int y,
         const glm::mat4& modelview,
-        const glm::mat4& projection) const;
+        const glm::mat4& projection,
+        const ShaderWithVariables& sh) const;
 
 protected:
     void LoadFromBinary(const std::string& fntFileName);
@@ -111,7 +112,6 @@ protected:
     std::vector<GLuint> m_texturePages;
     unsigned int m_pageSzx;
     unsigned int m_pageSzy;
-    ShaderWithVariables m_fontRender;
 
 private: // Disallow default, copy ctor and assignment operator
     BMFont();

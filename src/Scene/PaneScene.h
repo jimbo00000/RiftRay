@@ -41,6 +41,8 @@ public:
     virtual void SetHmdPositionPointer(glm::vec3* pRo) { m_pHmdRo = pRo; }
     virtual void SetHmdDirectionPointer(glm::vec3* pRd) { m_pHmdRd = pRd; }
 
+    const ShaderWithVariables& GetFontShader() const { return m_fontShader; }
+
 protected:
     virtual void _InitPlaneAttributes();
     virtual void DrawScene(
@@ -54,6 +56,7 @@ protected:
     glm::vec3* m_pHmdRo;
     glm::vec3* m_pHmdRd;
     ShaderWithVariables m_paneShader;
+    ShaderWithVariables m_fontShader;
 
 public:
     std::vector<Pane*> m_panes;
