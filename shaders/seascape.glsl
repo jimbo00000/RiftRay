@@ -1,5 +1,6 @@
 // "Seascape" by Alexander Alekseev aka TDM - 2014
 // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+// @var title Seascape
 // @var author TDM
 // @var license CC BY-NC-SA 3.0
 // @var url https://www.shadertoy.com/view/Ms2SD1

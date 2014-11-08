@@ -723,7 +723,8 @@ void RiftAppSkeleton::RenderThumbnails()
         const BMFont& fnt = m_paneScene.GetFont();
         // Twisting together 3 strands of ownership: ShaderPane's function
         // taking ShaderToy's data and ShaderGalleryScene's font and shader.
-        pP->DrawTextOverlay(pSt->GetSourceFile(), margin, txh, fsh, fnt);
+        const std::string title = pSt->GetStringByName("title");
+        pP->DrawTextOverlay(title.empty() ? pSt->GetSourceFile() : title, margin, txh, fsh, fnt);
         pP->DrawTextOverlay(pSt->GetStringByName("author"), margin, txh += lineh, fsh, fnt);
         pP->DrawTextOverlay(pSt->GetStringByName("license"), margin, txh += lineh, fsh, fnt);
 

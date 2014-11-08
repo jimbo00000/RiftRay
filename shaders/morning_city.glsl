@@ -1,4 +1,5 @@
 // Morning City
+// @var title Morning City
 // @var author Devin
 // @var license CC BY-NC-SA 3.0
 // @var url https://www.shadertoy.com/view/XsBSRG

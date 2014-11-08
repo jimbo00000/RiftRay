@@ -5,6 +5,7 @@
 //v 1.1 Added water, plus colour gradient and extra shine to wet stones.
 //v 1.2 Some optimisations.
 
+// @var title Brigthton Beach
 // @var author David Hoskins
 // @var license CC BY-NC-SA 3.0
 // @var url https://www.shadertoy.com/view/lssGW7

@@ -3,6 +3,7 @@
 // A second attempt at procedural terrain generation - based on
 // techniques developed by Inigo Quilez.
 
+// @var title Desert Morning
 // @var author ESpitz
 // @var license CC BY-NC-SA 3.0
 // @var url https://www.shadertoy.com/view/lsf3zB

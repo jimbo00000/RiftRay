@@ -22,6 +22,7 @@
 
 // Everything that looks scrunched and hard to read is what I added - eiffie
 
+// @var title D.E.A.L.
 // @var author eiffie
 // @var license CC BY-NC-SA 3.0
 // @var url https://www.shadertoy.com/view/4ss3Ws

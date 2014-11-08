@@ -1,5 +1,6 @@
 // Created by inigo quilez - iq/2014
 // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+// @var title Terrain Tubes
 // @var author iq
 // @var license CC BY-NC-SA 3.0
 // @var url https://www.shadertoy.com/view/4sjXzG

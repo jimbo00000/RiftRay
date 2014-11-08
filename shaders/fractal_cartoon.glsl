@@ -9,6 +9,7 @@
 
 // update: Nyan Cat cameo, thanks to code from mu6k: https://www.shadertoy.com/view/4dXGWH
 
+// @var title Fractal Cartoon
 // @var url https://www.shadertoy.com/view/4djGz1
 // @var author Kali
 // @var license CC BY-NC-SA 3.0

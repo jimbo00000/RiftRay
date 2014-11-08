@@ -1,9 +1,10 @@
 // Created by inigo quilez - iq/2013
 // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
 
-// @var url 
+// @var tyitle Woods
 // @var author iq
 // @var license CC BY-NC-SA 3.0
+// @var url https://www.shadertoy.com/view/XsfGD4
 
 // @var headSize 0.9
 // @var eyePos 1.1388025 8.6627102 4.6900320

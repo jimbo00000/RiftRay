@@ -14,6 +14,7 @@
 // (better coloring, AO and  shadows), some lighting effects, and a path for the camera  
 // following a liquid metal ball. 
 
+// @var title Generators
 // @var url https://www.shadertoy.com/view/lsXGWl
 // @var author Kali
 // @var license CC BY-NC-SA 3.0

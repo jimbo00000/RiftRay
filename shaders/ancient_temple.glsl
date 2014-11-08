@@ -3,6 +3,7 @@
 // Made in "messy coder" mode, sorry! :D
 // I will clean up and comment later...
 
+// @var title Ancient Temple
 // @var author Kali
 // @var license CC BY-NC-SA 3.0
 // @var url https://www.shadertoy.com/view/XslGWf

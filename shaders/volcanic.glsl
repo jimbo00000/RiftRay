@@ -2,6 +2,7 @@
 // Created by inigo quilez - iq/2013
 // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
 
+// @var title Volcanic
 // @var url https://www.shadertoy.com/view/XsX3RB
 // @var author iq
 // @var license CC BY-NC-SA 3.0

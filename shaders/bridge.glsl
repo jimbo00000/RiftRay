@@ -5,6 +5,7 @@
 // Uncomment the following define in order to see the bridge in 3D!
 //#define STEREO
 
+// @var title Bridge
 // @var author iq
 // @var license CC BY-NC-SA 3.0
 // @var url https://www.shadertoy.com/view/Mds3z2
