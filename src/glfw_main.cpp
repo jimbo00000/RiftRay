@@ -401,6 +401,12 @@ void mouseMove(GLFWwindow* pWindow, double xd, double yd)
         g_app.m_mouseMove.x += static_cast<float>(mmx) * moveMagnitude;
         g_app.m_mouseMove.z += static_cast<float>(mmy) * moveMagnitude;
     }
+    else if (which_button == GLFW_MOUSE_BUTTON_3) // Middle click
+    {
+        const float moveMagnitude = 0.5f;
+        g_app.m_mouseMove.x += static_cast<float>(mmx) * moveMagnitude;
+        g_app.m_mouseMove.y -= static_cast<float>(mmy) * moveMagnitude;
+    }
 }
 
 void mouseWheel(GLFWwindow* pWindow, double x, double y)
