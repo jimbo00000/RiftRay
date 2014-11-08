@@ -144,6 +144,7 @@ protected:
     VirtualTrackball m_hyif;
     std::vector<ShaderToy*> m_shaderToys;
     std::map<std::string, textureChannel> m_texLibrary;
+    glm::ivec2 m_windowSize;
 
 public:
     float m_headSize;

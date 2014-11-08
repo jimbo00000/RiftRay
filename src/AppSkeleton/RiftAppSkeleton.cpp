@@ -479,12 +479,8 @@ void RiftAppSkeleton::resize(int w, int h)
 {
     (void)w;
     (void)h;
-    //m_Cfg.OGL.Header.RTSize.w = w;
-    //m_Cfg.OGL.Header.RTSize.h = h;
-
-    //const int l_DistortionCaps = ovrDistortionCap_Chromatic | ovrDistortionCap_TimeWarp;
-    ///@warning this crashes the app. What are we supposed to do here???
-    //ovrHmd_ConfigureRendering(m_Hmd, &m_Cfg.Config, l_DistortionCaps, m_EyeFov, m_EyeRenderDesc);
+    m_windowSize.x = w;
+    m_windowSize.y = h;
 }
 
 void RiftAppSkeleton::SetFBOScale(float s)
@@ -870,9 +866,6 @@ void RiftAppSkeleton::_drawSceneMono() const
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    const int w = m_Cfg.OGL.Header.RTSize.w;
-    const int h = m_Cfg.OGL.Header.RTSize.h;
-
     const glm::vec3 EyePos(m_chassisPos.x, m_chassisPos.y, m_chassisPos.z);
     const glm::vec3 LookVec(0.0f, 0.0f, -1.0f);
     const glm::vec3 up(0.0f, 1.0f, 0.0f);
@@ -888,6 +881,8 @@ void RiftAppSkeleton::_drawSceneMono() const
         m_chassisYaw,
         m_chassisPos);
 
+    const int w = m_windowSize.x;
+    const int h = m_windowSize.y;
     const glm::mat4 persp = glm::perspective(
         90.0f,
         static_cast<float>(w)/static_cast<float>(h),
@@ -900,8 +895,8 @@ void RiftAppSkeleton::_drawSceneMono() const
 
 void RiftAppSkeleton::display_raw() const
 {
-    const int w = m_Cfg.OGL.Header.RTSize.w;
-    const int h = m_Cfg.OGL.Header.RTSize.h;
+    const int w = m_windowSize.x;
+    const int h = m_windowSize.y;
     glViewport(0, 0, w, h);
 
     _drawSceneMono();
