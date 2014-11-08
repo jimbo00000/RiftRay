@@ -32,6 +32,7 @@ PaneScene::PaneScene()
 , m_pHmdRd(NULL)
 , m_paneShader()
 , m_fontShader()
+, m_font("../textures/arial.fnt")
 , m_panes()
 , m_panePts()
 {
@@ -107,6 +108,8 @@ void PaneScene::initGL()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, triVbo);
 
     glBindVertexArray(0);
+
+    m_font.initGL();
 }
 
 /// Draw the scene(matrices have already been set up).

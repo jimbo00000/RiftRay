@@ -19,6 +19,7 @@
 
 #include "Pane.h"
 #include "VirtualTrackball.h"
+#include "BMFont.h"
 
 ///@brief 
 class PaneScene : public IScene
@@ -42,6 +43,7 @@ public:
     virtual void SetHmdDirectionPointer(glm::vec3* pRd) { m_pHmdRd = pRd; }
 
     const ShaderWithVariables& GetFontShader() const { return m_fontShader; }
+    const BMFont& GetFont() const { return m_font; }
 
 protected:
     virtual void _InitPlaneAttributes();
@@ -57,6 +59,7 @@ protected:
     glm::vec3* m_pHmdRd;
     ShaderWithVariables m_paneShader;
     ShaderWithVariables m_fontShader;
+    BMFont m_font;
 
 public:
     std::vector<Pane*> m_panes;

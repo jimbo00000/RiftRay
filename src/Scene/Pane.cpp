@@ -1,6 +1,7 @@
 // Pane.cpp
 
 #include "Pane.h"
+#include "BMFont.h"
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -8,7 +9,6 @@
 
 Pane::Pane()
 : m_plane()
-, m_font("../textures/arial.fnt")
 , m_cursorShader()
 , m_paneRenderBuffer()
 , m_cursorInPane(false)
@@ -39,7 +39,6 @@ void Pane::initGL()
     glBindVertexArray(0);
 
     allocateFBO(m_paneRenderBuffer, 600, 600);
-    m_font.initGL();
 }
 
 void Pane::_InitPointerAttributes()
@@ -133,7 +132,8 @@ void Pane::DrawTextOverlay(
     const std::string text,
     int x,
     int y,
-    const ShaderWithVariables& sh) const
+    const ShaderWithVariables& sh,
+    const BMFont& font) const
 {
     const glm::mat4 modelview(1.0f);
     const glm::mat4 projection = glm::ortho(
@@ -144,7 +144,7 @@ void Pane::DrawTextOverlay(
         -1.0f,
         1.0f);
 
-    m_font.DrawString(text, x, y, modelview, projection, sh);
+    font.DrawString(text, x, y, modelview, projection, sh);
 }
 
 void Pane::DrawPane() const
