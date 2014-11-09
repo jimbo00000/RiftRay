@@ -39,6 +39,8 @@ void ShaderToyScene::_InitShaderRectAttributes()
         -1.0f, 1.0f,
     };
 
+    ///@note Texture coordinates are redundant here as we can glean them
+    /// from gl_FragCoord in the rwwtt shader.
     const float texs[] = {
         0.0f, 0.0f,
         1.0f, 0.0f,

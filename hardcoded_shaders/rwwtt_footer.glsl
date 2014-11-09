@@ -37,7 +37,13 @@ vec2 getSamplerUV( vec2 fragCoord )
 
 void main()
 {
-    vec2 uv  = getSamplerUV( vfFragCoord );
+#if 1
+    vec2 fc = gl_FragCoord.xy / iResolution.xy;
+    fc.x = fract(fc.x);
+#else
+    vec2 fc = vfFragCoord;
+#endif
+    vec2 uv  = getSamplerUV( fc );
     vec3 ro  = getEyePoint( mvmtx );
     vec3 rd  = getEyeDirection( uv, mvmtx );
     vec3 col = getSceneColor( ro, rd );

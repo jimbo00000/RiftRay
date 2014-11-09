@@ -274,6 +274,12 @@ void RiftAppSkeleton::initVR()
 
     _initPresentDistMesh(m_presentDistMeshL, 0);
     _initPresentDistMesh(m_presentDistMeshR, 1);
+
+    if (UsingDebugHmd() == false)
+    {
+        m_windowSize.x = m_EyeTexture[0].OGL.Header.RenderViewport.Size.w;
+        m_windowSize.y = m_EyeTexture[0].OGL.Header.RenderViewport.Size.h;
+    }
 }
 
 void RiftAppSkeleton::_initPresentDistMesh(ShaderWithVariables& shader, int eyeIdx)
