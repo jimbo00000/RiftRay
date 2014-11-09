@@ -821,8 +821,8 @@ int main(void)
     else
     {
         l_Window = glfwCreateWindow(sz.w, sz.h, "RiftRay", NULL, NULL);
-        g_app.resize(sz.w, sz.h);
     }
+    g_app.resize(sz.w, sz.h);
 
     if (g_app.UsingDebugHmd() == false)
     {
