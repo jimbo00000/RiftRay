@@ -138,10 +138,14 @@ void ShaderToyScene::DrawScene(
 
         if (m_pRB != NULL)
         {
+            // Query viewport dimensions
+            GLint vp[4];
+            glGetIntegerv(GL_VIEWPORT, &vp[0]);
+
             const GLint u_res = glGetUniformLocation(prog, "iResolution");
             glUniform3f(u_res,
-                static_cast<float>(m_pRB->w) * m_RBScale * 0.5f,
-                static_cast<float>(m_pRB->h) * m_RBScale,
+                static_cast<float>(vp[2]),
+                static_cast<float>(vp[3]),
                 0.0f);
         }
 
