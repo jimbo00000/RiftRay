@@ -113,7 +113,7 @@ void ShaderToyScene::DrawScene(
     if (pST == NULL)
         return;
 
-    const GLuint prog = pST->prog(); // m_quadVao.prog();//
+    const GLuint prog = pST->prog();
 
     glUseProgram(prog);
     {
@@ -123,6 +123,10 @@ void ShaderToyScene::DrawScene(
         glUniformMatrix4fv(u_mv, 1, false, glm::value_ptr(modelview));
         glUniformMatrix4fv(u_pr, 1, false, glm::value_ptr(projection));
         glUniformMatrix4fv(u_ob, 1, false, glm::value_ptr(object));
+
+        // To transform only the vertices that define the quad being drawn.
+        const GLint u_pm = glGetUniformLocation(prog, "paneMatrix");
+        glUniformMatrix4fv(u_pm, 1, false, glm::value_ptr(glm::mat4(1.0f)));
 
         // Extract viewing parameters encoded in projection matrix.
         // Stereo separation is encoded here in riftskeleton during pre-translate by half IPD.
