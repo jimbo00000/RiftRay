@@ -143,7 +143,7 @@ void PaneScene::DrawScene(
             const glm::mat4 objectMatrix = modelview * object;
             glUniformMatrix4fv(m_paneShader.GetUniLoc("mvmtx"), 1, false, glm::value_ptr(objectMatrix));
             glUniformMatrix4fv(m_paneShader.GetUniLoc("prmtx"), 1, false, glm::value_ptr(projection));
-            pP->DrawPaneWithShader(m_paneShader);
+            pP->DrawPaneWithShader(objectMatrix, projection, m_paneShader);
         }
         glUseProgram(0);
     }

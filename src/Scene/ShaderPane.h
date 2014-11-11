@@ -20,7 +20,16 @@ public:
     virtual ~ShaderPane();
 
     virtual void initGL();
-    virtual void DrawPaneWithShader(const ShaderWithVariables& sh) const;
+    virtual void DrawPaneWithShader(
+        const glm::mat4& modelview,
+        const glm::mat4& projection,
+        const ShaderWithVariables& sh) const;
+
+    void ShaderPane::DrawPaneAsPortal(
+        const glm::mat4& modelview,
+        const glm::mat4& projection,
+        const glm::mat4& object,
+        const ShaderWithVariables& sh) const;
 
     ShaderToy* m_pShadertoy;
 
