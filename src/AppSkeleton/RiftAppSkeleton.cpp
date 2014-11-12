@@ -93,8 +93,6 @@ RiftAppSkeleton::RiftAppSkeleton()
 #endif
 
     ResetAllTransformations();
-
-    m_shaderToyScene.SetRenderBufferPointer(&m_renderBuffer);
 }
 
 RiftAppSkeleton::~RiftAppSkeleton()
