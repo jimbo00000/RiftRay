@@ -14,19 +14,6 @@ ShaderGalleryScene::~ShaderGalleryScene()
 {
 }
 
-void ShaderGalleryScene::InitPanesGL()
-{
-    for (std::vector<Pane*>::iterator it = m_panes.begin();
-        it != m_panes.end();
-        ++it)
-    {
-        Pane* pP = *it;
-        if (pP == NULL)
-            continue;
-        pP->initGL();
-    }
-}
-
 Pane* ShaderGalleryScene::AddShaderPane(ShaderToy* pSt)
 {
     ShaderPane* pP = new ShaderPane();

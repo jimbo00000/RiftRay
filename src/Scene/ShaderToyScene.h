@@ -36,7 +36,6 @@ public:
     virtual void timestep(float) {}
     virtual void RenderForOneEye(const float* pMview, const float* pPersp) const;
 
-    void SetRenderBufferScale(float scale) { m_RBScale = scale; }
     void SetTextureLibraryPointer(std::map<std::string, textureChannel>* pTL) { m_pTexLibrary = pTL; }
     void SetShaderToy(ShaderToy* pST) { m_currentShaderToy = pST; }
     void ResetTimer() { m_globalTime.reset(); }
@@ -56,8 +55,6 @@ protected:
     Timer m_globalTime;
     std::map<std::string, textureChannel>* m_pTexLibrary;
     ShaderToy* m_currentShaderToy;
-
-    float m_RBScale;
 
 private: // Disallow copy ctor and assignment operator
     ShaderToyScene(const ShaderToyScene&);

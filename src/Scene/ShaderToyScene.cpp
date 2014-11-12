@@ -12,7 +12,6 @@ ShaderToyScene::ShaderToyScene()
 , m_globalTime()
 , m_pTexLibrary(NULL)
 , m_currentShaderToy(NULL)
-, m_RBScale(1.0f)
 {
     m_bDraw = false;
 }
