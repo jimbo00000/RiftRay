@@ -54,7 +54,7 @@ public:
     float GetFboScale() const { return m_fboScale; }
     bool UsingDebugHmd() const { return m_usingDebugHmd; }
     bool UsingDirectMode() const { return m_directHmdMode; }
-    void AttachToWindow(void* pWindow) { ovrHmd_AttachToWindow(m_Hmd, pWindow, nullptr, nullptr); }
+    void AttachToWindow(void* pWindow) { ovrHmd_AttachToWindow(m_Hmd, pWindow, NULL, NULL); }
 
     int ConfigureSDKRendering();
     int ConfigureClientRendering();
