@@ -82,7 +82,6 @@ const std::string GetShaderSourceFromFile(const char* filename, const std::strin
     file.open(fullShaderName.c_str(), std::ios::in);
     if (!file.is_open())
     {
-        std::cerr << "No file " << filename << std::endl;
         return "";
     }
 
