@@ -7,7 +7,7 @@
 // Creative Commons Attribution
 // http://creativecommons.org/licenses/by/3.0/
 
-// @var Kaleidoscopic Journey
+// @var title Kaleidoscopic Journey
 // @var author Syntopia
 // @var license CC BY-NC-SA 3.0
 // @var url https://www.shadertoy.com/view/XsX3z7
