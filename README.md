@@ -23,9 +23,11 @@ Gamepad and Hydra are supported, but optional. You can get by with only the HMD 
 - Tap on Headset - select shader/return to gallery  
 
 #### Keyboard:  
-- WASD - movement  
 - Space bar - recenter  
 - Enter - select shader/return to gallery  
+- WASD - movement  
+- QE13 - movement(elevation/yaw)  
+- Shift/Control - slow/fast movement  
 
 #### Mouse
 - Wheel - adjust vertical FOV
