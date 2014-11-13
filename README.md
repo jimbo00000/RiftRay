@@ -8,7 +8,7 @@ Tap the side of the Rift with one finger to dismiss the Health and Safety Warnin
 
 
 ## Features  
-- Adaptive performance scaling  
+- Dynamic framebuffer scaling  
 - Tracking volume display(on when near the boundary)  
 - Auxiliary window display mirroring  
 - Gamepad support  
@@ -60,3 +60,4 @@ All shader code under shaders/shadertoy/ was written by the top developers in th
 - Philip Rideout for the [excellent CMake/OpenGL code](http://github.prideout.net/)  
 - Philippe Decaudin for [AntTweakBar](http://anttweakbar.sourceforge.net/doc/)  
 - Milan Ikits and Marcelo Magallon for [GLEW](http://glew.sourceforge.net/)  
+- Christophe Riccio for [GLM](http://glm.g-truc.net/0.9.5/index.html)  

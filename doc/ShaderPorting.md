@@ -1,9 +1,8 @@
 # Shader Porting Instructions
 
-- Write or find a cool pixel shader on [http://www.shadertoy.com](http://www.shadertoy.com)
-- Leave camera setup intact in main
-- Take out post-processing
-- Extract the function:
+- Write or find a cool pixel shader on [http://www.shadertoy.com](http://www.shadertoy.com)  
+- Leave camera setup intact in main  
+- Extract the function:  
 
     **vec3 getSceneColor( in vec3 ro, in vec3 rd )**
 
