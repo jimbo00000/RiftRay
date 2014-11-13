@@ -1,6 +1,7 @@
 # assembleRelease.py
 # Create a Windows release package in the current directory.
 
+from __future__ import print_function
 import os
 import shutil
 import glob
@@ -36,3 +37,12 @@ if not os.path.exists(binDstDir):
     os.mkdir(binDstDir)
 for b in bins:
     shutil.copy(os.path.join(binSrcDir,b), os.path.join(binDstDir, b))
+
+# simple run script
+script = """
+@echo off
+cd /d bin
+start "" RiftRay2.exe
+"""
+with open(os.path.join(dstDir,"RunRiftRay.bat"), "w") as outfile:
+    print(script, file=outfile)
