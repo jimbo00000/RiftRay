@@ -13,7 +13,7 @@ const float detail=.001;
 
 vec3 lightdir=-vec3(.2,.5,1.);
 
-mat2 rot;
+mat2 rot = mat2(1.);
 
 float rand(vec2 co){
 	return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
