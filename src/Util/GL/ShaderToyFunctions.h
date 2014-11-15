@@ -23,7 +23,10 @@ struct textureChannel {
 
 class ShaderToy;
 
-void SetTextureUniforms(const ShaderToy* pST);
+void SetTextureUniforms(
+    const ShaderToy* pST,
+    const std::map<std::string, textureChannel>* pTexLib);
+
 void LoadShaderToyTexturesFromDirectory(
     std::map<std::string, textureChannel>& texLib,
     const std::string& texdir);

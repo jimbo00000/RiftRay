@@ -76,31 +76,7 @@ void ShaderToyScene::_DrawScreenQuad() const
 ///@todo We could cache some of the locations and texture IDs.
 void ShaderToyScene::_SetTextureUniforms(const ShaderToy* pST) const
 {
-    if (pST == NULL)
-        return;
-    const std::map<std::string, textureChannel>* pTexLib = m_pTexLibrary;
-    if (pTexLib == NULL)
-        return;
-
-    for (int i=0; i<4; ++i)
-    {
-        std::ostringstream oss;
-        oss << "iChannel"
-            << i;
-        const GLint u_samp = glGetUniformLocation(pST->prog(), oss.str().c_str());
-        const std::string texname = pST->GetTextureFilenameAtChannel(i);
-        const std::map<std::string, textureChannel>::const_iterator it = pTexLib->find(texname);
-        if (it != pTexLib->end()) // key not found
-        {
-            const textureChannel& t = it->second;
-            if ((u_samp != -1) && (t.texID > 0))
-            {
-                glActiveTexture(GL_TEXTURE0 + i);
-                glBindTexture(GL_TEXTURE_2D, t.texID);
-                glUniform1i(u_samp, i);
-            }
-        }
-    }
+    SetTextureUniforms(pST, m_pTexLibrary);
 }
 
 void ShaderToyScene::DrawScene(

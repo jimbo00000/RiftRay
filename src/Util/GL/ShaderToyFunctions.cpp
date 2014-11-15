@@ -1,14 +1,44 @@
 // ShaderToyFunctions.cpp
 
 #include "ShaderToyFunctions.h"
+#include "ShaderToy.h"
 #include "StringFunctions.h"
 #include "DirectoryFunctions.h"
 #include "TextureFunctions.h"
-#include <vector>
 
-void SetTextureUniforms(const ShaderToy* pST)
+#include <vector>
+#include <sstream>
+
+void SetTextureUniforms(
+    const ShaderToy* pST,
+    const std::map<std::string, textureChannel>* pTexLib)
 {
+    if (pST == NULL)
+        return;
+    if (pTexLib == NULL)
+        return;
+
+    for (int i=0; i<4; ++i)
+    {
+        std::ostringstream oss;
+        oss << "iChannel"
+            << i;
+        const GLint u_samp = glGetUniformLocation(pST->prog(), oss.str().c_str());
+        const std::string texname = pST->GetTextureFilenameAtChannel(i);
+        const std::map<std::string, textureChannel>::const_iterator it = pTexLib->find(texname);
+        if (it != pTexLib->end()) // key not found
+        {
+            const textureChannel& t = it->second;
+            if ((u_samp != -1) && (t.texID > 0))
+            {
+                glActiveTexture(GL_TEXTURE0 + i);
+                glBindTexture(GL_TEXTURE_2D, t.texID);
+                glUniform1i(u_samp, i);
+            }
+        }
+    }
 }
+
 
 void LoadShaderToyTexturesFromDirectory(
     std::map<std::string, textureChannel>& texLib,

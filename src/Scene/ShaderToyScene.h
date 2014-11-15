@@ -20,7 +20,7 @@
 #include "Timer.h"
 #include "FBO.h"
 
-///@brief 
+///@deprecate Dissolve this class and absorb into ShaderPane
 class ShaderToyScene : public IScene
 {
 public:
