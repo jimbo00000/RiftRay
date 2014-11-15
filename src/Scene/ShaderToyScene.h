@@ -14,10 +14,9 @@
 #include <glm/glm.hpp>
 
 #include "IScene.h"
-#include "ShaderToy.h"
 #include "ShaderWithVariables.h"
+#include "ShaderToy.h"
 #include "ShaderToyFunctions.h"
-#include "Timer.h"
 #include "FBO.h"
 
 ///@deprecate Dissolve this class and absorb into ShaderPane
@@ -33,7 +32,7 @@ public:
 
     void SetTextureLibraryPointer(std::map<std::string, textureChannel>* pTL) { m_pTexLibrary = pTL; }
     void SetShaderToy(ShaderToy* pST) { m_currentShaderToy = pST; }
-    void ResetTimer() { m_globalTime.reset(); }
+    void ResetTimer() { if(m_currentShaderToy) m_currentShaderToy->ResetTimer(); }
 
     ShaderToy* GetShaderToy() const { return m_currentShaderToy; }
 
@@ -47,7 +46,6 @@ protected:
         const glm::mat4& object) const;
 
     ShaderWithVariables m_quadVao;
-    Timer m_globalTime;
     std::map<std::string, textureChannel>* m_pTexLibrary;
     ShaderToy* m_currentShaderToy;
 

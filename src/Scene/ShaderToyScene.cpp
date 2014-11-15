@@ -9,7 +9,6 @@
 
 ShaderToyScene::ShaderToyScene()
 : m_quadVao()
-, m_globalTime()
 , m_pTexLibrary(NULL)
 , m_currentShaderToy(NULL)
 {
@@ -125,7 +124,7 @@ void ShaderToyScene::DrawScene(
             0.0f);
 
         const GLint timeUniLoc = glGetUniformLocation(prog, "iGlobalTime");
-        glUniform1f(timeUniLoc, static_cast<float>(m_globalTime.seconds()));
+        glUniform1f(timeUniLoc, pST->GlobalTime());
 
         _SetTextureUniforms(pST);
         _DrawScreenQuad();

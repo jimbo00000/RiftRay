@@ -69,7 +69,7 @@ void ShaderPane::DrawPaneAsPortal(
         }
 
         const GLint timeUniLoc = glGetUniformLocation(prog, "iGlobalTime");
-        glUniform1f(timeUniLoc, static_cast<float>(0.0f));//m_globalTime.seconds()));
+        glUniform1f(timeUniLoc, pST->GlobalTime());
 
         ///@todo Consolidate texture library?
         //_SetTextureUniforms(pST);

@@ -18,6 +18,8 @@
 #include <string>
 #include <map>
 
+#include "Timer.h"
+
 class ShaderToy
 {
 public:
@@ -26,12 +28,15 @@ public:
 
     virtual void CompileShader();
 
+    void ResetTimer() { m_globalTime.reset(); }
+
     GLuint prog() const { return m_prog; }
     const std::string GetSourceFile() const { return m_sourceFile; }
     const std::string GetTextureFilenameAtChannel(int idx) const;
     const std::string GetStringByName(const char* key) const;
     glm::vec3 GetHeadPos() const;
     float GetHeadSize() const;
+    float GlobalTime() const { return static_cast<float>(m_globalTime.seconds()); }
 
     static std::string s_shaderDir;
 
@@ -41,6 +46,7 @@ protected:
     std::string m_sourceFile;
     GLuint m_prog;
     std::map<std::string, std::string> m_varMap;
+    Timer m_globalTime;
 
 private: // Disallow default, copy ctor and assignment operator
     ShaderToy();

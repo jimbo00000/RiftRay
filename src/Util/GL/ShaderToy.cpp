@@ -16,6 +16,7 @@ ShaderToy::ShaderToy(const std::string& sourceFile)
 : m_sourceFile(sourceFile)
 , m_prog(0)
 , m_varMap()
+, m_globalTime()
 {
 }
 
