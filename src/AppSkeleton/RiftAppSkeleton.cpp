@@ -673,6 +673,8 @@ void RiftAppSkeleton::CompileShaders()
 
 void RiftAppSkeleton::RenderThumbnails()
 {
+    const ShaderWithVariables& fsh = m_paneScene.GetFontShader();
+    const BMFont& fnt = m_paneScene.GetFont();
     std::vector<Pane*>& panes = m_paneScene.m_panes;
     for (std::vector<Pane*>::iterator it = panes.begin();
         it != panes.end();
@@ -718,8 +720,6 @@ void RiftAppSkeleton::RenderThumbnails()
             m_shaderToyScene.SetShaderToy(NULL);
         }
 
-        const ShaderWithVariables& fsh = m_paneScene.GetFontShader();
-        const BMFont& fnt = m_paneScene.GetFont();
         pP->DrawShaderInfoText(fsh, fnt);
 
         unbindFBO();
