@@ -7,6 +7,8 @@
 #include <math.h>
 
 ShaderGalleryScene::ShaderGalleryScene()
+: PaneScene()
+, m_pActiveShaderToy(NULL)
 {
 }
 

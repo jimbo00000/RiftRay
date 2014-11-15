@@ -777,6 +777,7 @@ void RiftAppSkeleton::ToggleShaderWorld()
         m_headSize = 1.0f;
         m_shaderToyScene.m_bDraw = false;
         m_shaderToyScene.SetShaderToy(NULL);
+        m_galleryScene.SetActiveShaderToy(NULL);
 
 #ifdef USE_ANTTWEAKBAR
         TwRemoveVar(m_pTweakbar, "title");
@@ -790,6 +791,7 @@ void RiftAppSkeleton::ToggleShaderWorld()
         ///@todo Will we drop frames here? Clear to black if so.
         m_shaderToyScene.m_bDraw = true;
         m_shaderToyScene.SetShaderToy(pST);
+        m_galleryScene.SetActiveShaderToy(pST);
 
         const glm::vec3 hp = pST->GetHeadPos();
         m_chassisPos.x = hp.x;

@@ -26,6 +26,11 @@ public:
     virtual void RearrangePanes();
     virtual ShaderToy* GetFocusedShader() const;
 
+    virtual void SetActiveShaderToy(ShaderToy* pSt) { m_pActiveShaderToy = pSt; }
+
+protected:
+    ShaderToy* m_pActiveShaderToy;
+
 private: // Disallow copy ctor and assignment operator
     ShaderGalleryScene(const ShaderGalleryScene&);
     ShaderGalleryScene& operator=(const ShaderGalleryScene&);
