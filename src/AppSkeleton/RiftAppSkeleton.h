@@ -142,7 +142,6 @@ protected:
     float m_chassisYaw;
 
     VirtualTrackball m_hyif;
-    std::vector<ShaderToy*> m_shaderToys;
     std::map<std::string, textureChannel> m_texLibrary;
     glm::ivec2 m_windowSize;
 

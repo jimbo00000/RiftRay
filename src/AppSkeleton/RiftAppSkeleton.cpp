@@ -48,7 +48,6 @@ RiftAppSkeleton::RiftAppSkeleton()
 , m_presentDistMeshR()
 , m_chassisYaw(0.0f)
 , m_hyif()
-, m_shaderToys()
 , m_texLibrary()
 , m_headSize(1.0f)
 , m_fm()
@@ -640,8 +639,6 @@ void RiftAppSkeleton::DiscoverShaders(bool recurse)
         ShaderToy* pSt = new ShaderToy(s);
         if (pSt == NULL)
             continue;
-
-        m_shaderToys.push_back(pSt);
 
         Pane* pP = m_paneScene.AddShaderPane(pSt);
         pP->initGL();
