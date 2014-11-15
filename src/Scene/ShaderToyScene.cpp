@@ -8,8 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 ShaderToyScene::ShaderToyScene()
-: m_quadVao()
-, m_pTexLibrary(NULL)
+: m_pTexLibrary(NULL)
 , m_currentShaderToy(NULL)
 {
     m_bDraw = false;
@@ -21,53 +20,12 @@ ShaderToyScene::~ShaderToyScene()
 
 void ShaderToyScene::initGL()
 {
-    m_quadVao.initProgram("raymarch"); ///@todo replace program
-    m_quadVao.bindVAO();
-    _InitShaderRectAttributes();
-    glBindVertexArray(0);
 }
 
-void ShaderToyScene::_InitShaderRectAttributes()
-{
-    const float verts[] = {
-        -1.0f, -1.0f,
-        1.0f, -1.0f,
-        1.0f, 1.0f,
-        -1.0f, 1.0f,
-    };
-
-    ///@note Texture coordinates are redundant here as we can glean them
-    /// from gl_FragCoord in the rwwtt shader.
-    const float texs[] = {
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f,
-        0.0f, 1.0f,
-    };
-
-    GLuint vertVbo = 0;
-    glGenBuffers(1, &vertVbo);
-    m_quadVao.AddVbo("vPos", vertVbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vertVbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(verts)*3*sizeof(GLfloat), verts, GL_STATIC_DRAW);
-    glVertexAttribPointer(m_quadVao.GetAttrLoc("vPos"), 2, GL_FLOAT, GL_FALSE, 0, NULL);
-
-    GLuint colVbo = 0;
-    glGenBuffers(1, &colVbo);
-    m_quadVao.AddVbo("vTex", colVbo);
-    glBindBuffer(GL_ARRAY_BUFFER, colVbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(texs)*3*sizeof(GLfloat), texs, GL_STATIC_DRAW);
-    glVertexAttribPointer(m_quadVao.GetAttrLoc("vTex"), 2, GL_FLOAT, GL_FALSE, 0, NULL);
-
-    glEnableVertexAttribArray(m_quadVao.GetAttrLoc("vPos"));
-    glEnableVertexAttribArray(m_quadVao.GetAttrLoc("vTex"));
-}
 
 void ShaderToyScene::_DrawScreenQuad() const
 {
-    m_quadVao.bindVAO();
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-    glBindVertexArray(0);
 }
 
 ///@brief We can't get away with setting these just once on shader change as we need

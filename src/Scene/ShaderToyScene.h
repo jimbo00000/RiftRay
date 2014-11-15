@@ -45,7 +45,6 @@ protected:
         const glm::mat4& projection,
         const glm::mat4& object) const;
 
-    ShaderWithVariables m_quadVao;
     std::map<std::string, textureChannel>* m_pTexLibrary;
     ShaderToy* m_currentShaderToy;
 
