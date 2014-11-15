@@ -78,7 +78,8 @@ void ShaderToyScene::_SetTextureUniforms(const ShaderToy* pST) const
 {
     if (pST == NULL)
         return;
-    if (m_pTexLibrary == NULL)
+    std::map<std::string, textureChannel>* pTexLib = m_pTexLibrary;
+    if (pTexLib == NULL)
         return;
 
     for (int i=0; i<4; ++i)
@@ -88,8 +89,8 @@ void ShaderToyScene::_SetTextureUniforms(const ShaderToy* pST) const
             << i;
         const GLint u_samp = glGetUniformLocation(pST->prog(), oss.str().c_str());
         const std::string texname = pST->GetTextureFilenameAtChannel(i);
-        const std::map<std::string, textureChannel>::const_iterator it = m_pTexLibrary->find(texname);
-        if (it != m_pTexLibrary->end()) // key not found
+        const std::map<std::string, textureChannel>::const_iterator it = pTexLib->find(texname);
+        if (it != pTexLib->end()) // key not found
         {
             const textureChannel& t = it->second;
             if ((u_samp != -1) && (t.texID > 0))
