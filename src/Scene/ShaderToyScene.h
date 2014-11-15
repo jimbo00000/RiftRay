@@ -16,14 +16,9 @@
 #include "IScene.h"
 #include "ShaderToy.h"
 #include "ShaderWithVariables.h"
+#include "ShaderToyFunctions.h"
 #include "Timer.h"
 #include "FBO.h"
-
-struct textureChannel {
-    GLuint texID;
-    unsigned int w;
-    unsigned int h;
-};
 
 ///@brief 
 class ShaderToyScene : public IScene
