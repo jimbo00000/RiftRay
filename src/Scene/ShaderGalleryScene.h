@@ -9,8 +9,8 @@
 #endif
 
 #include "PaneScene.h"
-
 #include "VirtualTrackball.h"
+#include "ShaderToyFunctions.h"
 
 class ShaderToy;
 class Pane;
@@ -28,9 +28,11 @@ public:
     virtual const ShaderPane* GetFocusedPane() const;
 
     virtual void SetActiveShaderToy(ShaderToy* pSt) { m_pActiveShaderToy = pSt; }
+    virtual void SetTextureLibraryPointer(std::map<std::string, textureChannel>* pTL) { m_pTexLibrary = pTL; }
 
 protected:
     ShaderToy* m_pActiveShaderToy;
+    std::map<std::string, textureChannel>* m_pTexLibrary;
 
 private: // Disallow copy ctor and assignment operator
     ShaderGalleryScene(const ShaderGalleryScene&);

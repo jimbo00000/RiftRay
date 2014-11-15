@@ -711,12 +711,17 @@ void RiftAppSkeleton::RenderThumbnails()
                 0.004f,
                 500.0f);
 
+#if 1
             const bool wasDrawing = m_shaderToyScene.m_bDraw;
             m_shaderToyScene.m_bDraw = true;
             m_shaderToyScene.SetShaderToy(pSt);
             m_shaderToyScene.RenderForOneEye(&view.Transposed().M[0][0], glm::value_ptr(persp));
             m_shaderToyScene.m_bDraw = wasDrawing;
             m_shaderToyScene.SetShaderToy(NULL);
+#else
+            ///@todo
+            pP->DrawPaneAsPortal(&view.Transposed().M[0][0], glm::value_ptr(persp)));
+#endif
         }
 
         pP->DrawShaderInfoText(fsh, fnt);
@@ -736,6 +741,7 @@ void RiftAppSkeleton::LoadTexturesFromFile()
     std::cout << "Textures loaded in " << t.seconds() << " seconds." << std::endl;
 
     m_shaderToyScene.SetTextureLibraryPointer(&texLib);
+    m_galleryScene.SetTextureLibraryPointer(&texLib);
 }
 
 #ifdef USE_ANTTWEAKBAR
