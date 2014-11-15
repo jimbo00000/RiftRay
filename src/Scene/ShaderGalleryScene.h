@@ -10,10 +10,11 @@
 
 #include "PaneScene.h"
 
-#include "Pane.h"
 #include "VirtualTrackball.h"
 
 class ShaderToy;
+class Pane;
+class ShaderPane;
 
 ///@brief 
 class ShaderGalleryScene : public PaneScene
@@ -24,7 +25,7 @@ public:
 
     virtual Pane* AddShaderPane(ShaderToy* pSt);
     virtual void RearrangePanes();
-    virtual ShaderToy* GetFocusedShader() const;
+    virtual const ShaderPane* GetFocusedPane() const;
 
     virtual void SetActiveShaderToy(ShaderToy* pSt) { m_pActiveShaderToy = pSt; }
 

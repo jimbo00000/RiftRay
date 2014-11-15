@@ -768,7 +768,10 @@ static void TW_CALL GoToURLCB(void *clientData)
 
 void RiftAppSkeleton::ToggleShaderWorld()
 {
-    ShaderToy* pST = m_galleryScene.GetFocusedShader();
+    const ShaderPane* pP = m_galleryScene.GetFocusedPane();
+    if (pP == NULL)
+        return;
+    ShaderToy* pST = pP->m_pShadertoy;
 
     if (m_shaderToyScene.m_bDraw)
     {

@@ -71,7 +71,7 @@ void ShaderGalleryScene::RearrangePanes()
     }
 }
 
-ShaderToy* ShaderGalleryScene::GetFocusedShader() const
+const ShaderPane* ShaderGalleryScene::GetFocusedPane() const
 {
     int idx = 0;
     for (std::vector<Pane*>::const_iterator it = m_panes.begin();
@@ -82,7 +82,7 @@ ShaderToy* ShaderGalleryScene::GetFocusedShader() const
         if (pP == NULL)
             continue;
         if (pP->m_cursorInPane)
-            return pP->m_pShadertoy;
+            return pP;
     }
 
     return NULL;
