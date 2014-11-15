@@ -659,6 +659,8 @@ void RiftAppSkeleton::CompileShaders()
         if (pP == NULL)
             continue;
         ShaderToy* pSt = pP->m_pShadertoy;
+        if (pSt == NULL)
+            continue;
 
         Timer t;
         pSt->CompileShader();
