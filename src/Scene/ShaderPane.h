@@ -31,6 +31,11 @@ public:
         const glm::mat4& object,
         const ShaderWithVariables& sh) const;
 
+    void DrawShaderInfoText(
+        const ShaderWithVariables& fsh,
+        const BMFont& fnt
+        ) const;
+
     ShaderToy* m_pShadertoy;
 
 private: // Disallow copy ctor and assignment operator

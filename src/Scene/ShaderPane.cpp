@@ -81,6 +81,26 @@ void ShaderPane::DrawPaneAsPortal(
     glUseProgram(0);
 }
 
+///@brief Draw 3 lines of text in the lower-left of the pane, like an MTV video:
+/// Name, author and license.
+void ShaderPane::DrawShaderInfoText(
+    const ShaderWithVariables& fsh,
+    const BMFont& fnt
+    ) const
+{
+    const ShaderToy* pSt = m_pShadertoy;
+    if (pSt == NULL)
+        return;
+
+    const int lineh = 62;
+    const int margin = 22;
+    int txh = m_paneRenderBuffer.h - 3*lineh - margin;
+    const std::string title = pSt->GetStringByName("title");
+    DrawTextOverlay(title.empty() ? pSt->GetSourceFile() : title, margin, txh, fsh, fnt);
+    DrawTextOverlay(pSt->GetStringByName("author"), margin, txh += lineh, fsh, fnt);
+    DrawTextOverlay(pSt->GetStringByName("license"), margin, txh += lineh, fsh, fnt);
+}
+
 ///@brief Highlight pane when it's being pointed at.
 void ShaderPane::DrawPaneWithShader(
     const glm::mat4& modelview,
