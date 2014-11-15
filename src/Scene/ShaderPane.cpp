@@ -56,17 +56,15 @@ void ShaderPane::DrawPaneAsPortal(
         //const float aspect = cot_fovby2 / glm::value_ptr(projection)[0];
         //glUniform3f(glGetUniformLocation(prog, "iResolution"), aspect, 1.0, 0.0);
 
-        {
-            // Query viewport dimensions
-            GLint vp[4];
-            glGetIntegerv(GL_VIEWPORT, &vp[0]);
+        // Query viewport dimensions
+        GLint vp[4];
+        glGetIntegerv(GL_VIEWPORT, &vp[0]);
 
-            const GLint u_res = glGetUniformLocation(prog, "iResolution");
-            glUniform3f(u_res,
-                static_cast<float>(vp[2]),
-                static_cast<float>(vp[3]),
-                0.0f);
-        }
+        const GLint u_res = glGetUniformLocation(prog, "iResolution");
+        glUniform3f(u_res,
+            static_cast<float>(vp[2]),
+            static_cast<float>(vp[3]),
+            0.0f);
 
         const GLint timeUniLoc = glGetUniformLocation(prog, "iGlobalTime");
         glUniform1f(timeUniLoc, pST->GlobalTime());
