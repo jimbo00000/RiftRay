@@ -2,10 +2,6 @@
 
 #pragma once
 
-#ifdef __APPLE__
-#include "opengl/gl.h"
-#endif
-
 #ifdef _WIN32
 #  define WINDOWS_LEAN_AND_MEAN
 #  define NOMINMAX
