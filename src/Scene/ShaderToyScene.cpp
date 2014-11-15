@@ -78,7 +78,7 @@ void ShaderToyScene::_SetTextureUniforms(const ShaderToy* pST) const
 {
     if (pST == NULL)
         return;
-    std::map<std::string, textureChannel>* pTexLib = m_pTexLibrary;
+    const std::map<std::string, textureChannel>* pTexLib = m_pTexLibrary;
     if (pTexLib == NULL)
         return;
 
