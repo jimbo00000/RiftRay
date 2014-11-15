@@ -127,7 +127,7 @@ public:
     OVRScene m_ovrScene;
     RaymarchShaderScene m_raymarchScene;
     ShaderToyScene m_shaderToyScene;
-    ShaderGalleryScene m_paneScene;
+    ShaderGalleryScene m_galleryScene;
 
     ovrVector3f m_chassisPos;
 

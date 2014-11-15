@@ -39,7 +39,7 @@ RiftAppSkeleton::RiftAppSkeleton()
 , m_ovrScene()
 , m_raymarchScene()
 , m_shaderToyScene()
-, m_paneScene()
+, m_galleryScene()
 , m_scenes()
 
 , m_fboScale(1.0f)
@@ -76,12 +76,12 @@ RiftAppSkeleton::RiftAppSkeleton()
     m_scenes.push_back(&m_ovrScene);
     //m_scenes.push_back(&m_raymarchScene);
     m_scenes.push_back(&m_shaderToyScene);
-    m_scenes.push_back(&m_paneScene);
+    m_scenes.push_back(&m_galleryScene);
 
     m_raymarchScene.SetFlyingMousePointer(&m_fm);
-    m_paneScene.SetFlyingMousePointer(&m_fm);
-    m_paneScene.SetHmdPositionPointer(&m_hmdRo);
-    m_paneScene.SetHmdDirectionPointer(&m_hmdRd);
+    m_galleryScene.SetFlyingMousePointer(&m_fm);
+    m_galleryScene.SetHmdPositionPointer(&m_hmdRo);
+    m_galleryScene.SetHmdDirectionPointer(&m_hmdRd);
 
     // Give this scene a pointer to get live Hydra data for display
 #ifdef USE_SIXENSE
@@ -640,14 +640,14 @@ void RiftAppSkeleton::DiscoverShaders(bool recurse)
         if (pSt == NULL)
             continue;
 
-        Pane* pP = m_paneScene.AddShaderPane(pSt);
+        Pane* pP = m_galleryScene.AddShaderPane(pSt);
         pP->initGL();
     }
 }
 
 void RiftAppSkeleton::CompileShaders()
 {
-    std::vector<Pane*>& panes = m_paneScene.m_panes;
+    std::vector<Pane*>& panes = m_galleryScene.m_panes;
     for (std::vector<Pane*>::iterator it = panes.begin();
         it != panes.end();
         ++it)
@@ -672,9 +672,9 @@ void RiftAppSkeleton::CompileShaders()
 
 void RiftAppSkeleton::RenderThumbnails()
 {
-    const ShaderWithVariables& fsh = m_paneScene.GetFontShader();
-    const BMFont& fnt = m_paneScene.GetFont();
-    std::vector<Pane*>& panes = m_paneScene.m_panes;
+    const ShaderWithVariables& fsh = m_galleryScene.GetFontShader();
+    const BMFont& fnt = m_galleryScene.GetFont();
+    std::vector<Pane*>& panes = m_galleryScene.m_panes;
     for (std::vector<Pane*>::iterator it = panes.begin();
         it != panes.end();
         ++it)
@@ -768,7 +768,7 @@ static void TW_CALL GoToURLCB(void *clientData)
 
 void RiftAppSkeleton::ToggleShaderWorld()
 {
-    ShaderToy* pST = m_paneScene.GetFocusedShader();
+    ShaderToy* pST = m_galleryScene.GetFocusedShader();
 
     if (m_shaderToyScene.m_bDraw)
     {
