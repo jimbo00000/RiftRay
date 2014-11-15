@@ -739,6 +739,8 @@ void RiftAppSkeleton::RenderThumbnails()
 
 void RiftAppSkeleton::LoadTexturesFromFile()
 {
+    std::map<std::string, textureChannel>& texLib = m_texLibrary;
+
     Timer t;
     const std::string texdir("../textures/");
     const std::vector<std::string> texturenames = GetListOfFilesFromDirectory(texdir);
@@ -759,11 +761,11 @@ void RiftAppSkeleton::LoadTexturesFromFile()
             texId = LoadTextureFromPng(fullName.c_str(), &width, &height);
 
         textureChannel tc = {texId, width, height};
-        m_texLibrary[s] = tc;
+        texLib[s] = tc;
     }
     std::cout << "Textures loaded in " << t.seconds() << " seconds." << std::endl;
 
-    m_shaderToyScene.SetTextureLibraryPointer(&m_texLibrary);
+    m_shaderToyScene.SetTextureLibraryPointer(&texLib);
 }
 
 #ifdef USE_ANTTWEAKBAR
