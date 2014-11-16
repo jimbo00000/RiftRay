@@ -73,6 +73,31 @@ void ShaderGalleryScene::RearrangePanes()
     }
 }
 
+void ShaderGalleryScene::CompileShaders()
+{
+    std::vector<Pane*>& panes = m_panes;
+    for (std::vector<Pane*>::iterator it = panes.begin();
+        it != panes.end();
+        ++it)
+    {
+        ShaderToyPane* pP = reinterpret_cast<ShaderToyPane*>(*it);
+        if (pP == NULL)
+            continue;
+        ShaderToy* pSt = pP->m_pShadertoy;
+        if (pSt == NULL)
+            continue;
+
+        Timer t;
+        pSt->CompileShader();
+
+        std::cout
+            << "\t\t "
+            << t.seconds()
+            << "s"
+            ;
+    }
+}
+
 const ShaderToyPane* ShaderGalleryScene::GetFocusedPane() const
 {
     int idx = 0;

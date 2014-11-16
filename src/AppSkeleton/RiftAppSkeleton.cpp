@@ -643,31 +643,6 @@ void RiftAppSkeleton::DiscoverShaders(bool recurse)
     }
 }
 
-void RiftAppSkeleton::CompileShaders()
-{
-    std::vector<Pane*>& panes = m_galleryScene.m_panes;
-    for (std::vector<Pane*>::iterator it = panes.begin();
-        it != panes.end();
-        ++it)
-    {
-        ShaderToyPane* pP = reinterpret_cast<ShaderToyPane*>(*it);
-        if (pP == NULL)
-            continue;
-        ShaderToy* pSt = pP->m_pShadertoy;
-        if (pSt == NULL)
-            continue;
-
-        Timer t;
-        pSt->CompileShader();
-
-        std::cout
-            << "\t\t "
-            << t.seconds()
-            << "s"
-            ;
-    }
-}
-
 ///@note One of these days the texture library will break down into a singleton.
 void RiftAppSkeleton::SetTextureLibraryPointer()
 {

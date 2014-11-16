@@ -81,7 +81,6 @@ public:
     void resize(int w, int h);
 
     void DiscoverShaders(bool recurse=true);
-    void CompileShaders();
     void SetTextureLibraryPointer();
     void LoadTextureLibrary();
     void ToggleShaderWorld();

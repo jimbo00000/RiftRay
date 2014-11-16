@@ -723,7 +723,7 @@ void StartShaderLoad()
     /// while display is running, but trying that yields large frame rate drops
     /// which would make the VR experience unacceptably uncomfortable.
     g_app.LoadTextureLibrary();
-    g_app.CompileShaders();
+    g_app.m_galleryScene.CompileShaders();
     g_app.m_galleryScene.RearrangePanes();
     g_app.m_galleryScene.RenderThumbnails();
 

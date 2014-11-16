@@ -24,6 +24,8 @@ public:
     virtual ~ShaderGalleryScene();
 
     virtual void RenderForOneEye(const float* pMview, const float* pPersp) const;
+
+    virtual void CompileShaders();
     virtual void RenderThumbnails() const;
 
     virtual Pane* AddShaderToyPane(ShaderToy* pSt);
