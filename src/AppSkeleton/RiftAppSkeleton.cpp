@@ -711,22 +711,11 @@ void RiftAppSkeleton::RenderThumbnails()
                 0.004f,
                 500.0f);
 
-#if 0
-            const bool wasDrawing = m_shaderToyScene.m_bDraw;
-            m_shaderToyScene.m_bDraw = true;
-            m_shaderToyScene.SetShaderToy(pSt);
-            m_shaderToyScene.RenderForOneEye(&view.Transposed().M[0][0], glm::value_ptr(persp));
-            m_shaderToyScene.m_bDraw = wasDrawing;
-            m_shaderToyScene.SetShaderToy(NULL);
-#else
-            ///@todo
-            
             const glm::mat4 modelview = glm::make_mat4(&view.Transposed().M[0][0]);
             pP->DrawPaneAsPortal(
                 modelview,
                 persp,
                 glm::mat4(1.0f));
-#endif
         }
 
         pP->DrawShaderInfoText(fsh, fnt);
