@@ -6,6 +6,7 @@
 #include "DirectoryFunctions.h"
 #include "TextureFunctions.h"
 
+#include <string>
 #include <vector>
 #include <sstream>
 
