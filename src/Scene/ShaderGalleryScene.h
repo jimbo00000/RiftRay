@@ -14,7 +14,7 @@
 
 class ShaderToy;
 class Pane;
-class ShaderPane;
+class ShaderToyPane;
 
 ///@brief 
 class ShaderGalleryScene : public PaneScene
@@ -23,9 +23,9 @@ public:
     ShaderGalleryScene();
     virtual ~ShaderGalleryScene();
 
-    virtual Pane* AddShaderPane(ShaderToy* pSt);
+    virtual Pane* AddShaderToyPane(ShaderToy* pSt);
     virtual void RearrangePanes();
-    virtual const ShaderPane* GetFocusedPane() const;
+    virtual const ShaderToyPane* GetFocusedPane() const;
 
     virtual void SetActiveShaderToy(ShaderToy* pSt) { m_pActiveShaderToy = pSt; }
     virtual void SetTextureLibraryPointer(std::map<std::string, textureChannel>* pTL) { m_pTexLibrary = pTL; }

@@ -1,24 +1,24 @@
-// ShaderPane.cpp
+// ShaderToyPane.cpp
 
-#include "ShaderPane.h"
+#include "ShaderToyPane.h"
 #include "ShaderToy.h"
 
-ShaderPane::ShaderPane()
+ShaderToyPane::ShaderToyPane()
 : Pane()
 , m_pShadertoy(NULL)
 {
 }
 
-ShaderPane::~ShaderPane()
+ShaderToyPane::~ShaderToyPane()
 {
 }
 
-void ShaderPane::initGL()
+void ShaderToyPane::initGL()
 {
     allocateFBO(m_paneRenderBuffer, 600, 600);
 }
 
-void ShaderPane::DrawPaneAsPortal(
+void ShaderToyPane::DrawPaneAsPortal(
     const glm::mat4& modelview,
     const glm::mat4& projection,
     const glm::mat4& object,
@@ -83,7 +83,7 @@ void ShaderPane::DrawPaneAsPortal(
 
 ///@brief Draw 3 lines of text in the lower-left of the pane, like an MTV video:
 /// Name, author and license.
-void ShaderPane::DrawShaderInfoText(
+void ShaderToyPane::DrawShaderInfoText(
     const ShaderWithVariables& fsh,
     const BMFont& fnt
     ) const
@@ -102,7 +102,7 @@ void ShaderPane::DrawShaderInfoText(
 }
 
 ///@brief Highlight pane when it's being pointed at.
-void ShaderPane::DrawPaneWithShader(
+void ShaderToyPane::DrawPaneWithShader(
     const glm::mat4& modelview,
     const glm::mat4& projection,
     const ShaderWithVariables& sh) const

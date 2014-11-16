@@ -19,7 +19,7 @@
 #include <sstream>
 
 #include "RiftAppSkeleton.h"
-#include "ShaderPane.h"
+#include "ShaderToyPane.h"
 #include "ShaderToy.h"
 #include "ShaderFunctions.h"
 #include "DirectoryFunctions.h"
@@ -640,7 +640,7 @@ void RiftAppSkeleton::DiscoverShaders(bool recurse)
         if (pSt == NULL)
             continue;
 
-        Pane* pP = m_galleryScene.AddShaderPane(pSt);
+        Pane* pP = m_galleryScene.AddShaderToyPane(pSt);
         pP->initGL();
     }
 }
@@ -652,7 +652,7 @@ void RiftAppSkeleton::CompileShaders()
         it != panes.end();
         ++it)
     {
-        ShaderPane* pP = reinterpret_cast<ShaderPane*>(*it);
+        ShaderToyPane* pP = reinterpret_cast<ShaderToyPane*>(*it);
         if (pP == NULL)
             continue;
         ShaderToy* pSt = pP->m_pShadertoy;
@@ -679,7 +679,7 @@ void RiftAppSkeleton::RenderThumbnails()
         it != panes.end();
         ++it)
     {
-        ShaderPane* pP = reinterpret_cast<ShaderPane*>(*it);
+        ShaderToyPane* pP = reinterpret_cast<ShaderToyPane*>(*it);
         if (pP == NULL)
             continue;
         ShaderToy* pSt = pP->m_pShadertoy;
@@ -750,7 +750,12 @@ static void TW_CALL GoToURLCB(void *clientData)
     const RiftAppSkeleton* pApp = reinterpret_cast<RiftAppSkeleton *>(clientData);
     if (!pApp)
         return;
-    ShaderToy* pST = pApp->m_shaderToyScene.GetShaderToy();
+
+    const ShaderToyPane* pP = pApp->m_galleryScene.GetFocusedPane();
+    if (pP == NULL)
+        return;
+
+    ShaderToy* pST = pP->m_pShadertoy;
     if (pST == NULL)
         return;
 
@@ -791,7 +796,7 @@ void RiftAppSkeleton::ToggleShaderWorld()
         return;
     }
 
-    const ShaderPane* pP = m_galleryScene.GetFocusedPane();
+    const ShaderToyPane* pP = m_galleryScene.GetFocusedPane();
     if (pP == NULL)
         return;
 

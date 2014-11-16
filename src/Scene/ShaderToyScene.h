@@ -19,7 +19,7 @@
 #include "ShaderToyFunctions.h"
 #include "FBO.h"
 
-///@deprecate Dissolve this class and absorb into ShaderPane
+///@deprecate Dissolve this class and absorb into ShaderToyPane
 class ShaderToyScene : public IScene
 {
 public:

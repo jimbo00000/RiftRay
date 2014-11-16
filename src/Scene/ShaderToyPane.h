@@ -1,4 +1,4 @@
-// ShaderPane.h
+// ShaderToyPane.h
 
 #pragma once
 
@@ -13,11 +13,11 @@
 class ShaderToy;
 
 ///@brief 
-class ShaderPane : public Pane
+class ShaderToyPane : public Pane
 {
 public:
-    ShaderPane();
-    virtual ~ShaderPane();
+    ShaderToyPane();
+    virtual ~ShaderToyPane();
 
     virtual void initGL();
     virtual void DrawPaneWithShader(
@@ -39,6 +39,6 @@ public:
     ShaderToy* m_pShadertoy;
 
 private: // Disallow copy ctor and assignment operator
-    ShaderPane(const ShaderPane&);
-    ShaderPane& operator=(const ShaderPane&);
+    ShaderToyPane(const ShaderToyPane&);
+    ShaderToyPane& operator=(const ShaderToyPane&);
 };

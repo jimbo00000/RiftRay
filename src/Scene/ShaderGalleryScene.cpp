@@ -1,7 +1,7 @@
 // ShaderGalleryScene.cpp
 
 #include "ShaderGalleryScene.h"
-#include "ShaderPane.h"
+#include "ShaderToyPane.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -16,9 +16,9 @@ ShaderGalleryScene::~ShaderGalleryScene()
 {
 }
 
-Pane* ShaderGalleryScene::AddShaderPane(ShaderToy* pSt)
+Pane* ShaderGalleryScene::AddShaderToyPane(ShaderToy* pSt)
 {
-    ShaderPane* pP = new ShaderPane();
+    ShaderToyPane* pP = new ShaderToyPane();
     if (pP == NULL)
         return NULL;
 
@@ -71,14 +71,14 @@ void ShaderGalleryScene::RearrangePanes()
     }
 }
 
-const ShaderPane* ShaderGalleryScene::GetFocusedPane() const
+const ShaderToyPane* ShaderGalleryScene::GetFocusedPane() const
 {
     int idx = 0;
     for (std::vector<Pane*>::const_iterator it = m_panes.begin();
         it != m_panes.end();
         ++it, ++idx)
     {
-        const ShaderPane* pP = reinterpret_cast<ShaderPane*>(*it);
+        const ShaderToyPane* pP = reinterpret_cast<ShaderToyPane*>(*it);
         if (pP == NULL)
             continue;
         if (pP->m_cursorInPane)
