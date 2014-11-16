@@ -9,6 +9,8 @@
 ShaderToyPane::ShaderToyPane()
 : Pane()
 , m_pShadertoy(NULL)
+, m_pFontShader(NULL)
+, m_pFont(NULL)
 , m_vao(0)
 {
 }
@@ -188,7 +190,12 @@ void ShaderToyPane::DrawToFBO() const
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &bound_fbo);
 
     RenderThumbnail();
-    //DrawShaderInfoText(fsh, fnt);
+    if (m_pFontShader!=NULL && m_pFont!=NULL)
+    {
+        glDisable(GL_DEPTH_TEST);
+        DrawShaderInfoText(*m_pFontShader, *m_pFont);
+        glEnable(GL_DEPTH_TEST);
+    }
 
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, bound_fbo);
 

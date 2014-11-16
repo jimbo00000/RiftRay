@@ -36,6 +36,9 @@ Pane* ShaderGalleryScene::AddShaderToyPane(ShaderToy* pSt)
 
     pP->m_pShadertoy = pSt;
     pP->SetTextureLibraryPointer(m_pTexLibrary);
+    // It feels ugly to do all this pointer setting, but is it worse than a singleton?
+    pP->SetFontShaderPointer(&m_fontShader);
+    pP->SetFontPointer(&m_font);
 
     m_panes.push_back(pP);
 

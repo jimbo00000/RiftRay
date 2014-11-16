@@ -40,10 +40,14 @@ public:
     virtual void DrawToFBO() const;
 
     virtual void SetTextureLibraryPointer(std::map<std::string, textureChannel>* pTL) { m_pTexLibrary = pTL; }
+    virtual void SetFontShaderPointer(const ShaderWithVariables* pS) { m_pFontShader = pS; }
+    virtual void SetFontPointer(const BMFont* pF) { m_pFont = pF; }
 
     ShaderToy* m_pShadertoy;
 protected:
     std::map<std::string, textureChannel>* m_pTexLibrary;
+    const ShaderWithVariables* m_pFontShader;
+    const BMFont* m_pFont;
     GLuint m_vao;
 
 private: // Disallow copy ctor and assignment operator
