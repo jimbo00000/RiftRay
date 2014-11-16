@@ -33,7 +33,8 @@ void ShaderToyPane::initGL()
 void ShaderToyPane::DrawPaneAsPortal(
     const glm::mat4& modelview,
     const glm::mat4& projection,
-    const glm::mat4& object) const
+    const glm::mat4& object,
+    const glm::mat4& paneMatrix) const
 {
     ///@todo Consolidate this duplicated code
     ShaderToy* pST = m_pShadertoy;
@@ -53,8 +54,7 @@ void ShaderToyPane::DrawPaneAsPortal(
 
         // To transform only the vertices that define the quad being drawn.
         const GLint u_pm = glGetUniformLocation(prog, "paneMatrix");
-        glUniformMatrix4fv(u_pm, 1, false, glm::value_ptr(glm::mat4(1.0f)));
-        //glUniformMatrix4fv(u_pm, 1, false, glm::value_ptr(projection * modelview));
+        glUniformMatrix4fv(u_pm, 1, false, glm::value_ptr(paneMatrix));
 
         // Extract viewing parameters encoded in projection matrix.
         // Stereo separation is encoded here in riftskeleton during pre-translate by half IPD.
@@ -130,7 +130,7 @@ void ShaderToyPane::DrawPaneWithShader(
         ///@todo Fade in after time or after a selection tap/press
         if (m_cursorInPane)
         {
-            DrawPaneAsPortal(modelview, projection, glm::mat4(1.0f));
+            DrawPaneAsPortal(modelview, projection, glm::mat4(1.0f), projection*modelview);
             return;
         }
     }

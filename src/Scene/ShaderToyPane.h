@@ -29,7 +29,8 @@ public:
     virtual void DrawPaneAsPortal(
         const glm::mat4& modelview,
         const glm::mat4& projection,
-        const glm::mat4& object) const;
+        const glm::mat4& object,
+        const glm::mat4& paneMatrix=glm::mat4(1.0f)) const;
 
     virtual void DrawShaderInfoText(
         const ShaderWithVariables& fsh,
