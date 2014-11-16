@@ -600,7 +600,8 @@ void RiftAppSkeleton::_DrawScenes(
     // with rasterized world pixels.
     if (m_galleryScene.GetActiveShaderToy() != NULL)
     {
-        m_shaderToyScene.RenderForOneEye(pScaledMview ? pScaledMview : pMview, pPersp);
+        //m_shaderToyScene.RenderForOneEye(pScaledMview ? pScaledMview : pMview, pPersp);
+        m_galleryScene.RenderForOneEye(pScaledMview ? pScaledMview : pMview, pPersp);
 
         // Show the warning box if we get too close to edge of tracking cam's fov.
         glDisable(GL_DEPTH_TEST);
@@ -776,14 +777,13 @@ static void TW_CALL GoToURLCB(void *clientData)
 
 void RiftAppSkeleton::ToggleShaderWorld()
 {
-    if (m_shaderToyScene.m_bDraw)
+    if (m_galleryScene.GetActiveShaderToy() != NULL)
     {
         // Back into gallery
         ResetAllTransformations();
         m_headSize = 1.0f;
-        m_shaderToyScene.m_bDraw = false;
-        m_shaderToyScene.SetShaderToy(NULL);
         m_galleryScene.SetActiveShaderToy(NULL);
+        m_galleryScene.SetActiveShaderToyPane(NULL);
 
 #ifdef USE_ANTTWEAKBAR
         TwRemoveVar(m_pTweakbar, "title");
@@ -793,7 +793,7 @@ void RiftAppSkeleton::ToggleShaderWorld()
         return;
     }
 
-    const ShaderToyPane* pP = m_galleryScene.GetFocusedPane();
+    ShaderToyPane* pP = const_cast<ShaderToyPane*>(m_galleryScene.GetFocusedPane());
     if (pP == NULL)
         return;
 
@@ -802,9 +802,9 @@ void RiftAppSkeleton::ToggleShaderWorld()
         return;
     // Transitioning into shader world
     ///@todo Will we drop frames here? Clear to black if so.
-    m_shaderToyScene.m_bDraw = true;
     m_shaderToyScene.SetShaderToy(pST);
     m_galleryScene.SetActiveShaderToy(pST);
+    m_galleryScene.SetActiveShaderToyPane(pP);
 
     const glm::vec3 hp = pST->GetHeadPos();
     m_chassisPos.x = hp.x;

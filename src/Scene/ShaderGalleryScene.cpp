@@ -9,6 +9,7 @@
 ShaderGalleryScene::ShaderGalleryScene()
 : PaneScene()
 , m_pActiveShaderToy(NULL)
+, m_pActiveShaderToyPane(NULL)
 {
 }
 
@@ -87,4 +88,30 @@ const ShaderToyPane* ShaderGalleryScene::GetFocusedPane() const
     }
 
     return NULL;
+}
+
+void ShaderGalleryScene::RenderForOneEye(const float* pMview, const float* pPersp) const
+{
+    if (m_bDraw == false)
+        return;
+
+    if (m_pActiveShaderToy == NULL)
+    {
+        // Draw the gallery of panes
+        PaneScene::RenderForOneEye(pMview, pPersp);
+        return;
+    }
+
+    const ShaderToyPane* pP = GetActiveShaderToyPane();
+    if (pP == NULL)
+        return;
+
+    // Draw only the current ShaderToy encompassing the world
+    const glm::mat4 modelview = glm::make_mat4(pMview);
+    const glm::mat4 projection = glm::make_mat4(pPersp);
+
+    pP->DrawPaneAsPortal(
+        modelview,
+        projection,
+        glm::mat4(1.0f));
 }
