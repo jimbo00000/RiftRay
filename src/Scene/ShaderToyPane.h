@@ -42,6 +42,7 @@ public:
     void SetTextureLibraryPointer(std::map<std::string, textureChannel>* pTL) { m_pTexLibrary = pTL; }
 
     ShaderToy* m_pShadertoy;
+protected:
     std::map<std::string, textureChannel>* m_pTexLibrary;
     GLuint m_vao;
 
