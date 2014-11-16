@@ -128,7 +128,7 @@ void ShaderToyPane::DrawPaneWithShader(
     const glm::mat4& projection,
     const ShaderWithVariables& sh) const
 {
-    if (true)
+    if (false)
     {
         ///@todo Line up eyePos and headScale to match initial view of shader from our vantage point in 3d
         ///@todo Fade in after time or after a selection tap/press
@@ -185,6 +185,9 @@ void ShaderToyPane::RenderThumbnail() const
 
 void ShaderToyPane::DrawToFBO() const
 {
+    if (true)
+        return;
+
     GLint bound_prog = 0;
     glGetIntegerv(GL_CURRENT_PROGRAM, &bound_prog);
 
