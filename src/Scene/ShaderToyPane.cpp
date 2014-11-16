@@ -15,6 +15,7 @@ ShaderToyPane::~ShaderToyPane()
 
 void ShaderToyPane::initGL()
 {
+    Pane::initGL();
     allocateFBO(m_paneRenderBuffer, 600, 600);
 }
 
@@ -41,7 +42,8 @@ void ShaderToyPane::DrawPaneAsPortal(
 
         // To transform only the vertices that define the quad being drawn.
         const GLint u_pm = glGetUniformLocation(prog, "paneMatrix");
-        glUniformMatrix4fv(u_pm, 1, false, glm::value_ptr(projection * modelview));
+        glUniformMatrix4fv(u_pm, 1, false, glm::value_ptr(glm::mat4(1.0f)));
+        //glUniformMatrix4fv(u_pm, 1, false, glm::value_ptr(projection * modelview));
 
         // Extract viewing parameters encoded in projection matrix.
         // Stereo separation is encoded here in riftskeleton during pre-translate by half IPD.
@@ -68,8 +70,7 @@ void ShaderToyPane::DrawPaneAsPortal(
         const GLint timeUniLoc = glGetUniformLocation(prog, "iGlobalTime");
         glUniform1f(timeUniLoc, pST->GlobalTime());
 
-        ///@todo Consolidate texture library?
-        //_SetTextureUniforms(pST);
+        SetTextureUniforms(pST, m_pTexLibrary);
 
         m_plane.bindVAO();
         {

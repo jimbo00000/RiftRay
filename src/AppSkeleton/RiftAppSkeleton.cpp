@@ -711,7 +711,7 @@ void RiftAppSkeleton::RenderThumbnails()
                 0.004f,
                 500.0f);
 
-#if 1
+#if 0
             const bool wasDrawing = m_shaderToyScene.m_bDraw;
             m_shaderToyScene.m_bDraw = true;
             m_shaderToyScene.SetShaderToy(pSt);
@@ -720,7 +720,12 @@ void RiftAppSkeleton::RenderThumbnails()
             m_shaderToyScene.SetShaderToy(NULL);
 #else
             ///@todo
-            pP->DrawPaneAsPortal(&view.Transposed().M[0][0], glm::value_ptr(persp)));
+            
+            const glm::mat4 modelview = glm::make_mat4(&view.Transposed().M[0][0]);
+            pP->DrawPaneAsPortal(
+                modelview,
+                persp,
+                glm::mat4(1.0f));
 #endif
         }
 
@@ -731,17 +736,20 @@ void RiftAppSkeleton::RenderThumbnails()
     }
 }
 
+///@note One of these days the texture library will break down into a singleton.
+void RiftAppSkeleton::SetTextureLibraryPointer()
+{
+    m_shaderToyScene.SetTextureLibraryPointer(&m_texLibrary);
+    m_galleryScene.SetTextureLibraryPointer(&m_texLibrary);
+}
+
 void RiftAppSkeleton::LoadTexturesFromFile()
 {
-    std::map<std::string, textureChannel>& texLib = m_texLibrary;
-
     Timer t;
+    std::map<std::string, textureChannel>& texLib = m_texLibrary;
     const std::string texdir("../textures/");
     LoadShaderToyTexturesFromDirectory(texLib, texdir);
     std::cout << "Textures loaded in " << t.seconds() << " seconds." << std::endl;
-
-    m_shaderToyScene.SetTextureLibraryPointer(&texLib);
-    m_galleryScene.SetTextureLibraryPointer(&texLib);
 }
 
 #ifdef USE_ANTTWEAKBAR

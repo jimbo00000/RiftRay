@@ -33,6 +33,7 @@ Pane* ShaderGalleryScene::AddShaderToyPane(ShaderToy* pSt)
     pP->m_tx.SetOrientation(ori);
 
     pP->m_pShadertoy = pSt;
+    pP->SetTextureLibraryPointer(m_pTexLibrary);
 
     m_panes.push_back(pP);
 

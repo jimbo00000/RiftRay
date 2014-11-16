@@ -11,6 +11,7 @@
 #include "Pane.h"
 
 class ShaderToy;
+#include "ShaderToyFunctions.h"
 
 ///@brief 
 class ShaderToyPane : public Pane
@@ -35,7 +36,10 @@ public:
         const BMFont& fnt
         ) const;
 
+    void SetTextureLibraryPointer(std::map<std::string, textureChannel>* pTL) { m_pTexLibrary = pTL; }
+
     ShaderToy* m_pShadertoy;
+    std::map<std::string, textureChannel>* m_pTexLibrary;
 
 private: // Disallow copy ctor and assignment operator
     ShaderToyPane(const ShaderToyPane&);

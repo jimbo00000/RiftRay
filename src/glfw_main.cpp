@@ -714,6 +714,8 @@ void LoadConfigFile()
 
 void StartShaderLoad()
 {
+    g_app.SetTextureLibraryPointer();
+
     g_app.DiscoverShaders(g_loadShadertoysRecursive);
 
     ///@todo It would save some time to compile all these shaders in parallel on

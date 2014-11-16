@@ -84,6 +84,7 @@ public:
     void DiscoverShaders(bool recurse=true);
     void CompileShaders();
     void RenderThumbnails();
+    void SetTextureLibraryPointer();
     void LoadTexturesFromFile();
     void ToggleShaderWorld();
 
