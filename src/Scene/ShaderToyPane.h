@@ -25,21 +25,21 @@ public:
         const glm::mat4& modelview,
         const glm::mat4& projection,
         const ShaderWithVariables& sh) const;
-    
-    void DrawPaneAsPortal(
+
+    virtual void DrawPaneAsPortal(
         const glm::mat4& modelview,
         const glm::mat4& projection,
         const glm::mat4& object) const;
 
-    void DrawShaderInfoText(
+    virtual void DrawShaderInfoText(
         const ShaderWithVariables& fsh,
         const BMFont& fnt
         ) const;
 
-    void RenderThumbnail() const;
+    virtual void RenderThumbnail() const;
     virtual void DrawToFBO() const;
 
-    void SetTextureLibraryPointer(std::map<std::string, textureChannel>* pTL) { m_pTexLibrary = pTL; }
+    virtual void SetTextureLibraryPointer(std::map<std::string, textureChannel>* pTL) { m_pTexLibrary = pTL; }
 
     ShaderToy* m_pShadertoy;
 protected:
