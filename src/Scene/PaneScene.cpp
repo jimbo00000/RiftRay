@@ -125,18 +125,13 @@ void PaneScene::DrawScene(
         if (pP == NULL)
             continue;
 
-#if 0
-        // We must keep the previously bound FBO and restore
-        GLint bound_fbo = 0;
-        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &bound_fbo);
-        bindFBO(pP->m_paneRenderBuffer);
-
-        pP->DrawToFBO();
-
-        unbindFBO();
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, bound_fbo);
-#endif
         const glm::mat4 object = pP->m_tx.GetMatrix();
+
+        if (pP->m_cursorInPane)
+        {
+            ///@warning Watch out, if this shader is expensive at FBO dimensions(600x600) it could cause dropped frames.
+            pP->DrawToFBO();
+        }
 
         glUseProgram(m_paneShader.prog());
         {

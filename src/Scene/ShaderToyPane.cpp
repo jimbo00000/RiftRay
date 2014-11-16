@@ -77,7 +77,8 @@ void ShaderToyPane::DrawPaneAsPortal(
             0.0f);
 
         const GLint timeUniLoc = glGetUniformLocation(prog, "iGlobalTime");
-        glUniform1f(timeUniLoc, pST->GlobalTime());
+        const float t = pST->GlobalTime();
+        glUniform1f(timeUniLoc, t);
 
         SetTextureUniforms(pST, m_pTexLibrary);
 
@@ -147,12 +148,14 @@ void ShaderToyPane::DrawPaneWithShader(
 
 void ShaderToyPane::RenderThumbnail() const
 {
-    ShaderToy* pSt = m_pShadertoy;
+    const ShaderToy* pSt = m_pShadertoy;
+    if (pSt == NULL)
+        return;
 
     bindFBO(m_paneRenderBuffer);
-
-    //DrawToFBO();
     {
+        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
         const glm::vec3 hp = pSt->GetHeadPos();
         const glm::vec3 LookVec(0.0f, 0.0f, -1.0f);
         const glm::vec3 up(0.0f, 1.0f, 0.0f);
@@ -171,6 +174,23 @@ void ShaderToyPane::RenderThumbnail() const
             persp,
             glm::mat4(1.0f));
     }
-
     unbindFBO();
+}
+
+void ShaderToyPane::DrawToFBO() const
+{
+    GLint bound_prog = 0;
+    glGetIntegerv(GL_CURRENT_PROGRAM, &bound_prog);
+
+    // Render a view of the shader to the FBO
+    // We must keep the previously bound FBO and restore
+    GLint bound_fbo = 0;
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &bound_fbo);
+
+    RenderThumbnail();
+    //DrawShaderInfoText(fsh, fnt);
+
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, bound_fbo);
+
+    glUseProgram(bound_prog);
 }
