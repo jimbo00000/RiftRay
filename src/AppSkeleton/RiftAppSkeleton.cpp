@@ -697,11 +697,9 @@ void RiftAppSkeleton::RenderThumbnails()
             ovrPosef eyePose;
             eyePose.Orientation = OVR::Quatf();
             eyePose.Position = OVR::Vector3f();
-            const OVR::Matrix4f view = _MakeModelviewMatrix(
-                eyePose,
-                OVR::Vector3f(0.0f),
-                static_cast<float>(M_PI),
-                OVR::Vector3f(hp.x, hp.y, hp.z));
+
+            const glm::mat4 rot = glm::rotate(glm::mat4(1.0f), static_cast<float>(M_PI), glm::vec3(0.f,1.f,0.f));
+            const glm::mat4 modelview = glm::translate(rot, hp*-1.f);
 
             const glm::mat4 persp = glm::perspective(
                 90.0f,
@@ -709,7 +707,6 @@ void RiftAppSkeleton::RenderThumbnails()
                 0.004f,
                 500.0f);
 
-            const glm::mat4 modelview = glm::make_mat4(&view.Transposed().M[0][0]);
             pP->DrawPaneAsPortal(
                 modelview,
                 persp,
