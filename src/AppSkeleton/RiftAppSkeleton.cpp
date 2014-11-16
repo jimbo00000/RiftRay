@@ -774,11 +774,6 @@ static void TW_CALL GoToURLCB(void *clientData)
 
 void RiftAppSkeleton::ToggleShaderWorld()
 {
-    const ShaderPane* pP = m_galleryScene.GetFocusedPane();
-    if (pP == NULL)
-        return;
-    ShaderToy* pST = pP->m_pShadertoy;
-
     if (m_shaderToyScene.m_bDraw)
     {
         // Back into gallery
@@ -793,42 +788,48 @@ void RiftAppSkeleton::ToggleShaderWorld()
         TwRemoveVar(m_pTweakbar, "author");
         TwRemoveVar(m_pTweakbar, "gotourl");
 #endif
+        return;
     }
-    else if (pST != NULL)
-    {
-        // Transitioning into shader world
-        ///@todo Will we drop frames here? Clear to black if so.
-        m_shaderToyScene.m_bDraw = true;
-        m_shaderToyScene.SetShaderToy(pST);
-        m_galleryScene.SetActiveShaderToy(pST);
 
-        const glm::vec3 hp = pST->GetHeadPos();
-        m_chassisPos.x = hp.x;
-        m_chassisPos.y = hp.y;
-        m_chassisPos.z = hp.z;
-        m_headSize = pST->GetHeadSize();
-        m_chassisYaw = static_cast<float>(M_PI);
+    const ShaderPane* pP = m_galleryScene.GetFocusedPane();
+    if (pP == NULL)
+        return;
+
+    ShaderToy* pST = pP->m_pShadertoy;
+    if (pST == NULL)
+        return;
+    // Transitioning into shader world
+    ///@todo Will we drop frames here? Clear to black if so.
+    m_shaderToyScene.m_bDraw = true;
+    m_shaderToyScene.SetShaderToy(pST);
+    m_galleryScene.SetActiveShaderToy(pST);
+
+    const glm::vec3 hp = pST->GetHeadPos();
+    m_chassisPos.x = hp.x;
+    m_chassisPos.y = hp.y;
+    m_chassisPos.z = hp.z;
+    m_headSize = pST->GetHeadSize();
+    m_chassisYaw = static_cast<float>(M_PI);
 
 #ifdef USE_ANTTWEAKBAR
-        const std::string titleStr = "title: " + pST->GetSourceFile();
-        const std::string authorStr = "author: " + pST->GetStringByName("author");
+    const std::string titleStr = "title: " + pST->GetSourceFile();
+    const std::string authorStr = "author: " + pST->GetStringByName("author");
 
-        std::stringstream ss;
-        // Assemble a string to pass into help here
-        ss << " label='"
-           << titleStr
-           << "' group=Shader ";
-        TwAddButton(m_pTweakbar, "title", NULL, NULL, ss.str().c_str());
+    std::stringstream ss;
+    // Assemble a string to pass into help here
+    ss << " label='"
+        << titleStr
+        << "' group=Shader ";
+    TwAddButton(m_pTweakbar, "title", NULL, NULL, ss.str().c_str());
 
-        ss.str("");
-        ss << " label='"
-           << authorStr
-           << "' group=Shader ";
-        TwAddButton(m_pTweakbar, "author", NULL, NULL, ss.str().c_str());
+    ss.str("");
+    ss << " label='"
+        << authorStr
+        << "' group=Shader ";
+    TwAddButton(m_pTweakbar, "author", NULL, NULL, ss.str().c_str());
 
-        TwAddButton(m_pTweakbar, "gotourl", GoToURLCB, this, " label='Go to URL'  group='Shader' ");
+    TwAddButton(m_pTweakbar, "gotourl", GoToURLCB, this, " label='Go to URL'  group='Shader' ");
 #endif
-    }
 }
 
 // Store HMD position and direction for gaze tracking in timestep.
