@@ -6,17 +6,23 @@
 ShaderToyPane::ShaderToyPane()
 : Pane()
 , m_pShadertoy(NULL)
+, m_vao(0)
 {
 }
 
 ShaderToyPane::~ShaderToyPane()
 {
+    if (m_vao != 0)
+    {
+        glDeleteVertexArrays(1, &m_vao);
+    }
 }
 
 void ShaderToyPane::initGL()
 {
-    Pane::initGL();
+    //Pane::initGL();
     allocateFBO(m_paneRenderBuffer, 600, 600);
+    glGenVertexArrays(1, &m_vao);
 }
 
 void ShaderToyPane::DrawPaneAsPortal(
@@ -72,7 +78,7 @@ void ShaderToyPane::DrawPaneAsPortal(
 
         SetTextureUniforms(pST, m_pTexLibrary);
 
-        m_plane.bindVAO();
+        glBindVertexArray(m_vao);
         {
             glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
         }

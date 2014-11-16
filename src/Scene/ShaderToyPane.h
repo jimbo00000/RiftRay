@@ -40,6 +40,7 @@ public:
 
     ShaderToy* m_pShadertoy;
     std::map<std::string, textureChannel>* m_pTexLibrary;
+    GLuint m_vao;
 
 private: // Disallow copy ctor and assignment operator
     ShaderToyPane(const ShaderToyPane&);
