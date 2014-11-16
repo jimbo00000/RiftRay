@@ -30,6 +30,7 @@ public:
     virtual void SetActiveShaderToy(ShaderToy* pSt) { m_pActiveShaderToy = pSt; }
     virtual void SetTextureLibraryPointer(std::map<std::string, textureChannel>* pTL) { m_pTexLibrary = pTL; }
 
+    virtual const ShaderToy* GetActiveShaderToy() const { return m_pActiveShaderToy; }
 protected:
     ShaderToy* m_pActiveShaderToy;
     std::map<std::string, textureChannel>* m_pTexLibrary;

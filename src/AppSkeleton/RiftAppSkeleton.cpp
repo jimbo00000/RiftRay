@@ -598,7 +598,7 @@ void RiftAppSkeleton::_DrawScenes(
     // This is because shadertoys typically don't write to the depth buffer.
     // If one did, it would take more time and complexity, but could be integrated
     // with rasterized world pixels.
-    if (m_shaderToyScene.m_bDraw)
+    if (m_galleryScene.GetActiveShaderToy() != NULL)
     {
         m_shaderToyScene.RenderForOneEye(pScaledMview ? pScaledMview : pMview, pPersp);
 
