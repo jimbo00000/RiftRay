@@ -10,9 +10,9 @@
 
 #include "PaneScene.h"
 #include "VirtualTrackball.h"
+#include "ShaderToy.h"
 #include "ShaderToyFunctions.h"
 
-class ShaderToy;
 class Pane;
 class ShaderToyPane;
 
@@ -28,6 +28,7 @@ public:
     virtual Pane* AddShaderToyPane(ShaderToy* pSt);
     virtual void RearrangePanes();
     virtual const ShaderToyPane* GetFocusedPane() const;
+    virtual void ResetTimer() { if(m_pActiveShaderToy) m_pActiveShaderToy->ResetTimer(); }
 
     virtual void SetTextureLibraryPointer(std::map<std::string, textureChannel>* pTL) { m_pTexLibrary = pTL; }
     virtual void SetActiveShaderToy(ShaderToy* pSt) { m_pActiveShaderToy = pSt; }

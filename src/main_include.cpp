@@ -20,7 +20,7 @@ static void TW_CALL GetDisplayFPS(void* value, void*)
 
 static void TW_CALL ResetTimerCB(void *clientData)
 {
-    static_cast<ShaderToyScene *>(clientData)->ResetTimer();
+    static_cast<ShaderGalleryScene *>(clientData)->ResetTimer();
 }
 
 void InitializeBar()
@@ -62,7 +62,7 @@ void InitializeBar()
 
 
 
-    TwAddButton(g_pTweakbar, "Reset Timer", ResetTimerCB, &g_app.m_shaderToyScene,
+    TwAddButton(g_pTweakbar, "Reset Timer", ResetTimerCB, &g_app.m_galleryScene,
         " label='Reset Timer' group='Shader' ");
     TwAddVarRW(g_pTweakbar, "headSize", TW_TYPE_FLOAT, &g_app.m_headSize,
                " label='headSize' precision=4 min=0.0001 step=0.001 group='Shader' ");

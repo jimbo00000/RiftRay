@@ -38,7 +38,6 @@ RiftAppSkeleton::RiftAppSkeleton()
 #endif
 , m_ovrScene()
 , m_raymarchScene()
-, m_shaderToyScene()
 , m_galleryScene()
 , m_scenes()
 
@@ -75,7 +74,6 @@ RiftAppSkeleton::RiftAppSkeleton()
 #endif
     m_scenes.push_back(&m_ovrScene);
     //m_scenes.push_back(&m_raymarchScene);
-    m_scenes.push_back(&m_shaderToyScene);
     m_scenes.push_back(&m_galleryScene);
 
     m_raymarchScene.SetFlyingMousePointer(&m_fm);
@@ -600,7 +598,6 @@ void RiftAppSkeleton::_DrawScenes(
     // with rasterized world pixels.
     if (m_galleryScene.GetActiveShaderToy() != NULL)
     {
-        //m_shaderToyScene.RenderForOneEye(pScaledMview ? pScaledMview : pMview, pPersp);
         m_galleryScene.RenderForOneEye(pScaledMview ? pScaledMview : pMview, pPersp);
 
         // Show the warning box if we get too close to edge of tracking cam's fov.
@@ -729,7 +726,6 @@ void RiftAppSkeleton::RenderThumbnails()
 ///@note One of these days the texture library will break down into a singleton.
 void RiftAppSkeleton::SetTextureLibraryPointer()
 {
-    m_shaderToyScene.SetTextureLibraryPointer(&m_texLibrary);
     m_galleryScene.SetTextureLibraryPointer(&m_texLibrary);
 }
 
@@ -802,7 +798,6 @@ void RiftAppSkeleton::ToggleShaderWorld()
         return;
     // Transitioning into shader world
     ///@todo Will we drop frames here? Clear to black if so.
-    m_shaderToyScene.SetShaderToy(pST);
     m_galleryScene.SetActiveShaderToy(pST);
     m_galleryScene.SetActiveShaderToyPane(pP);
 

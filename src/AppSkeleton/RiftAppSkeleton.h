@@ -26,7 +26,6 @@
 #endif
 #include "OVRScene.h"
 #include "RaymarchShaderScene.h"
-#include "ShaderToyScene.h"
 #include "ShaderGalleryScene.h"
 
 #include "FlyingMouse.h"
@@ -127,7 +126,6 @@ public:
 #endif
     OVRScene m_ovrScene;
     RaymarchShaderScene m_raymarchScene;
-    ShaderToyScene m_shaderToyScene;
     ShaderGalleryScene m_galleryScene;
 
     ovrVector3f m_chassisPos;
