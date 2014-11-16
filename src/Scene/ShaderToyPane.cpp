@@ -21,8 +21,7 @@ void ShaderToyPane::initGL()
 void ShaderToyPane::DrawPaneAsPortal(
     const glm::mat4& modelview,
     const glm::mat4& projection,
-    const glm::mat4& object,
-    const ShaderWithVariables& sh) const
+    const glm::mat4& object) const
 {
     ///@todo Consolidate this duplicated code
     ShaderToy* pST = m_pShadertoy;
@@ -72,7 +71,7 @@ void ShaderToyPane::DrawPaneAsPortal(
         ///@todo Consolidate texture library?
         //_SetTextureUniforms(pST);
 
-        sh.bindVAO();
+        m_plane.bindVAO();
         {
             glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
         }
@@ -101,6 +100,7 @@ void ShaderToyPane::DrawShaderInfoText(
     DrawTextOverlay(pSt->GetStringByName("license"), margin, txh += lineh, fsh, fnt);
 }
 
+
 ///@brief Highlight pane when it's being pointed at.
 void ShaderToyPane::DrawPaneWithShader(
     const glm::mat4& modelview,
@@ -113,7 +113,7 @@ void ShaderToyPane::DrawPaneWithShader(
         ///@todo Fade in after time or after a selection tap/press
         if (m_cursorInPane)
         {
-            DrawPaneAsPortal(modelview, projection, glm::mat4(1.0f), sh);
+            DrawPaneAsPortal(modelview, projection, glm::mat4(1.0f));
             return;
         }
     }

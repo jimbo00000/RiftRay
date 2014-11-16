@@ -24,12 +24,11 @@ public:
         const glm::mat4& modelview,
         const glm::mat4& projection,
         const ShaderWithVariables& sh) const;
-
+    
     void DrawPaneAsPortal(
         const glm::mat4& modelview,
         const glm::mat4& projection,
-        const glm::mat4& object,
-        const ShaderWithVariables& sh) const;
+        const glm::mat4& object) const;
 
     void DrawShaderInfoText(
         const ShaderWithVariables& fsh,
