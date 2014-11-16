@@ -729,7 +729,7 @@ void RiftAppSkeleton::SetTextureLibraryPointer()
     m_galleryScene.SetTextureLibraryPointer(&m_texLibrary);
 }
 
-void RiftAppSkeleton::LoadTexturesFromFile()
+void RiftAppSkeleton::LoadTextureLibrary()
 {
     Timer t;
     std::map<std::string, textureChannel>& texLib = m_texLibrary;

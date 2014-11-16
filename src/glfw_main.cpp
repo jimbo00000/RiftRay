@@ -722,7 +722,7 @@ void StartShaderLoad()
     /// a multicore machine. Even cooler would be compiling them in a background thread
     /// while display is running, but trying that yields large frame rate drops
     /// which would make the VR experience unacceptably uncomfortable.
-    g_app.LoadTexturesFromFile();
+    g_app.LoadTextureLibrary();
     g_app.CompileShaders();
     g_app.m_galleryScene.RearrangePanes();
     g_app.RenderThumbnails();

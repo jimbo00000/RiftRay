@@ -84,7 +84,7 @@ public:
     void CompileShaders();
     void RenderThumbnails();
     void SetTextureLibraryPointer();
-    void LoadTexturesFromFile();
+    void LoadTextureLibrary();
     void ToggleShaderWorld();
 
     float GetFBOScale() const { return m_fboScale; }
