@@ -5,6 +5,7 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <iostream>
 
 ShaderGalleryScene::ShaderGalleryScene()
 : PaneScene()
