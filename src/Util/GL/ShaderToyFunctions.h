@@ -9,6 +9,7 @@
 #endif
 
 #include <map>
+#include <string>
 #include <GL/glew.h>
 
 struct textureChannel {
