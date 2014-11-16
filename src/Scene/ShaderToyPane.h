@@ -36,10 +36,7 @@ public:
         const BMFont& fnt
         ) const;
 
-    void RenderThumbnail(
-        const ShaderWithVariables& fsh,
-        const BMFont& fnt
-        ) const;
+    void RenderThumbnail() const;
 
     void SetTextureLibraryPointer(std::map<std::string, textureChannel>* pTL) { m_pTexLibrary = pTL; }
 

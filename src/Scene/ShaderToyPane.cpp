@@ -97,6 +97,8 @@ void ShaderToyPane::DrawShaderInfoText(
     const BMFont& fnt
     ) const
 {
+    bindFBO(m_paneRenderBuffer);
+
     const ShaderToy* pSt = m_pShadertoy;
     if (pSt == NULL)
         return;
@@ -108,6 +110,8 @@ void ShaderToyPane::DrawShaderInfoText(
     DrawTextOverlay(title.empty() ? pSt->GetSourceFile() : title, margin, txh, fsh, fnt);
     DrawTextOverlay(pSt->GetStringByName("author"), margin, txh += lineh, fsh, fnt);
     DrawTextOverlay(pSt->GetStringByName("license"), margin, txh += lineh, fsh, fnt);
+
+    unbindFBO();
 }
 
 
@@ -141,10 +145,7 @@ void ShaderToyPane::DrawPaneWithShader(
     glBindVertexArray(0);
 }
 
-void ShaderToyPane::RenderThumbnail(
-    const ShaderWithVariables& fsh,
-    const BMFont& fnt
-    ) const
+void ShaderToyPane::RenderThumbnail() const
 {
     ShaderToy* pSt = m_pShadertoy;
 
@@ -170,8 +171,6 @@ void ShaderToyPane::RenderThumbnail(
             persp,
             glm::mat4(1.0f));
     }
-
-    DrawShaderInfoText(fsh, fnt);
 
     unbindFBO();
 }

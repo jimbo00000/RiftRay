@@ -160,7 +160,8 @@ void ShaderGalleryScene::RenderThumbnails() const
         GLint bound_fbo = 0;
         glGetIntegerv(GL_FRAMEBUFFER_BINDING, &bound_fbo);
 
-        pP->RenderThumbnail(fsh, fnt);
+        pP->RenderThumbnail();
+        pP->DrawShaderInfoText(fsh, fnt);
 
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, bound_fbo);
     }
