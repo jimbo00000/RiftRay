@@ -672,6 +672,7 @@ void RiftAppSkeleton::RenderThumbnails()
 {
     const ShaderWithVariables& fsh = m_galleryScene.GetFontShader();
     const BMFont& fnt = m_galleryScene.GetFont();
+
     std::vector<Pane*>& panes = m_galleryScene.m_panes;
     for (std::vector<Pane*>::iterator it = panes.begin();
         it != panes.end();
@@ -680,42 +681,14 @@ void RiftAppSkeleton::RenderThumbnails()
         ShaderToyPane* pP = reinterpret_cast<ShaderToyPane*>(*it);
         if (pP == NULL)
             continue;
-        ShaderToy* pSt = pP->m_pShadertoy;
 
         // Render a view of the shader to the FBO
         // We must keep the previously bound FBO and restore
         GLint bound_fbo = 0;
         glGetIntegerv(GL_FRAMEBUFFER_BINDING, &bound_fbo);
-        bindFBO(pP->m_paneRenderBuffer);
 
-        //pP->DrawToFBO();
-        {
-            const glm::vec3 hp = pSt->GetHeadPos();
-            const glm::vec3 LookVec(0.0f, 0.0f, -1.0f);
-            const glm::vec3 up(0.0f, 1.0f, 0.0f);
+        pP->RenderThumbnail(fsh, fnt);
 
-            ovrPosef eyePose;
-            eyePose.Orientation = OVR::Quatf();
-            eyePose.Position = OVR::Vector3f();
-
-            const glm::mat4 rot = glm::rotate(glm::mat4(1.0f), static_cast<float>(M_PI), glm::vec3(0.f,1.f,0.f));
-            const glm::mat4 modelview = glm::translate(rot, hp*-1.f);
-
-            const glm::mat4 persp = glm::perspective(
-                90.0f,
-                static_cast<float>(pP->m_paneRenderBuffer.w) / static_cast<float>(pP->m_paneRenderBuffer.h),
-                0.004f,
-                500.0f);
-
-            pP->DrawPaneAsPortal(
-                modelview,
-                persp,
-                glm::mat4(1.0f));
-        }
-
-        pP->DrawShaderInfoText(fsh, fnt);
-
-        unbindFBO();
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, bound_fbo);
     }
 }
