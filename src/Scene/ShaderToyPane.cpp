@@ -34,7 +34,8 @@ void ShaderToyPane::DrawPaneAsPortal(
     const glm::mat4& modelview,
     const glm::mat4& projection,
     const glm::mat4& object,
-    const glm::mat4& paneMatrix) const
+    const glm::mat4& paneMatrix,
+    float panePointScale) const
 {
     ///@todo Consolidate this duplicated code
     ShaderToy* pST = m_pShadertoy;
@@ -82,6 +83,9 @@ void ShaderToyPane::DrawPaneAsPortal(
         const float t = pST->GlobalTime();
         glUniform1f(timeUniLoc, t);
 
+        const GLint u_pps = glGetUniformLocation(prog, "u_panePointScale");
+        glUniform1f(u_pps, panePointScale);
+
         SetTextureUniforms(pST, m_pTexLibrary);
 
         glBindVertexArray(m_vao);
@@ -124,13 +128,13 @@ void ShaderToyPane::DrawPaneWithShader(
     const glm::mat4& projection,
     const ShaderWithVariables& sh) const
 {
-    if (false)
+    if (true)
     {
         ///@todo Line up eyePos and headScale to match initial view of shader from our vantage point in 3d
         ///@todo Fade in after time or after a selection tap/press
         if (m_cursorInPane)
         {
-            DrawPaneAsPortal(modelview, projection, glm::mat4(1.0f), projection*modelview);
+            DrawPaneAsPortal(modelview, projection, glm::mat4(1.0f), projection*modelview, 0.5f);
             return;
         }
     }
