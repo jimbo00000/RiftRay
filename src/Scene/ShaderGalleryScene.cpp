@@ -115,3 +115,28 @@ void ShaderGalleryScene::RenderForOneEye(const float* pMview, const float* pPers
         projection,
         glm::mat4(1.0f));
 }
+
+void ShaderGalleryScene::RenderThumbnails() const
+{
+    const ShaderWithVariables& fsh = GetFontShader();
+    const BMFont& fnt = GetFont();
+
+    const std::vector<Pane*>& panes = m_panes;
+    for (std::vector<Pane*>::const_iterator it = panes.begin();
+        it != panes.end();
+        ++it)
+    {
+        const ShaderToyPane* pP = reinterpret_cast<ShaderToyPane*>(*it);
+        if (pP == NULL)
+            continue;
+
+        // Render a view of the shader to the FBO
+        // We must keep the previously bound FBO and restore
+        GLint bound_fbo = 0;
+        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &bound_fbo);
+
+        pP->RenderThumbnail(fsh, fnt);
+
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, bound_fbo);
+    }
+}

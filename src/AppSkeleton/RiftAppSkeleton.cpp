@@ -668,31 +668,6 @@ void RiftAppSkeleton::CompileShaders()
     }
 }
 
-void RiftAppSkeleton::RenderThumbnails()
-{
-    const ShaderWithVariables& fsh = m_galleryScene.GetFontShader();
-    const BMFont& fnt = m_galleryScene.GetFont();
-
-    std::vector<Pane*>& panes = m_galleryScene.m_panes;
-    for (std::vector<Pane*>::iterator it = panes.begin();
-        it != panes.end();
-        ++it)
-    {
-        ShaderToyPane* pP = reinterpret_cast<ShaderToyPane*>(*it);
-        if (pP == NULL)
-            continue;
-
-        // Render a view of the shader to the FBO
-        // We must keep the previously bound FBO and restore
-        GLint bound_fbo = 0;
-        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &bound_fbo);
-
-        pP->RenderThumbnail(fsh, fnt);
-
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, bound_fbo);
-    }
-}
-
 ///@note One of these days the texture library will break down into a singleton.
 void RiftAppSkeleton::SetTextureLibraryPointer()
 {

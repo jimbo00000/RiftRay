@@ -24,16 +24,17 @@ public:
     virtual ~ShaderGalleryScene();
 
     virtual void RenderForOneEye(const float* pMview, const float* pPersp) const;
+    virtual void RenderThumbnails() const;
 
     virtual Pane* AddShaderToyPane(ShaderToy* pSt);
     virtual void RearrangePanes();
-    virtual const ShaderToyPane* GetFocusedPane() const;
     virtual void ResetTimer() { if(m_pActiveShaderToy) m_pActiveShaderToy->ResetTimer(); }
 
     virtual void SetTextureLibraryPointer(std::map<std::string, textureChannel>* pTL) { m_pTexLibrary = pTL; }
     virtual void SetActiveShaderToy(ShaderToy* pSt) { m_pActiveShaderToy = pSt; }
     virtual void SetActiveShaderToyPane(ShaderToyPane* pP) { m_pActiveShaderToyPane = pP; }
 
+    virtual const ShaderToyPane* GetFocusedPane() const;
     virtual const ShaderToy* GetActiveShaderToy() const { return m_pActiveShaderToy; }
     virtual const ShaderToyPane* GetActiveShaderToyPane() const { return m_pActiveShaderToyPane; }
 protected:

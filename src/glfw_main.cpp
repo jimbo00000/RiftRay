@@ -725,7 +725,7 @@ void StartShaderLoad()
     g_app.LoadTextureLibrary();
     g_app.CompileShaders();
     g_app.m_galleryScene.RearrangePanes();
-    g_app.RenderThumbnails();
+    g_app.m_galleryScene.RenderThumbnails();
 
     std::cout
         << std::endl
