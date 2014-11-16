@@ -47,6 +47,7 @@ protected:
 
     std::map<std::string, textureChannel>* m_pTexLibrary;
     ShaderToy* m_currentShaderToy;
+    GLuint m_vao;
 
 private: // Disallow copy ctor and assignment operator
     ShaderToyScene(const ShaderToyScene&);

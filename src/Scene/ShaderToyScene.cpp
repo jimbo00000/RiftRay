@@ -10,22 +10,30 @@
 ShaderToyScene::ShaderToyScene()
 : m_pTexLibrary(NULL)
 , m_currentShaderToy(NULL)
+, m_vao(0)
 {
     m_bDraw = false;
 }
 
 ShaderToyScene::~ShaderToyScene()
 {
+    if (m_vao != 0)
+    {
+        glDeleteVertexArrays(1, &m_vao);
+    }
 }
 
 void ShaderToyScene::initGL()
 {
+    glGenVertexArrays(1, &m_vao);
 }
 
 
 void ShaderToyScene::_DrawScreenQuad() const
 {
+    glBindVertexArray(m_vao);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    glBindVertexArray(0);
 }
 
 ///@brief We can't get away with setting these just once on shader change as we need
