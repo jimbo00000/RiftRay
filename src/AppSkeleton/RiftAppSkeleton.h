@@ -98,6 +98,7 @@ protected:
     void _drawSceneMono() const;
     void _DrawScenes(const float* pMview, const float* pPersp, const ovrRecti& rvp, const float* pScaledMview=NULL) const;
     void _StoreHmdPose(const ovrPosef& eyePose) const;
+    void _ToggleShaderWorld();
 
     ovrHmd m_Hmd;
     ovrFovPort m_EyeFov[2];
@@ -143,6 +144,9 @@ protected:
     VirtualTrackball m_hyif;
     std::map<std::string, textureChannel> m_texLibrary;
     glm::ivec2 m_windowSize;
+
+    Timer m_transitionTimer;
+    int m_transitionState;
 
 public:
     float m_headSize;

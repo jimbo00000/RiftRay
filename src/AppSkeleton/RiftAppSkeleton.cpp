@@ -48,6 +48,8 @@ RiftAppSkeleton::RiftAppSkeleton()
 , m_chassisYaw(0.0f)
 , m_hyif()
 , m_texLibrary()
+, m_transitionTimer()
+, m_transitionState(0)
 , m_headSize(1.0f)
 , m_fm()
 , m_keyboardMove(0.0f)
@@ -555,6 +557,30 @@ void RiftAppSkeleton::timestep(float dt)
 
     m_fm.updateHydraData();
     m_hyif.updateHydraData(m_fm, 1.0f);
+
+    // Manage transition animations
+    {
+        const float duration = 0.15f;
+        const float t = m_transitionTimer.seconds() / duration;
+        if (t >= 1.0f)
+        {
+            if (m_transitionState == 1)
+            {
+                _ToggleShaderWorld();
+                m_transitionState = 2;
+            }
+        }
+        if (t < 2.0f)
+        {
+            // eye blink transition
+            const float fac = std::max(1.0f-t, t-1.0f);
+            m_cinemaScopeFactor = 1.0f - fac;
+        }
+        else
+        {
+            m_transitionState = 0;
+        }
+    }
 }
 
 /// Scale the parallax translation and head pose motion vector by the head size
@@ -691,7 +717,14 @@ static void TW_CALL GoToURLCB(void *clientData)
 }
 #endif
 
+///@brief Initiate the change, timestep will call _ToggleShaderWorld after a small delay.
 void RiftAppSkeleton::ToggleShaderWorld()
+{
+    m_transitionState = 1;
+    m_transitionTimer.reset();
+}
+
+void RiftAppSkeleton::_ToggleShaderWorld()
 {
     if (m_galleryScene.GetActiveShaderToy() != NULL)
     {
