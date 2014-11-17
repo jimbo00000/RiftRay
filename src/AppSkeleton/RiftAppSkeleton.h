@@ -127,6 +127,7 @@ public:
     ShaderGalleryScene m_galleryScene;
 
     ovrVector3f m_chassisPos;
+    ovrVector3f m_chassisPosCached;
 
 protected:
     std::vector<IScene*> m_scenes;
@@ -137,6 +138,7 @@ protected:
     ShaderWithVariables m_presentDistMeshR;
 
     float m_chassisYaw;
+    float m_chassisYawCached;
 
     VirtualTrackball m_hyif;
     std::map<std::string, textureChannel> m_texLibrary;

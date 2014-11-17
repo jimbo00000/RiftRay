@@ -697,6 +697,8 @@ void RiftAppSkeleton::ToggleShaderWorld()
     {
         // Back into gallery
         ResetAllTransformations();
+        m_chassisPos = m_chassisPosCached;
+        m_chassisYaw = m_chassisYawCached;
         m_headSize = 1.0f;
         m_galleryScene.SetActiveShaderToy(NULL);
         m_galleryScene.SetActiveShaderToyPane(NULL);
@@ -720,6 +722,10 @@ void RiftAppSkeleton::ToggleShaderWorld()
     ///@todo Will we drop frames here? Clear to black if so.
     m_galleryScene.SetActiveShaderToy(pST);
     m_galleryScene.SetActiveShaderToyPane(pP);
+
+    // Return to the gallery in the same place we left it
+    m_chassisPosCached = m_chassisPos;
+    m_chassisYawCached = m_chassisYaw;
 
     const glm::vec3 hp = pST->GetHeadPos();
     m_chassisPos.x = hp.x;
