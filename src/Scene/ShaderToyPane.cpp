@@ -140,7 +140,16 @@ void ShaderToyPane::DrawPaneWithShader(
         ///@todo Check for viewer position along normal and at the right distance
         if (m_cursorInPane)
         {
-            DrawPaneAsPortal(modelview, projection, glm::mat4(1.0f), projection*modelview, 0.5f);
+            glm::mat4 adjustedMV = modelview;
+            const ShaderToy* pSt = m_pShadertoy;
+            if (pSt != NULL)
+            {
+                const glm::vec3 hp = pSt->GetHeadPos();
+                adjustedMV = glm::rotate(adjustedMV, static_cast<float>(M_PI), glm::vec3(0.,1.,0.));
+                adjustedMV = glm::translate(adjustedMV, -hp);
+            }
+
+            DrawPaneAsPortal(adjustedMV, projection, glm::mat4(1.0f), projection*modelview, 0.5f);
             return;
         }
     }
