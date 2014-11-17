@@ -57,12 +57,13 @@ void ShaderGalleryScene::RearrangePanes()
     {
         Pane* pP = *it;
 
-        // Lay the panes out in cylindrical rows in front of the viewer.
         const int numrows = 3;
         const int rowsz = 1 + static_cast<int>(m_panes.size()) / numrows;
         const int rownum = idx / rowsz;
         const int rowpos = idx % rowsz;
         const float colstep = 1.1f;
+#if 0
+        // Lay the panes out in cylindrical rows in front of the viewer.
         const float radstep = static_cast<float>(M_PI) / 16.0f;
         const float rads = static_cast<float>(rowpos-rowsz/2) * radstep;
         const float radius = 6.0f;
@@ -71,10 +72,20 @@ void ShaderGalleryScene::RearrangePanes()
             radius*sin(rads),
             0.8f + colstep * static_cast<float>(rownum),
             2.0f - radius*cos(rads));
+        const glm::mat4 ori = glm::rotate(glm::mat4(1.0f), -rads, glm::vec3(0,1,0));
+#else
+        // Lay out panes in a flat grid
+        const float xspacing = 1.1f;
+        const glm::vec3 pos(
+            static_cast<float>(rowpos-rowsz/2) * xspacing,
+            0.8f + colstep * static_cast<float>(rownum),
+            -6.0f);
+        const glm::mat4 ori = glm::mat4(1.0f);
+#endif
+
         pP->m_tx.SetPosition(pos);
         pP->m_tx.SetDefaultPosition(pos);
 
-        const glm::mat4 ori = glm::rotate(glm::mat4(1.0f), -rads, glm::vec3(0,1,0));
         pP->m_tx.SetDefaultOrientation(ori);
         pP->m_tx.SetOrientation(ori);
     }
