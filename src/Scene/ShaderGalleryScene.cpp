@@ -11,6 +11,8 @@ ShaderGalleryScene::ShaderGalleryScene()
 : PaneScene()
 , m_pActiveShaderToy(NULL)
 , m_pActiveShaderToyPane(NULL)
+, m_pTexLibrary(NULL)
+, m_globalShadertoyState()
 {
 }
 
@@ -39,6 +41,7 @@ Pane* ShaderGalleryScene::AddShaderToyPane(ShaderToy* pSt)
     // It feels ugly to do all this pointer setting, but is it worse than a singleton?
     pP->SetFontShaderPointer(&m_fontShader);
     pP->SetFontPointer(&m_font);
+    pP->SetGlobalStatePointer(&m_globalShadertoyState);
 
     m_panes.push_back(pP);
 

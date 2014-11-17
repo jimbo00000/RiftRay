@@ -62,6 +62,11 @@ void InitializeBar()
 
 
 
+    TwAddVarRW(g_pTweakbar, "Animated Thumbnails", TW_TYPE_BOOLCPP, &g_app.m_galleryScene.m_globalShadertoyState.animatedThumbnails,
+               "  group='Scene' ");
+    TwAddVarRW(g_pTweakbar, "Panes as Portals", TW_TYPE_BOOLCPP, &g_app.m_galleryScene.m_globalShadertoyState.panesAsPortals,
+               "  group='Scene' ");
+
     TwAddButton(g_pTweakbar, "Reset Timer", ResetTimerCB, &g_app.m_galleryScene,
         " label='Reset Timer' group='Shader' ");
     TwAddVarRW(g_pTweakbar, "headSize", TW_TYPE_FLOAT, &g_app.m_headSize,

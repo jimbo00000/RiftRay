@@ -11,6 +11,7 @@ ShaderToyPane::ShaderToyPane()
 , m_pShadertoy(NULL)
 , m_pFontShader(NULL)
 , m_pFont(NULL)
+, m_pGlobalState(NULL)
 , m_vao(0)
 {
 }
@@ -128,10 +129,15 @@ void ShaderToyPane::DrawPaneWithShader(
     const glm::mat4& projection,
     const ShaderWithVariables& sh) const
 {
-    if (false)
+    bool portals = false;
+    if (m_pGlobalState)
+        portals = m_pGlobalState->panesAsPortals;
+
+    if (portals == true)
     {
         ///@todo Line up eyePos and headScale to match initial view of shader from our vantage point in 3d
         ///@todo Fade in after time or after a selection tap/press
+        ///@todo Check for viewer position along normal and at the right distance
         if (m_cursorInPane)
         {
             DrawPaneAsPortal(modelview, projection, glm::mat4(1.0f), projection*modelview, 0.5f);
@@ -185,7 +191,13 @@ void ShaderToyPane::RenderThumbnail() const
 
 void ShaderToyPane::DrawToFBO() const
 {
-    if (true)
+    bool animated = false;
+    if (m_pGlobalState)
+    {
+        animated = m_pGlobalState->animatedThumbnails && !m_pGlobalState->panesAsPortals;
+    }
+
+    if (animated == false)
         return;
 
     GLint bound_prog = 0;

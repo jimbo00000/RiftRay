@@ -12,6 +12,7 @@
 
 class ShaderToy;
 #include "ShaderToyFunctions.h"
+#include "ShaderToyGlobalState.h"
 
 ///@brief 
 class ShaderToyPane : public Pane
@@ -44,12 +45,14 @@ public:
     virtual void SetTextureLibraryPointer(std::map<std::string, textureChannel>* pTL) { m_pTexLibrary = pTL; }
     virtual void SetFontShaderPointer(const ShaderWithVariables* pS) { m_pFontShader = pS; }
     virtual void SetFontPointer(const BMFont* pF) { m_pFont = pF; }
+    virtual void SetGlobalStatePointer(const ShaderToyGlobalState* pS) { m_pGlobalState = pS; }
 
     ShaderToy* m_pShadertoy;
 protected:
     std::map<std::string, textureChannel>* m_pTexLibrary;
     const ShaderWithVariables* m_pFontShader;
     const BMFont* m_pFont;
+    const ShaderToyGlobalState* m_pGlobalState;
     GLuint m_vao;
 
 private: // Disallow copy ctor and assignment operator

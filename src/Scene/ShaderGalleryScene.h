@@ -12,6 +12,7 @@
 #include "VirtualTrackball.h"
 #include "ShaderToy.h"
 #include "ShaderToyFunctions.h"
+#include "ShaderToyGlobalState.h"
 
 class Pane;
 class ShaderToyPane;
@@ -39,10 +40,14 @@ public:
     virtual const ShaderToyPane* GetFocusedPane() const;
     virtual const ShaderToy* GetActiveShaderToy() const { return m_pActiveShaderToy; }
     virtual const ShaderToyPane* GetActiveShaderToyPane() const { return m_pActiveShaderToyPane; }
+
 protected:
     ShaderToy* m_pActiveShaderToy;
     ShaderToyPane* m_pActiveShaderToyPane;
     std::map<std::string, textureChannel>* m_pTexLibrary;
+
+public:
+    ShaderToyGlobalState m_globalShadertoyState;
 
 private: // Disallow copy ctor and assignment operator
     ShaderGalleryScene(const ShaderGalleryScene&);
