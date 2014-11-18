@@ -63,7 +63,7 @@ void ShaderGalleryScene::RearrangePanes()
         const int rownum = idx / rowsz;
         const int rowpos = idx % rowsz;
         const float colstep = 1.1f;
-#if 0
+#if 1
         // Lay the panes out in cylindrical rows in front of the viewer.
         const float radstep = static_cast<float>(M_PI) / 16.0f;
         const float rads = static_cast<float>(rowpos-rowsz/2) * radstep;
