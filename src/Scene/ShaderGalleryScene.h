@@ -45,9 +45,9 @@ protected:
     ShaderToy* m_pActiveShaderToy;
     ShaderToyPane* m_pActiveShaderToyPane;
     std::map<std::string, textureChannel>* m_pTexLibrary;
-    unsigned int m_paneDimensionPixels;
 
 public:
+    unsigned int m_paneDimensionPixels;
     ShaderToyGlobalState m_globalShadertoyState;
 
 private: // Disallow copy ctor and assignment operator

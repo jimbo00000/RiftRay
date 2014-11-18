@@ -718,6 +718,11 @@ void LoadConfigFile()
             const int pp = static_cast<float>(atof(toks[1].c_str()));
             g_app.m_galleryScene.m_globalShadertoyState.panesAsPortals = (pp != 0);
         }
+        else if (!t.compare("ThumbnailFboSize"))
+        {
+            const int ts = static_cast<float>(atof(toks[1].c_str()));
+            g_app.m_galleryScene.m_paneDimensionPixels = ts;
+        }
     }
     file.close();
 }
