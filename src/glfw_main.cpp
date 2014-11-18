@@ -309,6 +309,16 @@ void joystick()
             {
                 g_app.ToggleShaderWorld();
             }
+            else if (i == 8)
+            {
+                float cs = g_app.m_cinemaScopeFactor;
+                if (cs >= 0.9f) cs = 0.0f;
+                else if (cs >= 0.75f) cs = 0.9f;
+                else if (cs >= 0.5f) cs = 0.75f;
+                else if (cs >= 0.25f) cs = 0.5f;
+                else cs = 0.25f;
+                g_app.m_cinemaScopeFactor = cs;
+            }
         }
     }
 
