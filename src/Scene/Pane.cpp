@@ -138,8 +138,9 @@ void Pane::DrawTextOverlay(
     const glm::mat4 modelview(1.0f);
     const glm::mat4 projection = glm::ortho(
         0.0f,
-        static_cast<float>(m_paneRenderBuffer.w),
-        static_cast<float>(m_paneRenderBuffer.h),
+        // Text size is tuned to font size and max shader title/author/license length
+        static_cast<float>(600),//m_paneRenderBuffer.w),
+        static_cast<float>(600),//m_paneRenderBuffer.h),
         0.0f,
         -1.0f,
         1.0f);

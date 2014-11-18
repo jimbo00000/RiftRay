@@ -18,7 +18,7 @@ class ShaderToy;
 class ShaderToyPane : public Pane
 {
 public:
-    ShaderToyPane();
+    ShaderToyPane(unsigned int paneDimensionPixels);
     virtual ~ShaderToyPane();
 
     virtual void initGL();
@@ -54,6 +54,7 @@ protected:
     const BMFont* m_pFont;
     const ShaderToyGlobalState* m_pGlobalState;
     GLuint m_vao;
+    unsigned int m_paneSizePx;
 
 private: // Disallow copy ctor and assignment operator
     ShaderToyPane(const ShaderToyPane&);

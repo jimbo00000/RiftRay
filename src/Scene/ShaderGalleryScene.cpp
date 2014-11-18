@@ -12,6 +12,7 @@ ShaderGalleryScene::ShaderGalleryScene()
 , m_pActiveShaderToy(NULL)
 , m_pActiveShaderToyPane(NULL)
 , m_pTexLibrary(NULL)
+, m_paneDimensionPixels(400)
 , m_globalShadertoyState()
 {
 }
@@ -22,7 +23,7 @@ ShaderGalleryScene::~ShaderGalleryScene()
 
 Pane* ShaderGalleryScene::AddShaderToyPane(ShaderToy* pSt)
 {
-    ShaderToyPane* pP = new ShaderToyPane();
+    ShaderToyPane* pP = new ShaderToyPane(m_paneDimensionPixels);
     if (pP == NULL)
         return NULL;
 

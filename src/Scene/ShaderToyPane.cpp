@@ -6,13 +6,14 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-ShaderToyPane::ShaderToyPane()
+ShaderToyPane::ShaderToyPane(unsigned int px)
 : Pane()
 , m_pShadertoy(NULL)
 , m_pFontShader(NULL)
 , m_pFont(NULL)
 , m_pGlobalState(NULL)
 , m_vao(0)
+, m_paneSizePx(px)
 {
 }
 
@@ -27,7 +28,7 @@ ShaderToyPane::~ShaderToyPane()
 void ShaderToyPane::initGL()
 {
     //Pane::initGL();
-    allocateFBO(m_paneRenderBuffer, 600, 600);
+    allocateFBO(m_paneRenderBuffer, m_paneSizePx, m_paneSizePx);
     glGenVertexArrays(1, &m_vao);
 }
 
@@ -113,7 +114,7 @@ void ShaderToyPane::DrawShaderInfoText(
 
     const int lineh = 62;
     const int margin = 22;
-    int txh = m_paneRenderBuffer.h - 3*lineh - margin;
+    int txh = 600 - 3*lineh - margin; // tuned to font size and string lengths
     const std::string title = pSt->GetStringByName("title");
     DrawTextOverlay(title.empty() ? pSt->GetSourceFile() : title, margin, txh, fsh, fnt);
     DrawTextOverlay(pSt->GetStringByName("author"), margin, txh += lineh, fsh, fnt);

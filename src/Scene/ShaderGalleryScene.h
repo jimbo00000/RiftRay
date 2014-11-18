@@ -45,6 +45,7 @@ protected:
     ShaderToy* m_pActiveShaderToy;
     ShaderToyPane* m_pActiveShaderToyPane;
     std::map<std::string, textureChannel>* m_pTexLibrary;
+    unsigned int m_paneDimensionPixels;
 
 public:
     ShaderToyGlobalState m_globalShadertoyState;
