@@ -5,7 +5,7 @@
 // @var license CC BY-NC-SA 3.0
 // @var url https://www.shadertoy.com/view/MsX3D2
 
-// @var headSize 5.0
+// @var headSize 1.0
 // @var eyePos 0.0 0.0 -6.4
 // @var tex0 tex05.jpg
 
