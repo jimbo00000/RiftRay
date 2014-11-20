@@ -216,7 +216,7 @@ std::vector<glm::vec3> Pane::GetTransformedPanePoints() const
 ///@return true if ray hits pane quad, false otherwise
 bool Pane::GetPaneRayIntersectionCoordinates(glm::vec3 origin3, glm::vec3 dir3, glm::vec2& planePt)
 {
-    std::vector<glm::vec3> pts = GetTransformedPanePoints();
+    const std::vector<glm::vec3> pts = GetTransformedPanePoints();
     glm::vec3 retval1(0.0f);
     glm::vec3 retval2(0.0f);
     const bool hit1 = glm::intersectLineTriangle(origin3, dir3, pts[0], pts[1], pts[2], retval1);
@@ -232,29 +232,26 @@ bool Pane::GetPaneRayIntersectionCoordinates(glm::vec3 origin3, glm::vec3 dir3, 
         // At this point, retval1 or retval2 contains hit data returned from glm::intersectLineTriangle.
         // This does not appear to be raw - y and z appear to be barycentric coordinates.
         // Fill out the x coord with the barycentric identity then convert using simple weighted sum.
-        hitval.x = 1.0f - hitval.y - hitval.z;
         cartesianpos = 
-            hitval.x * pts[0] +
+            (1.0f - hitval.y - hitval.z) * pts[0] +
             hitval.y * pts[1] +
             hitval.z * pts[2];
     }
     else if (hit2)
     {
         hitval = retval2;
-        hitval.x = 1.0f - hitval.y - hitval.z;
         cartesianpos = 
-            hitval.x * pts[0] +
+            (1.0f - hitval.y - hitval.z) * pts[0] +
             hitval.y * pts[2] +
             hitval.z * pts[3];
     }
 
     // Store the t param along controller ray of the hit in the Transformation
-    if (m_tx.m_controllerTParamAtClick <= 0.0f)
-    {
-        const glm::vec3 originToHitPt = cartesianpos - origin3;
-        const float tParam = glm::length(originToHitPt);
-        m_tx.m_controllerTParamAtClick = tParam;
-    }
+    // Did you know that x stores the t param val? I couldn't find this in docs anywhere.
+    const float tParam = hitval.x;
+    m_tx.m_controllerTParamAtClick = tParam;
+    if (tParam < 0.0f)
+        return false; // Behind the origin
 
     const glm::vec3 v1 = pts[1] - pts[0]; // x axis
     const glm::vec3 v2 = pts[3] - pts[0]; // y axis
