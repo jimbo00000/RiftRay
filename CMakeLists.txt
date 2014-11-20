@@ -186,7 +186,7 @@ ELSEIF( UNIX )
 
     IF( GL_FRAMEWORK STREQUAL "GLFW" )
         MESSAGE("Using GLFW Framework.")
-        SET( FRAMEWORK_LIBS -lglfw3 )
+        SET( FRAMEWORK_LIBS -lglfw )
     ELSEIF( GL_FRAMEWORK STREQUAL "SDL" )
         MESSAGE("Using SDL2 Framework.")
         INCLUDE_DIRECTORIES( "/usr/local/include/SDL2" )
