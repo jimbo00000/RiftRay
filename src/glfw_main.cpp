@@ -114,6 +114,7 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
 
     const float f = 0.9f;
     const float ff = 0.99f;
+    ShaderToyGlobalState& gs = g_app.m_galleryScene.m_globalShadertoyState;
 
     if (action == GLFW_PRESS)
     {
@@ -161,6 +162,9 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
         case GLFW_KEY_F11: SetVsync(-1); break;
 
         case GLFW_KEY_DELETE: g_dynamicallyScaleFBO = !g_dynamicallyScaleFBO; break;
+
+        case GLFW_KEY_SEMICOLON: gs.animatedThumbnails = !gs.animatedThumbnails; break;
+        case GLFW_KEY_APOSTROPHE: gs.panesAsPortals = !gs.panesAsPortals; break;
 
         case '`':
             ///@todo Is there a way to create an auxiliary window in Direct to rift mode?
