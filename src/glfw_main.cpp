@@ -67,7 +67,7 @@ int g_joystickIdx = -1;
 float g_fpsSmoothingFactor = 0.02f;
 float g_fpsDeltaThreshold = 5.0f;
 bool g_dynamicallyScaleFBO = true;
-int g_targetFPS = 100;
+int g_targetFPS = 70;
 bool g_loadShadertoysRecursive = true;
 
 #ifdef USE_ANTTWEAKBAR
@@ -159,6 +159,8 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
         case GLFW_KEY_F9: SetVsync(0); break;
         case GLFW_KEY_F10: SetVsync(1); break;
         case GLFW_KEY_F11: SetVsync(-1); break;
+
+        case GLFW_KEY_DELETE: g_dynamicallyScaleFBO = !g_dynamicallyScaleFBO; break;
 
         case '`':
             ///@todo Is there a way to create an auxiliary window in Direct to rift mode?
