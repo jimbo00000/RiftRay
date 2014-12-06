@@ -181,6 +181,16 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
             g_app.ResetAllTransformations();
             break;
 
+        case GLFW_KEY_PAGE_DOWN:
+            g_app.m_cinemaScopeFactor += 0.1f;
+            g_app.m_cinemaScopeFactor = std::min(0.95f, g_app.m_cinemaScopeFactor);
+            break;
+
+        case GLFW_KEY_PAGE_UP:
+            g_app.m_cinemaScopeFactor -= 0.1f;
+            g_app.m_cinemaScopeFactor = std::max(0.f, g_app.m_cinemaScopeFactor);
+            break;
+
         case GLFW_KEY_ENTER:
             g_app.ToggleShaderWorld();
             break;
