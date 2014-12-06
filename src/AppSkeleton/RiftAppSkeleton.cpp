@@ -226,9 +226,6 @@ void RiftAppSkeleton::initHMD()
         m_directHmdMode = false;
     }
 
-    ///@todo Why does ovrHmd_GetEnabledCaps always return 0 when querying the caps
-    /// through the field in ovrHmd appears to work correctly?
-    //const unsigned int caps = ovrHmd_GetEnabledCaps(m_Hmd);
     const unsigned int caps = m_Hmd->HmdCaps;
     if ((caps & ovrHmdCap_ExtendDesktop) != 0)
     {
