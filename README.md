@@ -28,6 +28,11 @@ Gamepad and Hydra are supported, but optional. You can get by with only the HMD 
 - WASD - movement  
 - QE13 - movement(elevation/yaw)  
 - Shift/Control - slow/fast movement  
+- Page Up/Page Down - Open/Close cinemascope(letterbox)  
+- F5-F8 - Adjust render target size manually  
+- F9 - VSync Off  
+- F10 Vsync On  
+- F11 Vsync Adaptive  
 
 #### Mouse
 - Wheel - adjust vertical FOV
@@ -46,6 +51,14 @@ Gamepad and Hydra are supported, but optional. You can get by with only the HMD 
 - Trigger - speed boost  
 - Start button - select shader/return to gallery  
 - Left trigger - adjust vertical FOV  
+
+## Related work
+  - [Shadertoy VR](http://www.reddit.com/r/oculus/comments/2q0ard/new_build_of_shadertoy_vr/) - Qt-enabled shader editing in VR  
+    - Part of Brad Davis(jherico)'s [Oculus Rift in Action]()
+  - [boxplorer2](https://code.google.com/p/boxplorer2/) - Marius Schilder  
+  - [Fragmentarium](http://syntopia.github.io/Fragmentarium/) - native cross-platform shader IDE
+  - [GLSL Sandbox](http://glslsandbox.com/) - web app, similar to Shadertoy
+  - [Synthclipse](http://synthclipse.sourceforge.net/user_guide/shadertoy.html) - plugin for Eclipse
 
 
 ## Acknowledgments
