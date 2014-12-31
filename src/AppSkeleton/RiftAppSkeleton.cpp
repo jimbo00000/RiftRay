@@ -254,11 +254,11 @@ void RiftAppSkeleton::initVR()
         }
     }
 
-    // The RTSize fields are used by all rendering paths
+    // The BackBufferSize fields are used by all rendering paths
     ovrSizei l_ClientSize;
     l_ClientSize = getHmdResolution();
-    m_Cfg.OGL.Header.RTSize.w = l_ClientSize.w;
-    m_Cfg.OGL.Header.RTSize.h = l_ClientSize.h;
+    m_Cfg.OGL.Header.BackBufferSize.w = l_ClientSize.w;
+    m_Cfg.OGL.Header.BackBufferSize.h = l_ClientSize.h;
 
     ///@todo Do we need to choose here?
     ConfigureSDKRendering();
@@ -855,8 +855,8 @@ void RiftAppSkeleton::display_buffered(bool setViewport) const
 
     if (setViewport)
     {
-        const int w = m_Cfg.OGL.Header.RTSize.w;
-        const int h = m_Cfg.OGL.Header.RTSize.h;
+        const int w = m_Cfg.OGL.Header.BackBufferSize.w;
+        const int h = m_Cfg.OGL.Header.BackBufferSize.h;
         glViewport(0, 0, w, h);
     }
 
@@ -1116,8 +1116,8 @@ void RiftAppSkeleton::display_client() const
 
 
     // Set full viewport...?
-    const int w = m_Cfg.OGL.Header.RTSize.w;
-    const int h = m_Cfg.OGL.Header.RTSize.h;
+    const int w = m_Cfg.OGL.Header.BackBufferSize.w;
+    const int h = m_Cfg.OGL.Header.BackBufferSize.h;
     glViewport(0, 0, w, h);
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
