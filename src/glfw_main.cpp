@@ -304,8 +304,9 @@ void joystick()
     if (numButtons < 10)
         return;
 
-    glm::vec3 joystickMove(0.0f, 0.0f, 0.0f);
     // Map joystick buttons to move directions
+    ///@todo Support alternate button layouts
+    // This layout is designed for "Microsoft PC-joystick driver"
     glm::vec3 moveDirs[8] = {
         glm::vec3(-1.0f, 0.0f, 0.0f),
         glm::vec3(0.0f, 0.0f, 1.0f),
@@ -317,6 +318,14 @@ void joystick()
         glm::vec3(0.0f, -1.0f, 0.0f),
     };
 
+    int buttonToggleWorld = 9;
+    int buttonAdjustVfov = 8;
+    int buttonCloseVfov = 4;
+    int buttonOpenVfov = 6;
+    int buttonIncreaseSpeed = 4;
+    int buttonDecreaseSpeed = 6;
+
+    glm::vec3 joystickMove(0.0f, 0.0f, 0.0f);
     for (int i=0; i<std::min(8,numButtons); ++i)
     {
         if (pButtonStates[i] == GLFW_PRESS)
@@ -333,11 +342,11 @@ void joystick()
             (s_lastButtons[i] != GLFW_PRESS)
             )
         {
-            if (i == 9)
+            if (i == buttonToggleWorld)
             {
                 g_app.ToggleShaderWorld();
             }
-            else if (i == 8)
+            else if (i == buttonAdjustVfov)
             {
                 float cs = g_app.m_cinemaScopeFactor;
                 if (cs >= 0.9f) cs = 0.0f;
@@ -353,20 +362,20 @@ void joystick()
     float mag = 1.0f;
     // Left shoulder buttons - if "select" is pressed, adjust vertical FOV.
     // Otherwise, boost or limit movement speed.
-    if (pButtonStates[8] == GLFW_PRESS)
+    if (pButtonStates[buttonAdjustVfov] == GLFW_PRESS)
     {
         const float incr = 0.05f;
         float scope = g_app.m_cinemaScopeFactor;
         if (
-            (pButtonStates[4] == GLFW_PRESS) &&
-            (s_lastButtons[4] != GLFW_PRESS)
+            (pButtonStates[buttonCloseVfov] == GLFW_PRESS) &&
+            (s_lastButtons[buttonCloseVfov] != GLFW_PRESS)
             )
         {
             scope += incr;
         }
         else if (
-            (pButtonStates[6] == GLFW_PRESS) &&
-            (s_lastButtons[6] != GLFW_PRESS)
+            (pButtonStates[buttonOpenVfov] == GLFW_PRESS) &&
+            (s_lastButtons[buttonOpenVfov] != GLFW_PRESS)
             )
         {
             scope -= incr;
@@ -377,10 +386,11 @@ void joystick()
     }
     else
     {
-        if (pButtonStates[4] == GLFW_PRESS)
-            mag *= 10.0f;
-        if (pButtonStates[6] == GLFW_PRESS)
-            mag /= 10.0f;
+        const float speedFactor = 10.f;
+        if (pButtonStates[buttonIncreaseSpeed] == GLFW_PRESS)
+            mag *= speedFactor;
+        if (pButtonStates[buttonDecreaseSpeed] == GLFW_PRESS)
+            mag /= speedFactor;
     }
     g_app.m_joystickMove = mag * joystickMove;
 
