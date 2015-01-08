@@ -423,6 +423,7 @@ void joystick()
     float mag = 1.f;
     if (numAxes > 2)
     {
+        // Xbox left and right analog triggers control speed
         mag = pow(10.f, pAxisStates[2]);
     }
     else
@@ -435,11 +436,26 @@ void joystick()
     }
     g_app.m_joystickMove = mag * joystickMove;
 
+    // Left stick controls yaw
     float x_move = pAxisStates[0];
     const float deadzone = 0.2f;
     if (fabs(x_move) < deadzone)
         x_move = 0.0f;
     g_app.m_joystickYaw = 0.5f * static_cast<float>(x_move);
+
+    // Right stick on Xbox controller changes render resolution
+    if (numAxes >= 5)
+    {
+        const float x = -pAxisStates[3];
+        if (fabs(x) > 0.1f)
+        {
+            const float curve = 1.f - sqrt(1-x*x);
+            const float increment = 0.03f * curve;
+            const float coeff = 1.f + increment * x;
+            g_app.SetFBOScale(coeff * g_app.GetFBOScale());
+            g_dynamicallyScaleFBO = false;
+        }
+    }
 
     memcpy(s_lastButtons, pButtonStates, numButtons);
 }
