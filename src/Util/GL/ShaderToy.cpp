@@ -17,6 +17,7 @@ ShaderToy::ShaderToy(const std::string& sourceFile)
 , m_prog(0)
 , m_varMap()
 , m_globalTime()
+, m_tweakVars()
 {
 }
 
@@ -112,6 +113,21 @@ void ShaderToy::_ParseVariableMap()
             const std::string& name = tokens[0];
             const std::string value = vardecl.substr(name.length()+1);
             m_varMap[name] = value;
+        }
+
+        if (tokens.size() >= 5)
+        {
+            const std::string& name = tokens[0];
+            // Push tweak variable to the list(vars can only be as wide as vec4)
+            if (!tokens[1].compare("vec3"))
+            {
+                glm::vec4 initialVal(
+                    atof(tokens[2].c_str()),
+                    atof(tokens[3].c_str()),
+                    atof(tokens[4].c_str()),
+                    0.f);
+                m_tweakVars[name] = initialVal;
+            }
         }
     }
     file.close();

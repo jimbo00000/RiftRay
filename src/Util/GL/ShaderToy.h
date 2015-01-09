@@ -48,6 +48,9 @@ protected:
     std::map<std::string, std::string> m_varMap;
     Timer m_globalTime;
 
+public:
+    std::map<std::string, glm::vec4> m_tweakVars;
+
 private: // Disallow default, copy ctor and assignment operator
     ShaderToy();
     ShaderToy(const ShaderToy&);

@@ -88,6 +88,7 @@ void ShaderToyPane::DrawPaneAsPortal(
         const GLint u_pps = glGetUniformLocation(prog, "u_panePointScale");
         glUniform1f(u_pps, panePointScale);
 
+        SetTweakUniforms(pST, prog);
         SetTextureUniforms(pST, m_pTexLibrary);
 
         glBindVertexArray(m_vao);

@@ -20,6 +20,10 @@ struct textureChannel {
 
 class ShaderToy;
 
+void SetTweakUniforms(
+    const ShaderToy* pST,
+    const GLuint prog);
+
 void SetTextureUniforms(
     const ShaderToy* pST,
     const std::map<std::string, textureChannel>* pTexLib);

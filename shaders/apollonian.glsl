@@ -15,6 +15,12 @@
 // @var eyePos2 -1.0, 1.2, -1.0
 // @var eyePos3 -1.582 0.113 -0.555
 // @var eyePos -2.304 0.110 -0.599
+// @var light1 vec3 0.577 0.577 -0.577
+// @var light2 vec3 -0.707 0.000  0.707
+
+///@todo Can and should we add these lines programmatically?
+uniform vec3 light1;
+uniform vec3 light2;
 
 vec4 orb = vec4(1000.0);
 float ss = 1.1;
@@ -79,8 +85,8 @@ vec3 getSceneColor( vec3 ro, vec3 rd )
 		vec3 nor = calcNormal( pos );
 		
 		// lighting
-        vec3  light1 = vec3(  0.577, 0.577, -0.577 );
-        vec3  light2 = vec3( -0.707, 0.000,  0.707 );
+        //vec3  light1 = vec3(  0.577, 0.577, -0.577 );
+        //vec3  light2 = vec3( -0.707, 0.000,  0.707 );
 		float key = clamp( dot( light1, nor ), 0.0, 1.0 );
 		float bac = clamp( 0.2 + 0.8*dot( light2, nor ), 0.0, 1.0 );
 		float amb = (0.7+0.3*nor.y);

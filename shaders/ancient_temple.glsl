@@ -10,12 +10,13 @@
 
 // @var headSize 0.008
 // @var eyePos -0.0011595160 1.5994246 -5.0102816
+// @var lightdir vec3 0 -0.3 -1
 
 const int Iterations=14;
 const float detail=.00002;
 const float Scale=2.;
 
-vec3 lightdir=normalize(vec3(0.,-0.3,-1.));
+uniform vec3 lightdir; //=normalize(vec3(0.,-0.3,-1.));
 
 
 float ot=0.;

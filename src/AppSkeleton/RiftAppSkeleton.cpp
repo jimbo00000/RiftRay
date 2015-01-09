@@ -737,6 +737,21 @@ void RiftAppSkeleton::_ToggleShaderWorld()
         TwRemoveVar(m_pTweakbar, "title");
         TwRemoveVar(m_pTweakbar, "author");
         TwRemoveVar(m_pTweakbar, "gotourl");
+
+#if 0
+        ///@todo Add all tweak vars to another bar we can clear.
+        //TwRemoveAllVars(TwBar *bar);
+        // The function TwRemoveGroup(bar, name) would be great here.
+        std::map<std::string, glm::vec4>& tweakVars = pST->m_tweakVars;
+        for (std::map<std::string, glm::vec4>::iterator it = tweakVars.begin();
+            it != tweakVars.end();
+            ++it)
+        {
+            const std::string& name = it->first;
+            TwRemoveVar(m_pTweakbar, name.c_str());
+        }
+#endif
+
 #endif
         return;
     }
@@ -782,6 +797,19 @@ void RiftAppSkeleton::_ToggleShaderWorld()
     TwAddButton(m_pTweakbar, "author", NULL, NULL, ss.str().c_str());
 
     TwAddButton(m_pTweakbar, "gotourl", GoToURLCB, this, " label='Go to URL'  group='Shader' ");
+
+    // for each var type, add vec3 direction control
+    ///@todo Different type widths
+    std::map<std::string, glm::vec4>& tweakVars = pST->m_tweakVars;
+    for (std::map<std::string, glm::vec4>::iterator it = tweakVars.begin();
+        it != tweakVars.end();
+        ++it)
+    {
+        const std::string& name = it->first;
+        glm::vec4& tv = it->second;
+        const std::string vn = name + ".x";
+        TwAddVarRW(m_pTweakbar, vn.c_str(), TW_TYPE_DIR3F, (void*)glm::value_ptr(tv), " group='Shader' ");
+    }
 #endif
 }
 
