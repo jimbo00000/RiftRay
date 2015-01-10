@@ -15,17 +15,28 @@ void SetTweakUniforms(
     const ShaderToy* pST,
     const GLuint prog)
 {
-    ///@todo Different type widths(float, vec2, vec3...)
     const std::map<std::string, shaderVariable>& tweakVars = pST->m_tweakVars;
     for (std::map<std::string, shaderVariable>::const_iterator it = tweakVars.begin();
         it != tweakVars.end();
         ++it)
     {
         const std::string& name = it->first;
-        const glm::vec4& tv = it->second.value;
+        const shaderVariable& var = it->second;
 
-        const GLint uloc = glGetUniformLocation(prog, name.c_str());
-        glUniform3f(uloc, tv.x, tv.y, tv.z);
+        const glm::vec4& tv = var.value;
+
+        const GLint uloc =
+            glGetUniformLocation(prog, name.c_str());
+            ///@todo var.uniLoc;
+
+        switch(var.width)
+        {
+        default: break;
+        case 1: glUniform1f(uloc, tv.x); break;
+        case 2: glUniform2f(uloc, tv.x, tv.y); break;
+        case 3: glUniform3f(uloc, tv.x, tv.y, tv.z); break;
+        case 4: glUniform4f(uloc, tv.x, tv.y, tv.z, tv.w); break;
+        }
     }
 }
 

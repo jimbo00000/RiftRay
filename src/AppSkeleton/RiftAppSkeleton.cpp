@@ -794,9 +794,17 @@ void RiftAppSkeleton::_ToggleShaderWorld()
         ++it)
     {
         const std::string& name = it->first;
-        glm::vec4& tv = it->second.value;
+        const shaderVariable& var = it->second;
+
+        const glm::vec4& tv = var.value;
         const std::string vn = name + ".x";
-        TwAddVarRW(m_pShaderTweakbar, vn.c_str(), TW_TYPE_DIR3F, (void*)glm::value_ptr(tv), " group='Shader' ");
+        ETwType t = TW_TYPE_FLOAT;
+        if (var.width == 3)
+        {
+            t = TW_TYPE_DIR3F;
+            ///@todo dir flag vs. free values
+        }
+        TwAddVarRW(m_pShaderTweakbar, vn.c_str(), t, (void*)glm::value_ptr(tv), " group='Shader' ");
     }
 #endif
 }

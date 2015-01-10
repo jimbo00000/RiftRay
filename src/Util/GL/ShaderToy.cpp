@@ -91,33 +91,47 @@ void ShaderToy::_ParseVariableLine(const std::string& vardecl)
         return;
 
     const std::string& type = tokens[0];
+    const std::string& name = tokens[1];
     if (!type.compare("vec3"))
     {
+        if (tokens.size() < 5)
+            return;
+
+        const glm::vec4 initialVal(
+            atof(tokens[2].c_str()),
+            atof(tokens[3].c_str()),
+            atof(tokens[4].c_str()),
+            0.f);
+
+        shaderVariable var;
+        var.value = initialVal;
+        var.width = 3;
+
+        m_tweakVars[name] = var;
+        ///@todo check for dir tag at end
     }
     else if (!type.compare("float"))
     {
-    }
+        const glm::vec4 initialVal(
+            atof(tokens[2].c_str()),
+            0.f,
+            0.f,
+            0.f);
+        ///@todo min, max, increment
+        shaderVariable var;
+        var.value = initialVal;
+        var.width = 1;
 
-    // Push {name,value} pair to hash map
-    if (tokens.size() >= 2)
-    {
-        const std::string& name = tokens[0];
-        const std::string value = vardecl.substr(name.length()+1);
-        m_varMap[name] = value;
+        m_tweakVars[name] = var;
     }
-
-    if (tokens.size() >= 5)
+    else
     {
-        const std::string& name = tokens[0];
-        // Push tweak variable to the list(vars can only be as wide as vec4)
-        if (!tokens[1].compare("vec3"))
+        // Push {name,value} pair to hash map
+        if (tokens.size() >= 2)
         {
-            glm::vec4 initialVal(
-                atof(tokens[2].c_str()),
-                atof(tokens[3].c_str()),
-                atof(tokens[4].c_str()),
-                0.f);
-            m_tweakVars[name].value = initialVal;
+            const std::string& name = tokens[0];
+            const std::string value = vardecl.substr(name.length()+1);
+            m_varMap[name] = value;
         }
     }
 }
@@ -133,7 +147,6 @@ void ShaderToy::_ParseVariableMap()
         return;
 
     std::string str;
-    std::vector <std::string> lines;
     // Look through lines for variable decls
     const std::string needle = "@var "; //< Include the trailing space
     while (std::getline(file,str))

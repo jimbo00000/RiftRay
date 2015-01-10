@@ -15,15 +15,19 @@
 // @var eyePos2 -1.0, 1.2, -1.0
 // @var eyePos3 -1.582 0.113 -0.555
 // @var eyePos -2.304 0.110 -0.599
-// @var light1 vec3 0.577 0.577 -0.577
-// @var light2 vec3 -0.707 0.000  0.707
+// @var vec3 light1 0.577 0.577 -0.577 dir
+// @var vec3 light2 -0.707 0.000  0.707 dir
+// @var float ss 1.1 10.0 -10.0 0.01
 
-///@todo Can and should we add these lines programmatically?
+#ifdef RIFTRAY
 uniform vec3 light1;
 uniform vec3 light2;
+uniform float ss;
+#else
+float ss = 1.1;
+#endif
 
 vec4 orb = vec4(1000.0);
-float ss = 1.1;
 float map( vec3 p )
 {
 	float scale = 1.0;
@@ -75,7 +79,6 @@ vec3 calcNormal( in vec3 pos )
 
 vec3 getSceneColor( vec3 ro, vec3 rd )
 {
-    ss = 1.1 + 0.5*smoothstep( -0.3, 0.3, cos(0.1*iGlobalTime) );
     // trace	
 	vec3 col = vec3(0.0);
 	float t = trace( ro, rd );

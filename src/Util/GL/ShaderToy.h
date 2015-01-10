@@ -24,11 +24,13 @@ struct shaderVariable {
     std::string name;
     GLint uniLoc;
     glm::vec4 value;
+    int width;
 
     shaderVariable()
         : name()
         , uniLoc(-1)
         , value(0.f)
+        , width(1)
     {
     }
 };
