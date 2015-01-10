@@ -72,6 +72,7 @@ bool g_loadShadertoysRecursive = true;
 
 #ifdef USE_ANTTWEAKBAR
 TwBar* g_pTweakbar = NULL;
+TwBar* g_pShaderTweakbar = NULL;
 #endif
 
 GLFWwindow* initializeAuxiliaryWindow(GLFWwindow* pRiftWindow);
@@ -1045,6 +1046,7 @@ int main(void)
 
 #ifdef USE_ANTTWEAKBAR
         TwRefreshBar(g_pTweakbar);
+        TwRefreshBar(g_pShaderTweakbar);
 #endif
 
         displayToHMD();

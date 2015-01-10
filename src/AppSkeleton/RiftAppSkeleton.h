@@ -161,6 +161,7 @@ public:
     float m_fboMinScale;
 #ifdef USE_ANTTWEAKBAR
     TwBar* m_pTweakbar;
+    TwBar* m_pShaderTweakbar;
 #endif
 
 private: // Disallow copy ctor and assignment operator
