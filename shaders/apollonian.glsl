@@ -75,6 +75,7 @@ vec3 calcNormal( in vec3 pos )
 
 vec3 getSceneColor( vec3 ro, vec3 rd )
 {
+    ss = 1.1 + 0.5*smoothstep( -0.3, 0.3, cos(0.1*iGlobalTime) );
     // trace	
 	vec3 col = vec3(0.0);
 	float t = trace( ro, rd );
@@ -118,7 +119,6 @@ void main(void)
     p.x *= iResolution.x/iResolution.y;
 
 	float time = iGlobalTime*0.25 + 0.01*iMouse.x;
-    ss = 1.1 + 0.5*smoothstep( -0.3, 0.3, cos(0.1*iGlobalTime) );
 	
     // camera
 	vec3 ro = vec3( 2.8*cos(0.1+.33*time), 0.4 + 0.30*cos(0.37*time), 2.8*cos(0.5+0.35*time) );
