@@ -33,17 +33,13 @@ void InitializeBar()
     g_app.m_pTweakbar = g_pTweakbar;
 
     TwDefine(" GLOBAL fontsize=3 ");
-    TwDefine(" TweakBar size='300 700' ");
+    TwDefine(" TweakBar size='300 420' ");
+    TwDefine(" TweakBar position='10 10' ");
 
-    TwAddButton(g_pTweakbar, "Disable VSync", DisableVSyncCB, NULL, " group='VSync' ");
-    TwAddButton(g_pTweakbar, "Enable VSync", EnableVSyncCB, NULL, " group='VSync' ");
-    TwAddButton(g_pTweakbar, "Adaptive VSync", AdaptiveVSyncCB, NULL, " group='VSync' ");
-
-    TwAddVarCB(g_pTweakbar, "Display FPS", TW_TYPE_UINT32, NULL, GetDisplayFPS, NULL, " group='Performance' ");
-
+    TwAddVarCB(g_pTweakbar, "Display FPS", TW_TYPE_UINT32, NULL, GetDisplayFPS, NULL,
+               " group='Performance' ");
     TwAddVarRW(g_pTweakbar, "Target FPS", TW_TYPE_INT32, &g_targetFPS,
                " min=45 max=200 group='Performance' ");
-
     TwAddVarRW(g_pTweakbar, "FBO Scale", TW_TYPE_FLOAT, g_app.GetFBOScalePointer(),
                " min=0.05 max=1.0 step=0.005 group='Performance' ");
     TwAddVarRW(g_pTweakbar, "Dynamic FBO Scale", TW_TYPE_BOOLCPP, &g_dynamicallyScaleFBO,
@@ -54,6 +50,10 @@ void InitializeBar()
                " min=0.0 max=100.0 step=1.0 group='Performance' ");
     TwAddVarRW(g_pTweakbar, "CinemaScope", TW_TYPE_FLOAT, &g_app.m_cinemaScopeFactor,
                " min=0.0 max=0.95 step=0.005 group='Performance' ");
+
+    TwAddButton(g_pTweakbar, "Disable VSync", DisableVSyncCB, NULL, " group='VSync' ");
+    TwAddButton(g_pTweakbar, "Enable VSync", EnableVSyncCB, NULL, " group='VSync' ");
+    TwAddButton(g_pTweakbar, "Adaptive VSync", AdaptiveVSyncCB, NULL, " group='VSync' ");
 
 
     TwAddButton(g_pTweakbar, "Recenter Pose", RecenterPoseCB, NULL, " group='Position' ");
@@ -92,10 +92,15 @@ void InitializeBar()
     TwAddVarRW(g_pTweakbar, "Hydra Location z", TW_TYPE_FLOAT, &g_app.m_fm.m_baseOffset.z,
                " min=-10 max=10 step=0.05 group='HydraScene' ");
 #endif
+
+#if 0
     TwAddVarRW(g_pTweakbar, "Draw RaymarchScene", TW_TYPE_BOOLCPP, &g_app.m_raymarchScene.m_bDraw,
                "  group='RaymarchScene' ");
+#endif
 
     int opened = 0;
+    TwSetParam(g_pTweakbar, "VSync", "opened", TW_PARAM_INT32, 1, &opened);
+    TwSetParam(g_pTweakbar, "Position", "opened", TW_PARAM_INT32, 1, &opened);
     TwSetParam(g_pTweakbar, "Scene", "opened", TW_PARAM_INT32, 1, &opened);
     TwSetParam(g_pTweakbar, "HydraScene", "opened", TW_PARAM_INT32, 1, &opened);
     TwSetParam(g_pTweakbar, "RaymarchScene", "opened", TW_PARAM_INT32, 1, &opened);

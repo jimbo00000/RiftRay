@@ -1067,7 +1067,7 @@ int main(void)
         if (g_AuxWindow != NULL)
         {
             glfwMakeContextCurrent(g_AuxWindow);
-            glClearColor(0,1,0,1);
+            glClearColor(0,0,0,1);
             glClear(GL_COLOR_BUFFER_BIT);
 
             ///@note VAOs *cannot* be shared between contexts.
