@@ -81,6 +81,33 @@ void ShaderToy::CompileShader()
     _ParseVariableMap();
 }
 
+void ShaderToy::_ParseVariableLine(const std::string& vardecl)
+{
+    // Push {name,value} pair to hash map
+    std::vector<std::string> tokens = split(vardecl, ' ');
+    if (tokens.size() >= 2)
+    {
+        const std::string& name = tokens[0];
+        const std::string value = vardecl.substr(name.length()+1);
+        m_varMap[name] = value;
+    }
+
+    if (tokens.size() >= 5)
+    {
+        const std::string& name = tokens[0];
+        // Push tweak variable to the list(vars can only be as wide as vec4)
+        if (!tokens[1].compare("vec3"))
+        {
+            glm::vec4 initialVal(
+                atof(tokens[2].c_str()),
+                atof(tokens[3].c_str()),
+                atof(tokens[4].c_str()),
+                0.f);
+            m_tweakVars[name] = initialVal;
+        }
+    }
+}
+
 void ShaderToy::_ParseVariableMap()
 {
     //const std::string src = GetShaderSourceFromFile(m_sourceFile.c_str(), s_shaderDir);
@@ -103,32 +130,8 @@ void ShaderToy::_ParseVariableMap()
 
         const std::string stripped = trim(str);
         // Keep only the part after the magic decl string
-        std::string vardecl = stripped.substr(found + needle.length());
-        lines.push_back(vardecl);
-
-        // Push {name,value} pair to hash map
-        std::vector<std::string> tokens = split(vardecl, ' ');
-        if (tokens.size() >= 2)
-        {
-            const std::string& name = tokens[0];
-            const std::string value = vardecl.substr(name.length()+1);
-            m_varMap[name] = value;
-        }
-
-        if (tokens.size() >= 5)
-        {
-            const std::string& name = tokens[0];
-            // Push tweak variable to the list(vars can only be as wide as vec4)
-            if (!tokens[1].compare("vec3"))
-            {
-                glm::vec4 initialVal(
-                    atof(tokens[2].c_str()),
-                    atof(tokens[3].c_str()),
-                    atof(tokens[4].c_str()),
-                    0.f);
-                m_tweakVars[name] = initialVal;
-            }
-        }
+        const std::string vardecl = stripped.substr(found + needle.length());
+        _ParseVariableLine(vardecl);
     }
     file.close();
 }

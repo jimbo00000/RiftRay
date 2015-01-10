@@ -41,6 +41,7 @@ public:
     static std::string s_shaderDir;
 
 protected:
+    virtual void _ParseVariableLine(const std::string&);
     virtual void _ParseVariableMap();
 
     std::string m_sourceFile;
