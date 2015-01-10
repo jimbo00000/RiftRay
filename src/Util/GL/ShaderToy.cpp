@@ -83,8 +83,22 @@ void ShaderToy::CompileShader()
 
 void ShaderToy::_ParseVariableLine(const std::string& vardecl)
 {
+    if (vardecl.empty())
+        return;
+
+    const std::vector<std::string> tokens = split(vardecl, ' ');
+    if (tokens.size() < 2)
+        return;
+
+    const std::string& type = tokens[0];
+    if (!type.compare("vec3"))
+    {
+    }
+    else if (!type.compare("float"))
+    {
+    }
+
     // Push {name,value} pair to hash map
-    std::vector<std::string> tokens = split(vardecl, ' ');
     if (tokens.size() >= 2)
     {
         const std::string& name = tokens[0];
@@ -103,7 +117,7 @@ void ShaderToy::_ParseVariableLine(const std::string& vardecl)
                 atof(tokens[3].c_str()),
                 atof(tokens[4].c_str()),
                 0.f);
-            m_tweakVars[name] = initialVal;
+            m_tweakVars[name].value = initialVal;
         }
     }
 }

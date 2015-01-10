@@ -20,6 +20,19 @@
 
 #include "Timer.h"
 
+struct shaderVariable {
+    std::string name;
+    GLint uniLoc;
+    glm::vec4 value;
+
+    shaderVariable()
+        : name()
+        , uniLoc(-1)
+        , value(0.f)
+    {
+    }
+};
+
 class ShaderToy
 {
 public:
@@ -50,7 +63,7 @@ protected:
     Timer m_globalTime;
 
 public:
-    std::map<std::string, glm::vec4> m_tweakVars;
+    std::map<std::string, shaderVariable> m_tweakVars;
 
 private: // Disallow default, copy ctor and assignment operator
     ShaderToy();

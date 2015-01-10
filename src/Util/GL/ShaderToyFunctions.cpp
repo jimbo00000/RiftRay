@@ -16,13 +16,13 @@ void SetTweakUniforms(
     const GLuint prog)
 {
     ///@todo Different type widths(float, vec2, vec3...)
-    const std::map<std::string, glm::vec4>& tweakVars = pST->m_tweakVars;
-    for (std::map<std::string, glm::vec4>::const_iterator it = tweakVars.begin();
+    const std::map<std::string, shaderVariable>& tweakVars = pST->m_tweakVars;
+    for (std::map<std::string, shaderVariable>::const_iterator it = tweakVars.begin();
         it != tweakVars.end();
         ++it)
     {
         const std::string& name = it->first;
-        const glm::vec4& tv = it->second;
+        const glm::vec4& tv = it->second.value;
 
         const GLint uloc = glGetUniformLocation(prog, name.c_str());
         glUniform3f(uloc, tv.x, tv.y, tv.z);

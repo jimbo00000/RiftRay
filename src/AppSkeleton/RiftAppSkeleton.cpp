@@ -788,13 +788,13 @@ void RiftAppSkeleton::_ToggleShaderWorld()
 
     // for each var type, add vec3 direction control
     ///@todo Different type widths
-    std::map<std::string, glm::vec4>& tweakVars = pST->m_tweakVars;
-    for (std::map<std::string, glm::vec4>::iterator it = tweakVars.begin();
+    std::map<std::string, shaderVariable>& tweakVars = pST->m_tweakVars;
+    for (std::map<std::string, shaderVariable>::iterator it = tweakVars.begin();
         it != tweakVars.end();
         ++it)
     {
         const std::string& name = it->first;
-        glm::vec4& tv = it->second;
+        glm::vec4& tv = it->second.value;
         const std::string vn = name + ".x";
         TwAddVarRW(m_pShaderTweakbar, vn.c_str(), TW_TYPE_DIR3F, (void*)glm::value_ptr(tv), " group='Shader' ");
     }
