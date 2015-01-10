@@ -17,7 +17,7 @@
 // @var eyePos -2.304 0.110 -0.599
 // @var vec3 light1 0.577 0.577 -0.577 dir
 // @var vec3 light2 -0.707 0.000  0.707 dir
-// @var float ss 1.1 10.0 -10.0 0.01
+// @var float ss 1.1 0.5 2.0 0.01
 
 #ifdef RIFTRAY
 uniform vec3 light1;

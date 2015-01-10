@@ -112,14 +112,17 @@ void ShaderToy::_ParseVariableLine(const std::string& vardecl)
     }
     else if (!type.compare("float"))
     {
-        const glm::vec4 initialVal(
-            atof(tokens[2].c_str()),
-            0.f,
-            0.f,
-            0.f);
-        ///@todo min, max, increment
+        if (tokens.size() < 3)
+            return;
+
         shaderVariable var;
-        var.value = initialVal;
+        var.value = glm::vec4(atof(tokens[2].c_str()));
+        if (tokens.size() >= 4)
+            var.minVal = glm::vec4(atof(tokens[3].c_str()));
+        if (tokens.size() >= 5)
+            var.maxVal = glm::vec4(atof(tokens[4].c_str()));
+        if (tokens.size() >= 6)
+            var.incr = atof(tokens[5].c_str());
         var.width = 1;
 
         m_tweakVars[name] = var;

@@ -797,14 +797,31 @@ void RiftAppSkeleton::_ToggleShaderWorld()
         const shaderVariable& var = it->second;
 
         const glm::vec4& tv = var.value;
-        const std::string vn = name + ".x";
-        ETwType t = TW_TYPE_FLOAT;
-        if (var.width == 3)
+        const std::string vn = name;
+
+        std::ostringstream oss;
+        oss << " group='Shader' ";
+
+        ETwType t = TW_TYPE_FLOAT; 
+        if (var.width == 1)
+        {
+            // Assemble min/max/incr param string for ant
+            oss
+                << "min="
+                << var.minVal.x
+                << " max="
+                << var.maxVal.x
+                << " step="
+                << var.incr
+                << " ";
+        }
+        else if (var.width == 3)
         {
             t = TW_TYPE_DIR3F;
             ///@todo dir flag vs. free values
         }
-        TwAddVarRW(m_pShaderTweakbar, vn.c_str(), t, (void*)glm::value_ptr(tv), " group='Shader' ");
+
+        TwAddVarRW(m_pShaderTweakbar, vn.c_str(), t, (void*)glm::value_ptr(tv), oss.str().c_str());
     }
 #endif
 }
