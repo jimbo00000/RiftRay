@@ -131,11 +131,8 @@ void PaneScene::DrawScene(
 
         const glm::mat4 object = pP->m_tx.GetMatrix();
 
-        if (pP->m_cursorInPane)
-        {
-            ///@warning Watch out, if this shader is expensive at FBO dimensions(600x600) it could cause dropped frames.
-            pP->DrawToFBO();
-        }
+        ///@warning Watch out, if this shader is expensive at FBO dimensions(600x600) it could cause dropped frames.
+        pP->DrawToFBO();
 
         glUseProgram(m_paneShader.prog());
         {

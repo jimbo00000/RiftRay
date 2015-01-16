@@ -202,6 +202,9 @@ void ShaderToyPane::RenderThumbnail() const
 
 void ShaderToyPane::DrawToFBO() const
 {
+    if (m_cursorInPane == false)
+        return;
+
     bool animated = false;
     if (m_pGlobalState)
     {

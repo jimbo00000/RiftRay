@@ -48,17 +48,34 @@ void AntPane::initGL()
 
 void AntPane::DrawToFBO() const
 {
-    if (m_cursorInPane || !m_tx.m_lockedAtClickPos)
-        glClearColor(0.25f, 0.25f, 0.25f, 0.0f);
-    else
-        glClearColor(0,0,0,0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    GLint bound_prog = 0;
+    glGetIntegerv(GL_CURRENT_PROGRAM, &bound_prog);
+
+    // Render a view of the shader to the FBO
+    // We must keep the previously bound FBO and restore
+    GLint bound_fbo = 0;
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &bound_fbo);
+
+    bindFBO(m_paneRenderBuffer);
+    {
+        if (m_cursorInPane || !m_tx.m_lockedAtClickPos)
+            glClearColor(0.25f, 0.25f, 0.25f, 0.0f);
+        else
+            glClearColor(0,0,0,0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 #ifdef USE_ANTTWEAKBAR
-    TwDraw();
+        TwDraw();
 #endif
 
-    DrawCursor();
+        DrawCursor();
+    }
+    unbindFBO();
+
+    // Restore previous state
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, bound_fbo);
+
+    glUseProgram(bound_prog);
 }
 
 void AntPane::DrawPaneWithShader(

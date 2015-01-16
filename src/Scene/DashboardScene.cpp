@@ -40,9 +40,6 @@ DashboardScene::DashboardScene()
     m_antPane.m_tx.SetOrientation(ori);
 
     m_panes.push_back(&m_antPane);
-
-
-    m_bDraw = false;
 }
 
 DashboardScene::~DashboardScene()
