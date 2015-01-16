@@ -169,7 +169,8 @@ bool PaneScene::_GetFlyingMouseRightHandPaneRayIntersectionCoordinates(Pane* pPa
     glm::vec3 dir3;
     m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, origin3, dir3);
 
-    return pPane->GetPaneRayIntersectionCoordinates(origin3, dir3, planePt);
+    float t;
+    return pPane->GetPaneRayIntersectionCoordinates(origin3, dir3, planePt, t);
 }
 
 bool PaneScene::_GetHmdViewRayIntersectionCoordinates(Pane* pPane, glm::vec2& planePt)
@@ -181,11 +182,12 @@ bool PaneScene::_GetHmdViewRayIntersectionCoordinates(Pane* pPane, glm::vec2& pl
     if (m_pHmdRd == NULL)
         return false;
 
+    float t;
     if (glm::length(*m_pHmdRd) == 0)
     {
-        return pPane->GetPaneRayIntersectionCoordinates(*m_pHmdRo, glm::vec3(0,0,1), planePt);
+        return pPane->GetPaneRayIntersectionCoordinates(*m_pHmdRo, glm::vec3(0,0,1), planePt, t);
     }
-    return pPane->GetPaneRayIntersectionCoordinates(*m_pHmdRo, *m_pHmdRd, planePt);
+    return pPane->GetPaneRayIntersectionCoordinates(*m_pHmdRo, *m_pHmdRd, planePt, t);
 }
 
 

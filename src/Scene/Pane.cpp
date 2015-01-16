@@ -13,6 +13,7 @@ Pane::Pane()
 , m_paneRenderBuffer()
 , m_cursorInPane(false)
 , m_pointerCoords(0.0f)
+, m_holdState()
 {
     m_panePts.push_back(glm::vec3(-0.5f, -0.5f, 0.0f));
     m_panePts.push_back(glm::vec3(0.5f, -0.5f, 0.0f));
@@ -211,10 +212,13 @@ std::vector<glm::vec3> Pane::GetTransformedPanePoints() const
     return pts;
 }
 
-
 ///@param [out] planePt Intersection point on plane in local normalized coordinates
 ///@return true if ray hits pane quad, false otherwise
-bool Pane::GetPaneRayIntersectionCoordinates(glm::vec3 origin3, glm::vec3 dir3, glm::vec2& planePt)
+bool Pane::GetPaneRayIntersectionCoordinates(
+    glm::vec3 origin3, ///< [in] Ray origin
+    glm::vec3 dir3, ///< [in] Ray direction(normalized)
+    glm::vec2& planePtOut, ///< [out] Intersection point in XY plane coordinates
+    float& tParamOut) ///< [out] t parameter of ray intersection (ro + t*dt)
 {
     const std::vector<glm::vec3> pts = GetTransformedPanePoints();
     glm::vec3 retval1(0.0f);
@@ -250,6 +254,7 @@ bool Pane::GetPaneRayIntersectionCoordinates(glm::vec3 origin3, glm::vec3 dir3, 
     // Did you know that x stores the t param val? I couldn't find this in docs anywhere.
     const float tParam = hitval.x;
     m_tx.m_controllerTParamAtClick = tParam;
+    tParamOut = tParam;
     if (tParam < 0.0f)
         return false; // Behind the origin
 
@@ -257,7 +262,7 @@ bool Pane::GetPaneRayIntersectionCoordinates(glm::vec3 origin3, glm::vec3 dir3, 
     const glm::vec3 v2 = pts[3] - pts[0]; // y axis
     const float len = glm::length(v1); // v2 length should be equal
     const glm::vec3 vh = (cartesianpos - pts[0]) / len;
-    planePt = glm::vec2(
+    planePtOut = glm::vec2(
                glm::dot(v1/len, vh),
         1.0f - glm::dot(v2/len, vh) // y coord flipped by convention
         );
