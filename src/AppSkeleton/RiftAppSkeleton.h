@@ -27,6 +27,7 @@
 #include "OVRScene.h"
 #include "RaymarchShaderScene.h"
 #include "ShaderGalleryScene.h"
+#include "DashboardScene.h"
 
 #include "FlyingMouse.h"
 #include "VirtualTrackball.h"
@@ -126,6 +127,7 @@ public:
     OVRScene m_ovrScene;
     RaymarchShaderScene m_raymarchScene;
     ShaderGalleryScene m_galleryScene;
+    DashboardScene m_dashScene;
 
     ovrVector3f m_chassisPos;
     ovrVector3f m_chassisPosCached;

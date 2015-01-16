@@ -39,6 +39,7 @@ RiftAppSkeleton::RiftAppSkeleton()
 , m_ovrScene()
 , m_raymarchScene()
 , m_galleryScene()
+, m_dashScene()
 , m_scenes()
 
 , m_fboScale(1.0f)
@@ -78,11 +79,15 @@ RiftAppSkeleton::RiftAppSkeleton()
     m_scenes.push_back(&m_ovrScene);
     //m_scenes.push_back(&m_raymarchScene);
     m_scenes.push_back(&m_galleryScene);
+    m_scenes.push_back(&m_dashScene);
 
     m_raymarchScene.SetFlyingMousePointer(&m_fm);
     m_galleryScene.SetFlyingMousePointer(&m_fm);
     m_galleryScene.SetHmdPositionPointer(&m_hmdRo);
     m_galleryScene.SetHmdDirectionPointer(&m_hmdRd);
+    m_dashScene.SetFlyingMousePointer(&m_fm);
+    m_dashScene.SetHmdPositionPointer(&m_hmdRo);
+    m_dashScene.SetHmdDirectionPointer(&m_hmdRd);
 
     // Give this scene a pointer to get live Hydra data for display
 #ifdef USE_SIXENSE
@@ -121,6 +126,7 @@ void RiftAppSkeleton::ResetAllTransformations()
     m_chassisYaw = 0.0f;
 
     m_raymarchScene.ResetTransformation();
+    m_dashScene.ResetTransformation();
 }
 
 ovrSizei RiftAppSkeleton::getHmdResolution() const
