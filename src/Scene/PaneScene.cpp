@@ -209,8 +209,7 @@ bool PaneScene::_GetHmdViewRayIntersectionCoordinates(Pane* pPane, glm::vec2& pl
 
 void PaneScene::timestep(float dt)
 {
-    (void)dt;
-    if (!m_bDraw)
+    if (m_bDraw == false)
         return;
 
     for (std::vector<Pane*>::iterator it = m_panes.begin();
@@ -278,6 +277,9 @@ std::vector<Transformation*> PaneScene::GetTransformationPointers()
 
 void PaneScene::ResetTransformation()
 {
+    if (m_bDraw == false)
+        return;
+
     for (std::vector<Pane*>::iterator it = m_panes.begin();
         it != m_panes.end();
         ++it)
@@ -291,6 +293,9 @@ void PaneScene::ResetTransformation()
 
 void PaneScene::SendMouseClick(int state)
 {
+    if (m_bDraw == false)
+        return;
+
     for (std::vector<Pane*>::iterator it = m_panes.begin();
         it != m_panes.end();
         ++it)
@@ -304,6 +309,9 @@ void PaneScene::SendMouseClick(int state)
 
 void PaneScene::SendHmdTap()
 {
+    if (m_bDraw == false)
+        return;
+
     for (std::vector<Pane*>::iterator it = m_panes.begin();
         it != m_panes.end();
         ++it)
