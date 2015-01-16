@@ -25,7 +25,7 @@
 class PaneScene : public IScene
 {
 public:
-    PaneScene();
+    PaneScene(bool chassisLocal=false);
     virtual ~PaneScene();
 
     virtual void initGL();
@@ -64,6 +64,8 @@ protected:
 public:
     std::vector<Pane*> m_panes;
     std::vector<glm::vec3> m_panePts;
+    bool m_chassisLocalSpace;
+
 
 private: // Disallow copy ctor and assignment operator
     PaneScene(const PaneScene&);

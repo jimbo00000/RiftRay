@@ -26,7 +26,7 @@
 
 #include "Logger.h"
 
-PaneScene::PaneScene()
+PaneScene::PaneScene(bool chassisLocal)
 : m_pFm(NULL)
 , m_pHmdRo(NULL)
 , m_pHmdRd(NULL)
@@ -35,6 +35,7 @@ PaneScene::PaneScene()
 , m_font("../textures/arial.fnt")
 , m_panes()
 , m_panePts()
+, m_chassisLocalSpace(chassisLocal)
 {
     m_panePts.push_back(glm::vec3(-0.5f, -0.5f, 0.0f));
     m_panePts.push_back(glm::vec3(0.5f, -0.5f, 0.0f));
@@ -117,6 +118,9 @@ void PaneScene::DrawScene(
     const glm::mat4& modelview,
     const glm::mat4& projection) const
 {
+    const glm::vec3 sumOffset = m_pFm->m_baseOffset + m_pFm->GetChassisPos();
+    const glm::mat4 mvLocal = glm::translate(modelview, sumOffset);
+
     for (std::vector<Pane*>::const_iterator it = m_panes.begin();
         it != m_panes.end();
         ++it)
@@ -135,7 +139,8 @@ void PaneScene::DrawScene(
 
         glUseProgram(m_paneShader.prog());
         {
-            const glm::mat4 objectMatrix = modelview * object;
+            const glm::mat4& mv = m_chassisLocalSpace ? mvLocal : modelview;
+            const glm::mat4 objectMatrix = mv * object;
             glUniformMatrix4fv(m_paneShader.GetUniLoc("mvmtx"), 1, false, glm::value_ptr(objectMatrix));
             glUniformMatrix4fv(m_paneShader.GetUniLoc("prmtx"), 1, false, glm::value_ptr(projection));
             pP->DrawPaneWithShader(objectMatrix, projection, m_paneShader);
@@ -169,6 +174,13 @@ bool PaneScene::_GetFlyingMouseRightHandPaneRayIntersectionCoordinates(Pane* pPa
     glm::vec3 dir3;
     m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, origin3, dir3);
 
+    if (m_chassisLocalSpace)
+    {
+        // subtract off world space adjustment for local space
+        const glm::vec3 sumOffset = m_pFm->m_baseOffset + m_pFm->GetChassisPos();
+        origin3 -= sumOffset;
+    }
+
     float t;
     return pPane->GetPaneRayIntersectionCoordinates(origin3, dir3, planePt, t);
 }
@@ -181,6 +193,13 @@ bool PaneScene::_GetHmdViewRayIntersectionCoordinates(Pane* pPane, glm::vec2& pl
         return false;
     if (m_pHmdRd == NULL)
         return false;
+
+    if (m_chassisLocalSpace)
+    {
+        // subtract off world space adjustment for local space
+        const glm::vec3 sumOffset = m_pFm->m_baseOffset + m_pFm->GetChassisPos();
+        //origin3 -= sumOffset;
+    }
 
     float t;
     if (glm::length(*m_pHmdRd) == 0)
