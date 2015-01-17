@@ -48,6 +48,7 @@ void AntPane::initGL()
 
 void AntPane::DrawToFBO() const
 {
+    glDisable(GL_SCISSOR_TEST); // Assume this is turned on by caller
     GLint bound_prog = 0;
     glGetIntegerv(GL_CURRENT_PROGRAM, &bound_prog);
 
@@ -74,8 +75,8 @@ void AntPane::DrawToFBO() const
 
     // Restore previous state
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, bound_fbo);
-
     glUseProgram(bound_prog);
+    glEnable(GL_SCISSOR_TEST);
 }
 
 void AntPane::DrawPaneWithShader(
