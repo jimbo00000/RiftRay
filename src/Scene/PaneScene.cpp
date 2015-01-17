@@ -191,18 +191,21 @@ bool PaneScene::_GetHmdViewRayIntersectionCoordinates(Pane* pPane, glm::vec2& pl
     if (m_pHmdRd == NULL)
         return false;
 
+    glm::vec3 origin3 = *m_pHmdRo;
+    glm::vec3 dir3 = *m_pHmdRd;
+
     if (m_chassisLocalSpace)
     {
         // subtract off world space adjustment for local space
         const glm::vec3 sumOffset = m_pFm->m_baseOffset + m_pFm->GetChassisPos();
-        //origin3 -= sumOffset;
+        origin3 -= sumOffset;
     }
 
-    if (glm::length(*m_pHmdRd) == 0)
+    if (glm::length(dir3) == 0)
     {
-        return pPane->GetPaneRayIntersectionCoordinates(*m_pHmdRo, glm::vec3(0,0,1), planePt, tParam);
+        return pPane->GetPaneRayIntersectionCoordinates(origin3, glm::vec3(0,0,1), planePt, tParam);
     }
-    return pPane->GetPaneRayIntersectionCoordinates(*m_pHmdRo, *m_pHmdRd, planePt, tParam);
+    return pPane->GetPaneRayIntersectionCoordinates(origin3, dir3, planePt, tParam);
 }
 
 /// Handle Gamepad-HMD motion of panes in space.
