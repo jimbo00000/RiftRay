@@ -249,6 +249,7 @@ void PaneScene::timestep(float dt)
         Pane* pP = *it;
         if (pP == NULL)
             continue;
+        pP->timestep(dt);
 
         pP->m_cursorInPane = false;
 
