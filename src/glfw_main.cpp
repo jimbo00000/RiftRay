@@ -261,6 +261,23 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
         keyboardMove += glm::vec3(0.0f, 1.0f, 0.0f);
     }
 
+    if (m_keyStates[GLFW_KEY_UP] != GLFW_RELEASE)
+    {
+        keyboardMove += glm::vec3(0.0f, 0.0f, -1.0f);
+    }
+    if (m_keyStates[GLFW_KEY_DOWN] != GLFW_RELEASE)
+    {
+        keyboardMove += glm::vec3(0.0f, 0.0f, 1.0f);
+    }
+    if (m_keyStates[GLFW_KEY_LEFT] != GLFW_RELEASE)
+    {
+        keyboardMove += glm::vec3(-1.0f, 0.0f, 0.0f);
+    }
+    if (m_keyStates[GLFW_KEY_RIGHT] != GLFW_RELEASE)
+    {
+        keyboardMove += glm::vec3(1.0f, 0.0f, 0.0f);
+    }
+
     float mag = 1.0f;
     if (m_keyStates[GLFW_KEY_LEFT_SHIFT ] != GLFW_RELEASE)
         mag *= 0.1f;
