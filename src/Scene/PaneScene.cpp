@@ -182,7 +182,7 @@ bool PaneScene::_GetFlyingMouseRightHandPaneRayIntersectionCoordinates(Pane* pPa
     return pPane->GetPaneRayIntersectionCoordinates(origin3, dir3, planePt, t);
 }
 
-bool PaneScene::_GetHmdViewRayIntersectionCoordinates(Pane* pPane, glm::vec2& planePt)
+bool PaneScene::_GetHmdViewRayIntersectionCoordinates(Pane* pPane, glm::vec2& planePt, float& tParam)
 {
     if (pPane == NULL)
         return false;
@@ -198,12 +198,42 @@ bool PaneScene::_GetHmdViewRayIntersectionCoordinates(Pane* pPane, glm::vec2& pl
         //origin3 -= sumOffset;
     }
 
-    float t;
     if (glm::length(*m_pHmdRd) == 0)
     {
-        return pPane->GetPaneRayIntersectionCoordinates(*m_pHmdRo, glm::vec3(0,0,1), planePt, t);
+        return pPane->GetPaneRayIntersectionCoordinates(*m_pHmdRo, glm::vec3(0,0,1), planePt, tParam);
     }
-    return pPane->GetPaneRayIntersectionCoordinates(*m_pHmdRo, *m_pHmdRd, planePt, t);
+    return pPane->GetPaneRayIntersectionCoordinates(*m_pHmdRo, *m_pHmdRd, planePt, tParam);
+}
+
+/// Handle Gamepad-HMD motion of panes in space.
+void PaneScene::_SetHeldPanePositionAndOrientation(Pane* pP)
+{
+    if (pP == NULL)
+        return;
+
+    const glm::vec3 hmd_origin3 = *m_pHmdRo;
+    const glm::vec3 hmd_dir3 = *m_pHmdRd;
+
+
+    holdingState& hold = pP->m_holdState;
+    const glm::vec3 hmdHitPt = hmd_origin3 + hold.m_holdingTPoint * hmd_dir3;
+    const glm::vec3 originalPos = hold.m_holdingPosAtClick;
+    const glm::vec3 delta = hmdHitPt - hold.m_holdingPoint3;
+    pP->m_tx.SetPosition(originalPos + delta);
+
+    // Orient pane towards the viewer
+    const glm::vec3 fwd = glm::normalize(hmd_dir3);
+    const glm::vec3 upGuess(0.f, 1.f, 0.f);
+    const glm::vec3 rightGuess = glm::normalize(glm::cross(fwd, upGuess));
+    const glm::vec3 up = glm::cross(rightGuess, fwd);
+    const glm::vec3 right = glm::cross(fwd, up);
+    const glm::mat4 ori( // Swapped right and fwd to face towards viewer
+        glm::vec4(right,0.f),
+        glm::vec4(up,0.f),
+        glm::vec4(fwd,0.f),
+        glm::vec4(glm::vec3(0.f),1.f)
+        );
+    pP->m_tx.SetOrientation(ori);
 }
 
 
@@ -222,6 +252,18 @@ void PaneScene::timestep(float dt)
 
         pP->m_cursorInPane = false;
 
+        glm::vec2 hmdPt(0.0f);
+        float tHmd = 0.f;
+        const bool hmdInPane = _GetHmdViewRayIntersectionCoordinates(pP, hmdPt, tHmd);
+        if (hmdInPane)
+        {
+            pP->m_pointerCoords = hmdPt;
+            pP->m_cursorInPane = true;
+        }
+
+
+
+#if 0
         glm::vec2 fmPt(0.0f);
         bool fmInPane = _GetFlyingMouseRightHandPaneRayIntersectionCoordinates(pP, fmPt);
         if (fmInPane)
@@ -237,6 +279,8 @@ void PaneScene::timestep(float dt)
             pP->m_pointerCoords = hmdPt;
             pP->m_cursorInPane = true;
         }
+#endif
+
 
         pP->m_tx.m_lock = !pP->m_cursorInPane;
 
@@ -255,7 +299,25 @@ void PaneScene::timestep(float dt)
             {
                 pP->OnMouseClick(0, mx, my);
             }
+
+            const int modifier = SIXENSE_BUTTON_BUMPER; // match button used in FlyingMouse
+            if (m_pFm->IsPressed(FlyingMouse::Right, modifier) == false)
+            {
+                if (m_pFm->WasJustPressed(FlyingMouse::Right, SIXENSE_BUTTON_1))
+                {
+                    pP->OnHydraButton(1);
+                }
+                if (m_pFm->WasJustPressed(FlyingMouse::Right, SIXENSE_BUTTON_3))
+                {
+                    pP->OnHydraButton(2);
+                }
+            }
 #endif
+        }
+
+        if (pP->m_holdState.m_holding)
+        {
+            _SetHeldPanePositionAndOrientation(pP);
         }
     }
 }
@@ -320,5 +382,50 @@ void PaneScene::SendHmdTap()
         if (pP == NULL)
             continue;
         pP->OnHmdTap();
+    }
+}
+
+void PaneScene::SetHoldingFlag(int state)
+{
+    if (m_bDraw == false)
+        return;
+
+    for (std::vector<Pane*>::iterator it = m_panes.begin();
+        it != m_panes.end();
+        ++it)
+    {
+        Pane* pP = *it;
+        if (pP == NULL)
+            continue;
+        //pP->OnHmdTap();
+
+        holdingState& hold = pP->m_holdState;
+        if (state == 0)
+        {
+            hold.m_holding = false;
+        }
+
+        // Set a "holding" flag to true
+        if (pP->m_cursorInPane)
+        {
+            hold.m_holding = (state == 1);
+
+            // Store t param
+            glm::vec2 hmdPt(0.0f);
+            float tHmd = 0.f;
+            const bool hmdInPane = _GetHmdViewRayIntersectionCoordinates(pP, hmdPt, tHmd);
+            //if (hmdInPane)
+            {
+                glm::vec3 hmd_origin3 = *m_pHmdRo;
+                glm::vec3 hmd_dir3 = *m_pHmdRd;
+
+                const glm::vec3 hmdHitPt = hmd_origin3 + tHmd * hmd_dir3;
+                const glm::vec3 originalPos = glm::vec3(pP->m_tx.GetMatrix() * glm::vec4(0.,0.,0.,1.));
+
+                hold.m_holdingTPoint = tHmd;
+                hold.m_holdingPoint3 = hmdHitPt;
+                hold.m_holdingPosAtClick = originalPos;
+            }
+        }
     }
 }

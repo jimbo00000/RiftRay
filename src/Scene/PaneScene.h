@@ -37,6 +37,7 @@ public:
 
     virtual void SendMouseClick(int state);
     virtual void SendHmdTap();
+    virtual void SetHoldingFlag(int state);
 
     virtual void SetFlyingMousePointer(FlyingMouse* pFM) { m_pFm = pFM; }
     virtual void SetHmdPositionPointer(glm::vec3* pRo) { m_pHmdRo = pRo; }
@@ -52,7 +53,8 @@ protected:
         const glm::mat4& projection) const;
 
     virtual bool _GetFlyingMouseRightHandPaneRayIntersectionCoordinates(Pane* pPane, glm::vec2& planePt);
-    virtual bool _GetHmdViewRayIntersectionCoordinates(Pane* pPane, glm::vec2& planePt);
+    virtual bool _GetHmdViewRayIntersectionCoordinates(Pane* pPane, glm::vec2& planePt, float& tParam);
+    virtual void _SetHeldPanePositionAndOrientation(Pane* pP);
 
     FlyingMouse* m_pFm;
     glm::vec3* m_pHmdRo;
