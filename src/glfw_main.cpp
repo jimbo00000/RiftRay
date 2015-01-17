@@ -458,6 +458,15 @@ void joystick()
         g_app.m_cinemaScopeFactor = scope;
     }
 
+    if (numAxes > 1)
+    {
+        const float y_move = pAxisStates[1];
+        const glm::vec3 up(0.f, 1.f, 0.f);
+        const float deadzone = 0.5f;
+        if (fabs(y_move) > deadzone)
+            joystickMove += y_move * up;
+    }
+
     float mag = 1.f;
     if (numAxes > 2)
     {
