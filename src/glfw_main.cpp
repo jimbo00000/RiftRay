@@ -395,7 +395,7 @@ void joystick()
                              (s_lastButtons[i] != GLFW_PRESS);
         const bool released = (pButtonStates[i] != GLFW_PRESS) &&
                               (s_lastButtons[i] == GLFW_PRESS);
-        if (pressed || released)
+        if (pressed)
         {
             if (i == buttonToggleWorld)
             {
@@ -411,7 +411,10 @@ void joystick()
                 else cs = 0.25f;
                 g_app.m_cinemaScopeFactor = cs;
             }
+        }
 
+        if (pressed || released)
+        {
             if (i == buttonGrabPane)
             {
                 g_app.m_dashScene.SetHoldingFlag(pressed?1:0);
