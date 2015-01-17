@@ -306,15 +306,26 @@ void joystick()
         return;
 
     // Map joystick buttons to move directions
+    // Gravis Gamepad Pro layout in glfw:
+    // 0 Red (left position)
+    // 1 Yellow (down position)
+    // 2 Green (right position)
+    // 3 Blue (up position)
+    // 4 Left top shoulder
+    // 5 Right top shoulder
+    // 6 Left bottom shoulder
+    // 7 Right bottom shoulder
+    // 8 Select (left center)
+    // 9 Start (right center)
     const glm::vec3 moveDirsGravisGamepadPro[8] = {
         glm::vec3(-1.f,  0.f,  0.f),
         glm::vec3( 0.f,  0.f,  1.f),
         glm::vec3( 1.f,  0.f,  0.f),
         glm::vec3( 0.f,  0.f, -1.f),
         glm::vec3( 0.f,  0.f,  0.f),
-        glm::vec3( 0.f,  1.f,  0.f),
         glm::vec3( 0.f,  0.f,  0.f),
-        glm::vec3( 0.f, -1.f,  0.f),
+        glm::vec3( 0.f,  0.f,  0.f),
+        glm::vec3( 0.f,  0.f,  0.f),
     };
     int buttonToggleWorld = 9;
     int buttonAdjustVfov = 8;
@@ -322,6 +333,9 @@ void joystick()
     int buttonOpenVfov = 6;
     int buttonIncreaseSpeed = 4;
     int buttonDecreaseSpeed = 6;
+    int buttonGrabPane = 4;
+    int buttonSendMouseClick = 5;
+    int buttonToggleDashboard = 8;
 
     // Xbox controller layout in glfw:
     // numAxes 5, numButtons 14
@@ -341,8 +355,8 @@ void joystick()
         glm::vec3( 1.f,  0.f,  0.f),
         glm::vec3(-1.f,  0.f,  0.f),
         glm::vec3( 0.f,  0.f, -1.f),
-        glm::vec3( 0.f, -1.f,  0.f),
-        glm::vec3( 0.f,  1.f,  0.f),
+        glm::vec3( 0.f,  0.f,  0.f),
+        glm::vec3( 0.f,  0.f,  0.f),
         glm::vec3( 0.f,  0.f,  0.f),
         glm::vec3( 0.f,  0.f,  0.f),
     };
@@ -360,6 +374,9 @@ void joystick()
         buttonOpenVfov = 6;
         buttonIncreaseSpeed = 4;
         buttonDecreaseSpeed = 6;
+        buttonGrabPane = 4;
+        buttonSendMouseClick = 5;
+        buttonToggleDashboard = 6;
     }
 
     glm::vec3 joystickMove(0.0f, 0.0f, 0.0f);
@@ -374,16 +391,17 @@ void joystick()
     // Check for recent button pushes
     for (int i=0; i<numButtons; ++i)
     {
-        if (
-            (pButtonStates[i] == GLFW_PRESS) &&
-            (s_lastButtons[i] != GLFW_PRESS)
-            )
+        const bool pressed = (pButtonStates[i] == GLFW_PRESS) &&
+                             (s_lastButtons[i] != GLFW_PRESS);
+        const bool released = (pButtonStates[i] != GLFW_PRESS) &&
+                              (s_lastButtons[i] == GLFW_PRESS);
+        if (pressed || released)
         {
             if (i == buttonToggleWorld)
             {
                 g_app.ToggleShaderWorld();
             }
-            else if (i == buttonAdjustVfov)
+            else if (0)//i == buttonAdjustVfov)
             {
                 float cs = g_app.m_cinemaScopeFactor;
                 if (cs >= 0.9f) cs = 0.0f;
@@ -393,8 +411,24 @@ void joystick()
                 else cs = 0.25f;
                 g_app.m_cinemaScopeFactor = cs;
             }
+
+            if (i == buttonGrabPane)
+            {
+                g_app.m_dashScene.SetHoldingFlag(pressed?1:0);
+            }
+            if (i == buttonSendMouseClick)
+            {
+                g_app.m_dashScene.SendMouseClick(pressed?1:0);
+            }
+            if (i == buttonToggleDashboard)
+            {
+                if (pressed)
+                    g_app.m_dashScene.m_bDraw = !g_app.m_dashScene.m_bDraw;
+            }
         }
     }
+    memcpy(s_lastButtons, pButtonStates, numButtons);
+
 
     // Left shoulder buttons - if "select" is pressed, adjust vertical FOV.
     // Otherwise, boost or limit movement speed.
@@ -457,8 +491,6 @@ void joystick()
             g_dynamicallyScaleFBO = false;
         }
     }
-
-    memcpy(s_lastButtons, pButtonStates, numButtons);
 }
 
 void mouseDown(GLFWwindow* pWindow, int button, int action, int mods)
