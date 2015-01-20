@@ -24,6 +24,7 @@ public:
     ShaderGalleryScene();
     virtual ~ShaderGalleryScene();
 
+    virtual void RenderPrePass() const;
     virtual void RenderForOneEye(const float* pMview, const float* pPersp) const;
 
     virtual void CompileShaders();

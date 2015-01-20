@@ -134,6 +134,10 @@ const ShaderToyPane* ShaderGalleryScene::GetFocusedPane() const
     return NULL;
 }
 
+void ShaderGalleryScene::RenderPrePass() const
+{
+}
+
 void ShaderGalleryScene::RenderForOneEye(const float* pMview, const float* pPersp) const
 {
     if (m_bDraw == false)

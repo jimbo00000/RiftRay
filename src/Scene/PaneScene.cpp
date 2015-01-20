@@ -135,8 +135,7 @@ void PaneScene::DrawScene(
         const glm::mat4 object = pP->m_tx.GetMatrix();
         const glm::mat4& mv = m_chassisLocalSpace ? mvLocal : modelview;
 
-        pP->DrawToFBO();
-
+        ///@todo Extract function
         //pP->DrawInScene(m_chassisLocalSpace ? mvLocal : modelview, projection, pP->m_tx.GetMatrix());
         glUseProgram(m_paneShader.prog());
         {
@@ -151,6 +150,24 @@ void PaneScene::DrawScene(
 
 void PaneScene::RenderPrePass() const
 {
+    // We must keep the previously bound FBO and restore
+    GLint bound_fbo = 0;
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &bound_fbo);
+    for (std::vector<Pane*>::const_iterator it = m_panes.begin();
+        it != m_panes.end();
+        ++it)
+    {
+        const Pane* pP = *it;
+        if (pP == NULL)
+            continue;
+
+        bindFBO(pP->m_paneRenderBuffer);
+
+        pP->DrawToFBO();
+
+        unbindFBO();
+    }
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, bound_fbo);
 }
 
 void PaneScene::RenderForOneEye(const float* pMview, const float* pPersp) const
