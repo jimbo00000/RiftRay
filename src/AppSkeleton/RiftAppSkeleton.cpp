@@ -86,8 +86,8 @@ RiftAppSkeleton::RiftAppSkeleton()
     m_galleryScene.SetHmdPositionPointer(&m_hmdRo);
     m_galleryScene.SetHmdDirectionPointer(&m_hmdRd);
     m_dashScene.SetFlyingMousePointer(&m_fm);
-    m_dashScene.SetHmdPositionPointer(&m_hmdRo);
-    m_dashScene.SetHmdDirectionPointer(&m_hmdRd);
+    m_dashScene.SetHmdPositionPointer(&m_hmdRoLocal);
+    m_dashScene.SetHmdDirectionPointer(&m_hmdRdLocal);
 
     // Give this scene a pointer to get live Hydra data for display
 #ifdef USE_SIXENSE
@@ -862,6 +862,17 @@ void RiftAppSkeleton::_StoreHmdPose(const ovrPosef& eyePose) const
     m_hmdRd.x = rotvec.x;
     m_hmdRd.y = rotvec.y;
     m_hmdRd.z = rotvec.z;
+
+    // Store a separate copy of (ro,rd) in local space without chassis txfms applied.
+    m_hmdRoLocal.x = eyePose.Position.x;
+    m_hmdRoLocal.y = eyePose.Position.y;
+    m_hmdRoLocal.z = eyePose.Position.z;
+
+    const OVR::Matrix4f rotmtxLocal = OVR::Matrix4f(eyePose.Orientation);
+    const OVR::Vector4f rotvecLocal = rotmtxLocal.Transform(OVR::Vector4f(0.0f, 0.0f, -1.0f, 0.0f));
+    m_hmdRdLocal.x = rotvecLocal.x;
+    m_hmdRdLocal.y = rotvecLocal.y;
+    m_hmdRdLocal.z = rotvecLocal.z;
 }
 
 void RiftAppSkeleton::_drawSceneMono() const

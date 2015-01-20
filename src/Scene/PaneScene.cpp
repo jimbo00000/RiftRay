@@ -195,18 +195,6 @@ bool PaneScene::_GetFlyingMouseRightHandPaneRayIntersectionCoordinates(Pane* pPa
     glm::vec3 dir3;
     m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, origin3, dir3);
 
-    if (m_chassisLocalSpace)
-    {
-        // subtract off world space adjustment for local space
-        const glm::vec3 sumOffset = m_pFm->m_baseOffset + m_pFm->GetChassisPos();
-        origin3 -= sumOffset;
-        // Subtract off world space yaw
-        const glm::mat4 mvLocal = glm::rotate(
-            glm::translate(glm::mat4(1.f), sumOffset),
-            m_pFm->GetChassisYaw(), glm::vec3(0.f,1.f,0.f));
-        dir3 = glm::vec3(mvLocal * glm::vec4(dir3, 0.f));
-    }
-
     float t;
     return pPane->GetPaneRayIntersectionCoordinates(origin3, dir3, planePt, t);
 }
@@ -220,20 +208,8 @@ bool PaneScene::_GetHmdViewRayIntersectionCoordinates(Pane* pPane, glm::vec2& pl
     if (m_pHmdRd == NULL)
         return false;
 
-    glm::vec3 origin3 = *m_pHmdRo;
-    glm::vec3 dir3 = *m_pHmdRd;
-
-    if (m_chassisLocalSpace)
-    {
-        // subtract off world space adjustment for local space
-        const glm::vec3 sumOffset = m_pFm->m_baseOffset + m_pFm->GetChassisPos();
-        origin3 -= sumOffset;
-        // Subtract off world space yaw
-        const glm::mat4 mvLocal = glm::rotate(
-            glm::translate(glm::mat4(1.f), sumOffset),
-            m_pFm->GetChassisYaw(), glm::vec3(0.f,1.f,0.f));
-        dir3 = glm::vec3(mvLocal * glm::vec4(dir3, 0.f));
-    }
+    const glm::vec3 origin3 = *m_pHmdRo;
+    const glm::vec3 dir3 = *m_pHmdRd;
 
     if (glm::length(dir3) == 0)
     {
@@ -247,10 +223,13 @@ void PaneScene::_SetHeldPanePositionAndOrientation(Pane* pP)
 {
     if (pP == NULL)
         return;
+    if (m_pHmdRo == NULL)
+        return;
+    if (m_pHmdRd == NULL)
+        return;
 
     const glm::vec3 hmd_origin3 = *m_pHmdRo;
     const glm::vec3 hmd_dir3 = *m_pHmdRd;
-
 
     holdingState& hold = pP->m_holdState;
     const glm::vec3 hmdHitPt = hmd_origin3 + hold.m_holdingTPoint * hmd_dir3;
