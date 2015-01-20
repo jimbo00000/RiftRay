@@ -609,6 +609,20 @@ OVR::Matrix4f _MakeModelviewMatrix(
     return view;
 }
 
+void RiftAppSkeleton::DoSceneRenderPrePasses() const
+{
+    for (std::vector<IScene*>::const_iterator it = m_scenes.begin();
+        it != m_scenes.end();
+        ++it)
+    {
+        const IScene* pScene = *it;
+        if (pScene != NULL)
+        {
+            pScene->RenderPrePass();
+        }
+    }
+}
+
 void RiftAppSkeleton::_DrawScenes(
     const float* pMview,
     const float* pPersp,
@@ -633,6 +647,7 @@ void RiftAppSkeleton::_DrawScenes(
         // Show the warning box if we get too close to edge of tracking cam's fov.
         glDisable(GL_DEPTH_TEST);
         m_ovrScene.RenderForOneEye(pMview, pPersp);
+        m_dashScene.RenderForOneEye(pMview, pPersp);
         glEnable(GL_DEPTH_TEST);
     }
     else

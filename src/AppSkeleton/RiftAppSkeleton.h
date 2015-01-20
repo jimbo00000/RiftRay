@@ -72,6 +72,7 @@ public:
     void DismissHealthAndSafetyWarning() const;
     bool CheckForTapOnHmd();
 
+    void DoSceneRenderPrePasses() const;
     void display_raw() const;
     void display_buffered(bool setViewport=true) const;
     void display_stereo_undistorted() const;

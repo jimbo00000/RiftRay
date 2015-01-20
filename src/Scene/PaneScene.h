@@ -30,6 +30,7 @@ public:
 
     virtual void initGL();
     virtual void timestep(float dt);
+    virtual void RenderPrePass() const;
     virtual void RenderForOneEye(const float* pMview, const float* pPersp) const;
 
     virtual std::vector<Transformation*> GetTransformationPointers();

@@ -764,6 +764,8 @@ void presentSharedFboTexture()
 
 void displayToHMD()
 {
+    g_app.DoSceneRenderPrePasses();
+
     switch(g_renderMode.outputType)
     {
     case RenderingMode::Mono_Raw:

@@ -118,8 +118,11 @@ void PaneScene::DrawScene(
     const glm::mat4& modelview,
     const glm::mat4& projection) const
 {
-    const glm::vec3 sumOffset = m_pFm->m_baseOffset + m_pFm->GetChassisPos();
-    const glm::mat4 mvLocal = glm::translate(modelview, sumOffset);
+    const glm::vec3 sumOffset =
+        m_pFm->GetChassisPos();
+    const glm::mat4 mvLocal = glm::rotate(
+        glm::translate(modelview, sumOffset),
+        -m_pFm->GetChassisYaw(), glm::vec3(0.f,1.f,0.f));
 
     for (std::vector<Pane*>::const_iterator it = m_panes.begin();
         it != m_panes.end();
@@ -130,13 +133,13 @@ void PaneScene::DrawScene(
             continue;
 
         const glm::mat4 object = pP->m_tx.GetMatrix();
+        const glm::mat4& mv = m_chassisLocalSpace ? mvLocal : modelview;
 
-        ///@warning Watch out, if this shader is expensive at FBO dimensions(600x600) it could cause dropped frames.
         pP->DrawToFBO();
 
+        //pP->DrawInScene(m_chassisLocalSpace ? mvLocal : modelview, projection, pP->m_tx.GetMatrix());
         glUseProgram(m_paneShader.prog());
         {
-            const glm::mat4& mv = m_chassisLocalSpace ? mvLocal : modelview;
             const glm::mat4 objectMatrix = mv * object;
             glUniformMatrix4fv(m_paneShader.GetUniLoc("mvmtx"), 1, false, glm::value_ptr(objectMatrix));
             glUniformMatrix4fv(m_paneShader.GetUniLoc("prmtx"), 1, false, glm::value_ptr(projection));
@@ -144,6 +147,10 @@ void PaneScene::DrawScene(
         }
         glUseProgram(0);
     }
+}
+
+void PaneScene::RenderPrePass() const
+{
 }
 
 void PaneScene::RenderForOneEye(const float* pMview, const float* pPersp) const
@@ -176,6 +183,11 @@ bool PaneScene::_GetFlyingMouseRightHandPaneRayIntersectionCoordinates(Pane* pPa
         // subtract off world space adjustment for local space
         const glm::vec3 sumOffset = m_pFm->m_baseOffset + m_pFm->GetChassisPos();
         origin3 -= sumOffset;
+        // Subtract off world space yaw
+        const glm::mat4 mvLocal = glm::rotate(
+            glm::translate(glm::mat4(1.f), sumOffset),
+            m_pFm->GetChassisYaw(), glm::vec3(0.f,1.f,0.f));
+        dir3 = glm::vec3(mvLocal * glm::vec4(dir3, 0.f));
     }
 
     float t;
@@ -199,6 +211,11 @@ bool PaneScene::_GetHmdViewRayIntersectionCoordinates(Pane* pPane, glm::vec2& pl
         // subtract off world space adjustment for local space
         const glm::vec3 sumOffset = m_pFm->m_baseOffset + m_pFm->GetChassisPos();
         origin3 -= sumOffset;
+        // Subtract off world space yaw
+        const glm::mat4 mvLocal = glm::rotate(
+            glm::translate(glm::mat4(1.f), sumOffset),
+            m_pFm->GetChassisYaw(), glm::vec3(0.f,1.f,0.f));
+        dir3 = glm::vec3(mvLocal * glm::vec4(dir3, 0.f));
     }
 
     if (glm::length(dir3) == 0)
