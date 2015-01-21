@@ -119,11 +119,10 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
 
     if (action == GLFW_PRESS)
     {
+    g_app.DismissHealthAndSafetyWarning();
     switch (key)
     {
-        default:
-            g_app.DismissHealthAndSafetyWarning();
-            break;
+        default: break;
 
         case GLFW_KEY_F1:
             if (mods & GLFW_MOD_CONTROL)
@@ -1090,10 +1089,9 @@ int main(void)
 
     while (!glfwWindowShouldClose(l_Window))
     {
-        bool tapped = g_app.CheckForTapOnHmd();
+        const bool tapped = g_app.CheckForTapOnHmd();
         if (tapped && (g_receivedFirstTap == false))
         {
-            g_renderMode.useClientDistortion();
             g_app.RecenterPose();
             g_receivedFirstTap = true;
         }
