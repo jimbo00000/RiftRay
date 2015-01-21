@@ -3,6 +3,7 @@
 #include "Logger.h"
 #include <stdarg.h>
 #include <time.h>
+#include <iostream>
 
 /// Default constructor: called the first time Instance() is called.
 /// Open the output file.
@@ -37,4 +38,5 @@ void Logger::Write(const char* format, ...)
     strftime(timestamp, sizeof(timestamp), "%Y %b %d %H:%M:%S - ", tm);
 
     m_stream << timestamp << buffer << std::endl;
+    std::cout << buffer << std::endl;
 }
