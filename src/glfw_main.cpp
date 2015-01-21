@@ -97,8 +97,7 @@ static void SetVsync(int state)
 
 static void ErrorCallback(int p_Error, const char* p_Description)
 {
-    printf("ERROR: %d, %s\n", p_Error, p_Description);
-    LOG_INFO("ERROR: %d, %s\n", p_Error, p_Description);
+    LOG_INFO("ERROR: %d, %s", p_Error, p_Description);
 }
 
 
@@ -668,21 +667,16 @@ void printGLContextInfo(GLFWwindow* pW)
     {
         if (l_Profile == GLFW_OPENGL_COMPAT_PROFILE)
         {
-            printf("GLFW_OPENGL_COMPAT_PROFILE\n");
-            LOG_INFO("GLFW_OPENGL_COMPAT_PROFILE\n");
+            LOG_INFO("GLFW_OPENGL_COMPAT_PROFILE");
         }
         else
         {
-            printf("GLFW_OPENGL_CORE_PROFILE\n");
-            LOG_INFO("GLFW_OPENGL_CORE_PROFILE\n");
+            LOG_INFO("GLFW_OPENGL_CORE_PROFILE");
         }
     }
-    printf("OpenGL: %d.%d ", l_Major, l_Minor);
-    printf("Vendor: %s\n", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
-    printf("Renderer: %s\n", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
-    LOG_INFO("OpenGL: %d.%d ", l_Major, l_Minor);
-    LOG_INFO("Vendor: %s\n", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
-    LOG_INFO("Renderer: %s\n", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
+    LOG_INFO("OpenGL: %d.%d", l_Major, l_Minor);
+    LOG_INFO("Vendor: %s", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
+    LOG_INFO("Renderer: %s", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
 }
 
 void initAuxPresentFboShader()
@@ -979,8 +973,7 @@ int main(void)
 
     if (g_app.UsingDirectMode())
     {
-        printf("Using Direct to Rift mode...\n");
-        LOG_INFO("Using Direct to Rift mode...\n");
+        LOG_INFO("Using Direct to Rift mode.");
         const GLFWmonitor* pPrimary = glfwGetPrimaryMonitor();
         int monitorCount = 0;
         GLFWmonitor** ppMonitors = glfwGetMonitors(&monitorCount);
@@ -1004,12 +997,14 @@ int main(void)
     }
     else
     {
+        LOG_INFO("Using Extended desktop mode.");
         l_Window = glfwCreateWindow(sz.w, sz.h, "RiftRay", NULL, NULL);
     }
     g_app.resize(sz.w, sz.h);
 
     if (g_app.UsingDebugHmd() == false)
     {
+        LOG_INFO("Using debug HMD.");
         glfwSetWindowPos(l_Window, pos.x, pos.y);
         g_renderMode.outputType = RenderingMode::OVR_SDK;
     }
@@ -1033,8 +1028,7 @@ int main(void)
     const GLenum l_Result = glewInit();
     if (l_Result != GLEW_OK)
     {
-        printf("glewInit() error.\n");
-        LOG_INFO("glewInit() error.\n");
+        LOG_INFO("glewInit() error.");
         exit(EXIT_FAILURE);
     }
 
