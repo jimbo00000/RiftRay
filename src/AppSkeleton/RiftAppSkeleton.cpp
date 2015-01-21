@@ -454,7 +454,10 @@ bool RiftAppSkeleton::CheckForTapOnHmd()
 
     const OVR::Vector3f v(ts.RawSensorData.Accelerometer);
     // Arbitrary value and representing moderate tap on the side of the DK2 Rift.
-    if (v.LengthSq() > 250.f)
+    // When HMD is stationary, gravity alone should yield ~= 9.8^2 == 96.04
+    const float lenSq = v.LengthSq();
+    const float tapThreshold = 250.f;
+    if (lenSq > tapThreshold)
     {
         // Limit tapping rate
         static double lastTapTime = 0.0;
