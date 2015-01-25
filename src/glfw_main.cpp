@@ -83,6 +83,8 @@ void destroyAuxiliaryWindow(GLFWwindow* pAuxWindow);
 // Set vsync for both contexts.
 static void SetVsync(int state)
 {
+    LOG_INFO("SetVsync(%d)", state);
+
     // Since AuxWindow holds the tweakbar, this should never be NULL
     if (g_AuxWindow != NULL)
     {
@@ -127,28 +129,27 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
             if (mods & GLFW_MOD_CONTROL)
             {
                 g_renderMode.toggleRenderingTypeReverse();
-                LOG_INFO("Called toggleRenderingTypeReverse");
             }
             else
             {
                 g_renderMode.toggleRenderingType();
-                LOG_INFO("Called toggleRenderingType");
             }
+            LOG_INFO("Render Type: %d", g_renderMode.outputType);
             break;
 
         case GLFW_KEY_F2:
             g_renderMode.toggleRenderingTypeMono();
-            LOG_INFO("Called toggleRenderingTypeMono");
+            LOG_INFO("Render Type: %d", g_renderMode.outputType);
             break;
 
         case GLFW_KEY_F3:
             g_renderMode.toggleRenderingTypeHMD();
-            LOG_INFO("Called toggleRenderingTypeHMD");
+            LOG_INFO("Render Type: %d", g_renderMode.outputType);
             break;
 
         case GLFW_KEY_F4:
             g_renderMode.toggleRenderingTypeDistortion();
-            LOG_INFO("Called toggleRenderingTypeDistortion");
+            LOG_INFO("Render Type: %d", g_renderMode.outputType);
             break;
 
         case GLFW_KEY_F5: g_dynamicallyScaleFBO = false; g_app.SetFBOScale(f * g_app.GetFBOScale()); break;
