@@ -233,54 +233,26 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
 
     //g_app.keyboard(key, action, 0,0);
 
+    const glm::vec3 forward(0.f, 0.f, -1.f);
+    const glm::vec3 up(0.f, 1.f, 0.f);
+    const glm::vec3 right(1.f, 0.f, 0.f);
     // Handle keyboard movement(WASD keys)
     glm::vec3 keyboardMove(0.0f, 0.0f, 0.0f);
-    if (m_keyStates['W'] != GLFW_RELEASE)
-    {
-        keyboardMove += glm::vec3(0.0f, 0.0f, -1.0f);
-    }
-    if (m_keyStates['S'] != GLFW_RELEASE)
-    {
-        keyboardMove += glm::vec3(0.0f, 0.0f, 1.0f);
-    }
-    if (m_keyStates['A'] != GLFW_RELEASE)
-    {
-        keyboardMove += glm::vec3(-1.0f, 0.0f, 0.0f);
-    }
-    if (m_keyStates['D'] != GLFW_RELEASE)
-    {
-        keyboardMove += glm::vec3(1.0f, 0.0f, 0.0f);
-    }
-    if (m_keyStates['Q'] != GLFW_RELEASE)
-    {
-        keyboardMove += glm::vec3(0.0f, -1.0f, 0.0f);
-    }
-    if (m_keyStates['E'] != GLFW_RELEASE)
-    {
-        keyboardMove += glm::vec3(0.0f, 1.0f, 0.0f);
-    }
-
-    if (m_keyStates[GLFW_KEY_UP] != GLFW_RELEASE)
-    {
-        keyboardMove += glm::vec3(0.0f, 0.0f, -1.0f);
-    }
-    if (m_keyStates[GLFW_KEY_DOWN] != GLFW_RELEASE)
-    {
-        keyboardMove += glm::vec3(0.0f, 0.0f, 1.0f);
-    }
-    if (m_keyStates[GLFW_KEY_LEFT] != GLFW_RELEASE)
-    {
-        keyboardMove += glm::vec3(-1.0f, 0.0f, 0.0f);
-    }
-    if (m_keyStates[GLFW_KEY_RIGHT] != GLFW_RELEASE)
-    {
-        keyboardMove += glm::vec3(1.0f, 0.0f, 0.0f);
-    }
+    if (m_keyStates['W'] != GLFW_RELEASE) { keyboardMove += forward; }
+    if (m_keyStates['S'] != GLFW_RELEASE) { keyboardMove -= forward; }
+    if (m_keyStates['A'] != GLFW_RELEASE) { keyboardMove -= right; }
+    if (m_keyStates['D'] != GLFW_RELEASE) { keyboardMove += right; }
+    if (m_keyStates['Q'] != GLFW_RELEASE) { keyboardMove -= up; }
+    if (m_keyStates['E'] != GLFW_RELEASE) { keyboardMove += up; }
+    if (m_keyStates[GLFW_KEY_UP] != GLFW_RELEASE) { keyboardMove += forward; }
+    if (m_keyStates[GLFW_KEY_DOWN] != GLFW_RELEASE) { keyboardMove -= forward; }
+    if (m_keyStates[GLFW_KEY_LEFT] != GLFW_RELEASE) { keyboardMove -= right; }
+    if (m_keyStates[GLFW_KEY_RIGHT] != GLFW_RELEASE) { keyboardMove += right; }
 
     float mag = 1.0f;
-    if (m_keyStates[GLFW_KEY_LEFT_SHIFT ] != GLFW_RELEASE)
+    if (m_keyStates[GLFW_KEY_LEFT_SHIFT] != GLFW_RELEASE)
         mag *= 0.1f;
-    if (m_keyStates[GLFW_KEY_LEFT_CONTROL ] != GLFW_RELEASE)
+    if (m_keyStates[GLFW_KEY_LEFT_CONTROL] != GLFW_RELEASE)
         mag *= 10.0f;
 
     // Yaw keys
