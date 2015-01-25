@@ -899,8 +899,17 @@ void StartShaderLoad()
 #endif
 }
 
-int main(void)
+int main(int argc, char** argv)
 {
+    bool useOpenGLCoreContext = false;
+
+    RenderingMode renderMode;
+    renderMode.outputType = RenderingMode::OVR_SDK;
+
+#ifdef USE_CORE_CONTEXT
+    //useOpenGLCoreContext = true;
+#endif
+
     ///@todo Command line options
     LoadConfigFile();
 
@@ -926,18 +935,18 @@ int main(void)
         chdir(path);
 #endif
 
-
-#ifdef USE_CORE_CONTEXT
-    LOG_INFO("Using OpenGL core context.");
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    if (useOpenGLCoreContext)
+    {
+        LOG_INFO("Using OpenGL core context.");
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 #if defined(_MACOS)
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 #else
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 #endif
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    }
 
     glfwWindowHint(GLFW_SAMPLES, 0);
 
@@ -1061,12 +1070,10 @@ int main(void)
         exit(EXIT_FAILURE);
     }
 
+
 #ifdef USE_ANTTWEAKBAR
-  #ifdef USE_CORE_CONTEXT
-    TwInit(TW_OPENGL_CORE, NULL);
-  #else
-    TwInit(TW_OPENGL, NULL);
-  #endif
+    LOG_INFO("Using AntTweakbar.");
+    TwInit(useOpenGLCoreContext ? TW_OPENGL_CORE : TW_OPENGL, NULL);
     InitializeBar();
 #endif
 
