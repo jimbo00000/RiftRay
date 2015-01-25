@@ -991,12 +991,21 @@ int main(void)
         exit(EXIT_FAILURE);
     }
 
+    // Required for SDK rendering (to do the buffer swap on its own)
+#if defined(_WIN32)
+    g_app.setWindow(glfwGetWin32Window(l_Window));
+#elif defined(__linux__)
+    g_app.setWindow(glfwGetX11Window(l_Window), glfwGetX11Display());
+#endif
+
     glfwMakeContextCurrent(l_Window);
     glfwSetWindowSizeCallback(l_Window, resize);
     glfwSetMouseButtonCallback(l_Window, mouseDown);
     glfwSetCursorPosCallback(l_Window, mouseMove);
     glfwSetScrollCallback(l_Window, mouseWheel);
     glfwSetKeyCallback(l_Window, keyboard);
+
+    memset(m_keyStates, 0, GLFW_KEY_LAST*sizeof(int));
 
     // joysticks
     for (int i = GLFW_JOYSTICK_1; i <= GLFW_JOYSTICK_LAST; ++i)
@@ -1052,13 +1061,6 @@ int main(void)
         exit(EXIT_FAILURE);
     }
 
-    // Required for SDK rendering (to do the buffer swap on its own)
-#if defined(_WIN32)
-    g_app.setWindow(glfwGetWin32Window(l_Window));
-#elif defined(__linux__)
-    g_app.setWindow(glfwGetX11Window(l_Window), glfwGetX11Display());
-#endif
-
 #ifdef USE_ANTTWEAKBAR
   #ifdef USE_CORE_CONTEXT
     TwInit(TW_OPENGL_CORE, NULL);
@@ -1073,8 +1075,6 @@ int main(void)
     LOG_INFO("Calling initVR...");
     g_app.initVR();
     LOG_INFO("initVR complete.");
-
-    memset(m_keyStates, 0, GLFW_KEY_LAST*sizeof(int));
 
     SetVsync(1); // default to vsync on
 
