@@ -997,6 +997,50 @@ int main(void)
     glfwSetScrollCallback(l_Window, mouseWheel);
     glfwSetKeyCallback(l_Window, keyboard);
 
+    // joysticks
+    for (int i = GLFW_JOYSTICK_1; i <= GLFW_JOYSTICK_LAST; ++i)
+    {
+        if (GL_FALSE == glfwJoystickPresent(i))
+            continue;
+
+        const char* pJoyName = glfwGetJoystickName(i);
+        if (pJoyName == NULL)
+            continue;
+
+        int numAxes = 0;
+        int numButtons = 0;
+        glfwGetJoystickAxes(i, &numAxes);
+        glfwGetJoystickButtons(i, &numButtons);
+
+        LOG_INFO("Glfw opened Joystick #%d: %s w/ %d axes, %d buttons", i, pJoyName, numAxes, numButtons);
+        if (g_joystickIdx == -1)
+            g_joystickIdx = i;
+    }
+
+    // Log system monitor information
+    const GLFWmonitor* pPrimary = glfwGetPrimaryMonitor();
+    int monitorCount = 0;
+    GLFWmonitor** ppMonitors = glfwGetMonitors(&monitorCount);
+    for (int i=0; i<monitorCount; ++i)
+    {
+        GLFWmonitor* pCur = ppMonitors[i];
+        const GLFWvidmode* mode = glfwGetVideoMode(pCur);
+        if (mode != NULL)
+        {
+            LOG_INFO("Monitor #%d: %dx%d @ %dHz %s",
+                i,
+                mode->width,
+                mode->height,
+                mode->refreshRate,
+                pCur==pPrimary ? "Primary":"");
+        }
+    }
+
+    printGLContextInfo(l_Window);
+    glfwMakeContextCurrent(l_Window);
+    g_pHMDWindow = l_Window;
+
+
     // Don't forget to initialize Glew, turn glewExperimental on to
     // avoid problems fetching function pointers...
     glewExperimental = GL_TRUE;
@@ -1006,8 +1050,6 @@ int main(void)
         LOG_INFO("glewInit() error.");
         exit(EXIT_FAILURE);
     }
-
-    printGLContextInfo(l_Window);
 
     // Required for SDK rendering (to do the buffer swap on its own)
 #if defined(_WIN32)
@@ -1032,25 +1074,6 @@ int main(void)
     LOG_INFO("initVR complete.");
 
     memset(m_keyStates, 0, GLFW_KEY_LAST*sizeof(int));
-
-    // joysticks
-    printf("\n\n");
-    for (int i = GLFW_JOYSTICK_1; i <= GLFW_JOYSTICK_LAST; ++i)
-    {
-        if (GL_FALSE == glfwJoystickPresent(i))
-            continue;
-
-        const char* pJoyName = glfwGetJoystickName(i);
-        if (pJoyName == NULL)
-            continue;
-
-        printf("Opened Joystick %d: %s\n", i, pJoyName);
-        g_joystickIdx = i;
-        break;
-    }
-
-    glfwMakeContextCurrent(l_Window);
-    g_pHMDWindow = l_Window;
 
     SetVsync(1); // default to vsync on
 
