@@ -927,6 +927,7 @@ int main(void)
 
 
 #ifdef USE_CORE_CONTEXT
+    LOG_INFO("Using OpenGL core context.");
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 #if defined(_MACOS)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
@@ -984,6 +985,7 @@ int main(void)
 
     if (!l_Window)
     {
+        LOG_INFO("Glfw failed to create a window. Exiting.");
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
