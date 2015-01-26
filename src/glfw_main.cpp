@@ -935,63 +935,62 @@ int main(int argc, char** argv)
         chdir(path);
 #endif
 
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+#if defined(_MACOS)
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+#else
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+#endif
     if (useOpenGLCoreContext)
     {
         LOG_INFO("Using OpenGL core context.");
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-#if defined(_MACOS)
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-#else
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-#endif
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    }
+    else
+    {
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
     }
 
     glfwWindowHint(GLFW_SAMPLES, 0);
 
-    // This call assumes the Rift display is in extended mode.
     g_app.initHMD();
     const ovrSizei sz = g_app.getHmdResolution();
     const ovrVector2i pos = g_app.getHmdWindowPos();
 
-    if (g_app.UsingDirectMode())
+    if (g_app.UsingDebugHmd() == true)
     {
-        LOG_INFO("Using Direct to Rift mode.");
-        const GLFWmonitor* pPrimary = glfwGetPrimaryMonitor();
-        int monitorCount = 0;
-        GLFWmonitor** ppMonitors = glfwGetMonitors(&monitorCount);
-        for (int i=0; i<monitorCount; ++i)
-        {
-            GLFWmonitor* pCur = ppMonitors[i];
-            if (pCur == pPrimary)
-                continue;
-            const GLFWvidmode* mode = glfwGetVideoMode(pCur);
-        }
-
-        ///@note Without decorations, we pull <1 FPS on NVIDIA Win7 344.60
-        //glfwWindowHint(GLFW_DECORATED, 0);
-        l_Window = glfwCreateWindow(sz.w, sz.h, "RiftRay", NULL, NULL);
-        //glfwWindowHint(GLFW_DECORATED, 1);
-        glfwSetWindowPos(l_Window, pos.x, pos.y);
-
-#if defined(_WIN32)
-        g_app.AttachToWindow((void*)glfwGetWin32Window(l_Window));
-#endif
+        // Create a normal, decorated application window
+        LOG_INFO("Using Debug HMD mode.");
+        l_Window = glfwCreateWindow(sz.w, sz.h, "GLFW Oculus Rift Test", NULL, NULL);
     }
     else
     {
-        LOG_INFO("Using Extended desktop mode.");
-        l_Window = glfwCreateWindow(sz.w, sz.h, "RiftRay", NULL, NULL);
-    }
-    g_app.resize(sz.w, sz.h);
+        // HMD active - position undecorated window to fill HMD viewport
+        if (g_app.UsingDirectMode())
+        {
+            LOG_INFO("Using Direct to Rift mode.");
 
-    if (g_app.UsingDebugHmd() == false)
-    {
-        LOG_INFO("Using debug HMD.");
+            l_Window = glfwCreateWindow(sz.w, sz.h, "GLFW Oculus Rift Test", NULL, NULL);
+            glfwSetWindowPos(l_Window, pos.x, pos.y);
+
+#if defined(_WIN32)
+            g_app.AttachToWindow((void*)glfwGetWin32Window(l_Window));
+#endif
+        }
+        else
+        {
+            LOG_INFO("Using Extended desktop mode.");
+
+            glfwWindowHint(GLFW_DECORATED, 0);
+            l_Window = glfwCreateWindow(sz.w, sz.h, "GLFW Oculus Rift Test", NULL, NULL);
+            glfwWindowHint(GLFW_DECORATED, 1);
+        }
+
         glfwSetWindowPos(l_Window, pos.x, pos.y);
-        g_renderMode.outputType = RenderingMode::OVR_SDK;
+        g_renderMode = renderMode;
     }
+    resize(l_Window, sz.w, sz.h); // inform AppSkeleton of window size
 
     if (!l_Window)
     {
