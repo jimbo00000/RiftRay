@@ -24,6 +24,7 @@
 #include "ShaderFunctions.h"
 #include "DirectoryFunctions.h"
 #include "GLUtils.h"
+#include "Logger.h"
 
 RiftAppSkeleton::RiftAppSkeleton()
 : m_Hmd(NULL)
@@ -751,6 +752,7 @@ void RiftAppSkeleton::_ToggleShaderWorld()
     if (m_galleryScene.GetActiveShaderToy() != NULL)
     {
         // Back into gallery
+        LOG_INFO("Back to gallery");
         ResetAllTransformations();
         m_chassisPos = m_chassisPosCached;
         m_chassisYaw = m_chassisYawCached;
@@ -774,8 +776,10 @@ void RiftAppSkeleton::_ToggleShaderWorld()
     ShaderToy* pST = pP->m_pShadertoy;
     if (pST == NULL)
         return;
+
     // Transitioning into shader world
     ///@todo Will we drop frames here? Clear to black if so.
+    LOG_INFO("Transition to shadertoy: %s", pST->GetSourceFile().c_str());
     m_galleryScene.SetActiveShaderToy(pST);
     m_galleryScene.SetActiveShaderToyPane(pP);
 
