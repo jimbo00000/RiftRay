@@ -175,12 +175,25 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
                 if (g_AuxWindow == NULL)
                 {
                     g_AuxWindow = initializeAuxiliaryWindow(g_pHMDWindow);
+
+#ifdef USE_ANTTWEAKBAR
+                    ///@note This will break PaneScene's tweakbar positioning
+                    TwWindowSize(g_auxWindow_w, g_auxWindow_h);
+#endif
                 }
                 else
                 {
                     destroyAuxiliaryWindow(g_AuxWindow);
                     glfwMakeContextCurrent(g_pHMDWindow);
                 }
+            }
+            break;
+
+        case GLFW_KEY_TAB:
+            g_app.m_dashScene.m_bDraw = !g_app.m_dashScene.m_bDraw;
+            if (g_app.m_dashScene.m_bDraw)
+            {
+                g_app.m_dashScene.ResizeTweakbar();
             }
             break;
 

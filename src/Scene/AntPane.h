@@ -28,6 +28,7 @@ public:
     virtual void DrawToFBO() const;
     virtual void OnMouseClick(int state, int x, int y);
     virtual void OnMouseMove(int x, int y);
+    virtual void ResizeTweakbar();
 
 protected:
 

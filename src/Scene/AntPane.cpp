@@ -38,7 +38,11 @@ AntPane::~AntPane()
 void AntPane::initGL()
 {
     Pane::initGL();
+    ResizeTweakbar();
+}
 
+void AntPane::ResizeTweakbar()
+{
 #ifdef USE_ANTTWEAKBAR
     ///@note This will override the Aux window's TwSize call.
     const glm::ivec2 fbsz = GetFBOSize();

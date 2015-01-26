@@ -24,6 +24,7 @@ public:
 
     // This special case is for the AntTweakBar
     virtual glm::ivec2 GetAntFBOSize() const { return m_antPane.GetFBOSize(); }
+    virtual void ResizeTweakbar() { m_antPane.ResizeTweakbar(); }
 
 protected:
     AntPane m_antPane;
