@@ -976,6 +976,7 @@ int main(int argc, char** argv)
         // Create a normal, decorated application window
         LOG_INFO("Using Debug HMD mode.");
         l_Window = glfwCreateWindow(sz.w, sz.h, "GLFW Oculus Rift Test", NULL, NULL);
+        g_app.m_dashScene.m_bDraw = false;
     }
     else
     {
