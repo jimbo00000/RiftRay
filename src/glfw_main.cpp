@@ -920,16 +920,38 @@ int main(int argc, char** argv)
     renderMode.outputType = RenderingMode::OVR_SDK;
 
 #ifdef USE_CORE_CONTEXT
-    //useOpenGLCoreContext = true;
+    useOpenGLCoreContext = true;
 #endif
 
-    ///@todo Command line options
+    // Command line options
+    for (int i=0; i<argc; ++i)
+    {
+        const std::string a = argv[i];
+        LOG_INFO("argv[%d]: %s", i, a.c_str());
+        if (!a.compare("-sdk"))
+        {
+            g_renderMode.outputType = RenderingMode::OVR_SDK;
+            renderMode.outputType = RenderingMode::OVR_SDK;
+        }
+        else if (!a.compare("-client"))
+        {
+            g_renderMode.outputType = RenderingMode::OVR_Client;
+            renderMode.outputType = RenderingMode::OVR_Client;
+        }
+        else if (!a.compare("-core"))
+        {
+            useOpenGLCoreContext = true;
+        }
+        else if (!a.compare("-compat"))
+        {
+            useOpenGLCoreContext = false;
+        }
+    }
+
     LoadConfigFile();
 
     GLFWwindow* l_Window = NULL;
-
     glfwSetErrorCallback(ErrorCallback);
-
     if (!glfwInit())
     {
         exit(EXIT_FAILURE);
