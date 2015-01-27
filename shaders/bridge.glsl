@@ -15,6 +15,9 @@
 // @var tex0 tex00.jpg
 // @var tex1 tex09.jpg
 // @var tex2 tex16.png
+// @var vec3 lig 0 -0.3 -1
+
+uniform vec3 lig; // = normalize(vec3(-0.5,0.25,-0.3));
 
 //----------------------------------------------------------------
 
@@ -272,9 +275,6 @@ float calcOcc( in vec3 pos, in vec3 nor )
     }
     return clamp( 1.0 - 0.15*totao, 0.0, 1.0 );
 }
-
-
-vec3 lig = normalize(vec3(-0.5,0.25,-0.3));
 
 void shade( in vec3 pos, in vec3 nor, in vec3 rd, in float matID, 
 		    out vec3 bnor, out vec4 mate, out vec2 mate2 )
