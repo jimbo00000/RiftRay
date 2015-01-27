@@ -903,15 +903,15 @@ void RiftAppSkeleton::_drawSceneMono() const
         m_chassisYaw,
         m_chassisPos);
 
-    const int w = m_windowSize.x;
-    const int h = m_windowSize.y;
+    const int w = m_renderBuffer.w;
+    const int h = m_renderBuffer.h;
     const glm::mat4 persp = glm::perspective(
         90.0f,
         static_cast<float>(w)/static_cast<float>(h),
         0.004f,
         500.0f);
 
-    ovrRecti rvp = {0,0,w,h};
+    const ovrRecti rvp = {0,0,w,h};
     _DrawScenes(&view.Transposed().M[0][0], glm::value_ptr(persp), rvp);
 }
 
