@@ -11,13 +11,18 @@
 // @var headSize 0.008
 // @var eyePos -0.0011595160 1.5994246 -5.0102816
 // @var vec3 lightdir 0 -0.3 -1
+// @var vec3 ambcol .9 .85 1 color
+// @var vec3 diffcol 1. .9 .9 color
+// @var vec3 speccol 1 .9 .5 color
 
 const int Iterations=14;
 const float detail=.00002;
 const float Scale=2.;
 
 uniform vec3 lightdir; //=normalize(vec3(0.,-0.3,-1.));
-
+uniform vec3 ambcol;
+uniform vec3 diffcol;
+uniform vec3 speccol;
 
 float ot=0.;
 float det=0.;
@@ -112,7 +117,7 @@ vec3 light(in vec3 p, in vec3 dir) {
 	float spec=pow(max(0.,dot(dir,-r))*sh,10.)*(.5+ao*.5);
 	float k=kset(p)*.18; 
 	vec3 col=mix(vec3(k*1.1,k*k*1.3,k*k*k),vec3(k),.45)*2.;
-	col=col*ao*(amb*vec3(.9,.85,1.)+diff*vec3(1.,.9,.9))+spec*vec3(1,.9,.5)*.7;	
+	col=col*ao*(amb*ambcol+diff*diffcol)+spec*speccol*.7;	
 	return col;
 }
 
@@ -120,7 +125,6 @@ vec3 light(in vec3 p, in vec3 dir) {
 vec3 raymarch(in vec3 from, in vec3 dir) 
 {
 	float t=iGlobalTime;
-	vec2 lig=vec2(sin(t*2.)*.6,cos(t)*.25-.25);
 	float fog,glow,d=1., totdist=glow=fog=0.;
 	vec3 p, col=vec3(0.);
 	float ref=0.;
