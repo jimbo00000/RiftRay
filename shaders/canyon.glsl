@@ -13,6 +13,10 @@
 // @var tex1 tex07.jpg
 // @var tex2 tex16.png
 // @var tex3 tex06.jpg
+// @var vec3 klig -1.0 0.19 0.4 dir
+
+uniform vec3 klig; // = normalize(vec3(-1.0,0.19,0.4));
+
 //-----------------------------------------------------------------------------------
 
 #define LOWDETAIL
@@ -191,8 +195,6 @@ vec3 getSceneColor( in vec3 ro, in vec3 rd )
     //-----------------------------------------------------
 	// render
     //-----------------------------------------------------
-
-	vec3 klig = normalize(vec3(-1.0,0.19,0.4));
 
 	float sun = clamp(dot(klig,rd),0.0,1.0 );
 
