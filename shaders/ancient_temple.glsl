@@ -11,18 +11,20 @@
 // @var headSize 0.008
 // @var eyePos -0.0011595160 1.5994246 -5.0102816
 // @var vec3 lightdir 0 -0.3 -1
-// @var vec3 ambcol .9 .85 1 color
-// @var vec3 diffcol 1. .9 .9 color
-// @var vec3 speccol 1 .9 .5 color
+// @var vec3 colamb .9 .85 1 color
+// @var vec3 coldiff 1. .9 .9 color
+// @var vec3 colspec 1 .9 .5 color
+// @var vec3 ptx 0.5 1. 0.5 color
 
 const int Iterations=14;
 const float detail=.00002;
 const float Scale=2.;
 
 uniform vec3 lightdir; //=normalize(vec3(0.,-0.3,-1.));
-uniform vec3 ambcol;
-uniform vec3 diffcol;
-uniform vec3 speccol;
+uniform vec3 colamb;
+uniform vec3 coldiff;
+uniform vec3 colspec;
+uniform vec3 ptx;
 
 float ot=0.;
 float det=0.;
@@ -42,7 +44,7 @@ float de(vec3 pos) {
 		float sc=Scale/clamp(r2,0.4,1.);
 		p*=sc; 
 		DEfactor*=sc;
-		p = p - vec3(0.5,1.,0.5);
+		p = p - ptx;
 	}
 	float fl=pos.y-3.013;
 	float d=min(fl,length(p)/DEfactor-.0005);
@@ -117,7 +119,7 @@ vec3 light(in vec3 p, in vec3 dir) {
 	float spec=pow(max(0.,dot(dir,-r))*sh,10.)*(.5+ao*.5);
 	float k=kset(p)*.18; 
 	vec3 col=mix(vec3(k*1.1,k*k*1.3,k*k*k),vec3(k),.45)*2.;
-	col=col*ao*(amb*ambcol+diff*diffcol)+spec*speccol*.7;	
+	col=col*ao*(amb*colamb+diff*coldiff)+spec*colspec*.7;	
 	return col;
 }
 
