@@ -14,13 +14,16 @@
 // @var tex1 tex01.jpg
 // @var tex2 tex07.jpg
 // @var tex3 tex03.jpg
+// @var vec3 sunLight 0.35 0.3 0.6 dir
+// @var vec3 sunColour 1.0 .8 .7 color
 
 //#define STEREO 
 //#define VARY_SIZE
 
-vec3 sunLight  = normalize( vec3(  0.35, 0.3,  0.6 ) );
+uniform vec3 sunLight; // = normalize( vec3(  0.35, 0.3,  0.6 ) );
+uniform vec3 sunColour; // = vec3(1.0, .8, .7);
+
 vec3 cameraPos = vec3(0.0);
-vec3 sunColour = vec3(1.0, .8, .7);
 const mat2 rotate2D = mat2(1.932, 1.623, -1.623, 1.952);
 
 //--------------------------------------------------------------------------
