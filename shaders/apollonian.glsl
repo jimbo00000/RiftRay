@@ -17,13 +17,22 @@
 // @var eyePos -2.304 0.110 -0.599
 // @var vec3 light1 0.577 0.577 -0.577 dir
 // @var vec3 light2 -0.707 0.000  0.707 dir
+// @var vec3 col1 1.0 0.80 0.2 color
+// @var vec3 col2 1.0 0.55 0.0 color
 // @var float ss 1.1 0.5 2.0 0.01
+
 
 #ifdef RIFTRAY
 uniform vec3 light1;
 uniform vec3 light2;
+uniform vec3 col1;
+uniform vec3 col2;
 uniform float ss;
 #else
+vec3 light1 = vec3(0.577, 0.577, -0.577);
+vec3 light2 = vec3(-0.707, 0.000, 0.707);
+vec3 col1 = vec3(1.0,0.80,0.92);
+vec3 col2 = vec3(1.0,0.55,0.90);
 float ss = 1.1;
 #endif
 
@@ -102,8 +111,8 @@ vec3 getSceneColor( vec3 ro, vec3 rd )
 
         // material		
 		vec3 rgb = vec3(1.0);
-		rgb = mix( rgb, vec3(1.0,0.80,0.2), clamp(6.0*tra.y,0.0,1.0) );
-		rgb = mix( rgb, vec3(1.0,0.55,0.0), pow(clamp(1.0-2.0*tra.z,0.0,1.0),8.0) );
+		rgb = mix( rgb, col1, clamp(6.0*tra.y,0.0,1.0) );
+		rgb = mix( rgb, col2, pow(clamp(1.0-2.0*tra.z,0.0,1.0),8.0) );
 
 		// color
 		col = rgb*brdf*exp(-0.2*t);

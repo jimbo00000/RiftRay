@@ -21,6 +21,13 @@
 #include "Timer.h"
 
 struct shaderVariable {
+    enum variableType {
+        None=0,
+        Scalar,
+        Direction,
+        Color,
+        Unknown,
+    };
     std::string name;
     GLint uniLoc;
     glm::vec4 value;
@@ -28,6 +35,7 @@ struct shaderVariable {
     glm::vec4 maxVal;
     float incr;
     int width;
+    variableType varType;
 
     shaderVariable()
         : name()
@@ -37,6 +45,7 @@ struct shaderVariable {
         , maxVal(0.f)
         , incr(1.f)
         , width(1)
+        , varType(None)
     {
     }
 };

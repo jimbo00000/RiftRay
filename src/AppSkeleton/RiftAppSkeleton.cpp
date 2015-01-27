@@ -830,7 +830,7 @@ void RiftAppSkeleton::_ToggleShaderWorld()
         std::ostringstream oss;
         oss << " group='Shader' ";
 
-        ETwType t = TW_TYPE_FLOAT; 
+        ETwType t = TW_TYPE_FLOAT;
         if (var.width == 1)
         {
             // Assemble min/max/incr param string for ant
@@ -846,7 +846,18 @@ void RiftAppSkeleton::_ToggleShaderWorld()
         else if (var.width == 3)
         {
             t = TW_TYPE_DIR3F;
-            ///@todo dir flag vs. free values
+            if (var.varType == shaderVariable::Direction)
+            {
+                t = TW_TYPE_DIR3F;
+            }
+            else if (var.varType == shaderVariable::Color)
+            {
+                t = TW_TYPE_COLOR3F;
+            }
+            ///@todo handle free, non-normalized values
+            else
+            {
+            }
         }
 
         TwAddVarRW(m_pShaderTweakbar, vn.c_str(), t, (void*)glm::value_ptr(tv), oss.str().c_str());

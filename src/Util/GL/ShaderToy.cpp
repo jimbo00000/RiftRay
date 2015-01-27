@@ -107,8 +107,18 @@ void ShaderToy::_ParseVariableLine(const std::string& vardecl)
         var.value = initialVal;
         var.width = 3;
 
+        if (tokens.size() > 5)
+        {
+            if (!tokens[5].compare("dir"))
+            {
+                var.varType = shaderVariable::Direction;
+            }
+            else if (!tokens[5].compare("color"))
+            {
+                var.varType = shaderVariable::Color;
+            }
+        }
         m_tweakVars[name] = var;
-        ///@todo check for dir tag at end
     }
     else if (!type.compare("float"))
     {
