@@ -47,7 +47,7 @@ void PngPane::initGL()
     GLuint width = 0;
     GLuint height = 0;
     const std::string texName = "../textures/XboxControllerLayout.png";
-    texId = LoadTextureFromPng(texName.c_str(), &width, &height);
+    texId = LoadTextureFromPng(texName.c_str(), &width, &height, true);
 
     // Even though this buffer is not rendered to, we can store the static texture here.
     m_paneRenderBuffer.tex = texId;

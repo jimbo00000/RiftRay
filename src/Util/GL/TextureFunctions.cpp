@@ -62,7 +62,8 @@ GLuint GenTextureFromImageData(
 GLuint LoadTextureFromPng(
     const char* pFilename,
     unsigned int* pWid,
-    unsigned int* pHei)
+    unsigned int* pHei,
+    bool flipY)
 {
     std::vector<unsigned char> image;
     unsigned width, height;
@@ -82,6 +83,18 @@ GLuint LoadTextureFromPng(
         return 0;
     }
     //the pixels are now in the vector "image", 4 bytes per pixel, ordered RGBARGBA..., use it as texture, draw it, ...
+
+    if (flipY)
+    {
+        const int wsz = 4 * width;
+        std::vector<unsigned char> temp(wsz);
+        for (unsigned int i=0; i<height/2; ++i)
+        {
+            memcpy(&temp[0], &image[i*wsz], wsz);
+            memcpy(&image[i*wsz], &image[(height-i-1)*wsz], wsz);
+            memcpy(&image[(height-i-1)*wsz], &temp[0], wsz);
+        }
+    }
 
     *pWid = width;
     *pHei = height;
