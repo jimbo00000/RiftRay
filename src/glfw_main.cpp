@@ -495,14 +495,36 @@ void joystick()
     // Right stick on Xbox controller changes render resolution
     if (numAxes >= 5)
     {
-        const float x = -pAxisStates[3];
-        if (fabs(x) > 0.1f)
+        const float x = pAxisStates[4];
+        const float y = -pAxisStates[3];
+        const float deadZone = 0.1f;
+        if (fabs(y) > deadZone)
         {
-            const float curve = 1.f - sqrt(1-x*x);
+            const float curve = 1.f - sqrt(1-y*y);
             const float increment = 0.03f * curve;
-            const float coeff = 1.f + increment * x;
+            const float coeff = 1.f + increment * y;
             g_app.SetFBOScale(coeff * g_app.GetFBOScale());
             g_dynamicallyScaleFBO = false;
+        }
+        if (fabs(x) > deadZone)
+        {
+            const float cinMin = 0.f;
+            const float cinMax = .95f;
+            const float l = (-x - deadZone)/(1. - deadZone);
+            const float r = ( x - deadZone)/(1. - deadZone);
+            // Push left on stick to close cinemascope, right to open
+            if (l > 0.f)
+            {
+                g_app.m_cinemaScopeFactor = std::max(
+                    g_app.m_cinemaScopeFactor,
+                    l * cinMax);
+            }
+            else if (r > 0.f)
+            {
+                g_app.m_cinemaScopeFactor = std::min(
+                    g_app.m_cinemaScopeFactor,
+                    1.f - r);
+            }
         }
     }
 }
