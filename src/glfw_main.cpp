@@ -500,11 +500,30 @@ void joystick()
         const float deadZone = 0.1f;
         if (fabs(y) > deadZone)
         {
+            g_dynamicallyScaleFBO = false;
+#if 0
+            // Relative motion
             const float curve = 1.f - sqrt(1-y*y);
             const float increment = 0.03f * curve;
             const float coeff = 1.f + increment * y;
             g_app.SetFBOScale(coeff * g_app.GetFBOScale());
-            g_dynamicallyScaleFBO = false;
+#else
+            // Absolute "farthest push"
+            const float resMin = g_app.m_fboMinScale;
+            const float resMax = 1.f;
+            const float d = (-y - deadZone)/(1. - deadZone); // [0,1]
+            const float u = ( y - deadZone)/(1. - deadZone);
+            // Push up on stick to increase resolution, down to decrease
+            const float s = g_app.GetFBOScale();
+            if (d > 0.f)
+            {
+                g_app.SetFBOScale(std::min(s, 1.f - d));
+            }
+            else if (u > 0.f)
+            {
+                g_app.SetFBOScale(std::max(s, u * resMax));
+            }
+#endif
         }
         if (fabs(x) > deadZone)
         {
