@@ -29,6 +29,7 @@
 DashboardScene::DashboardScene()
 : PaneScene(true)
 , m_antPane()
+, m_pngPane()
 {
     // Like RiftAppSkeleton's ctor with vector of Scenes, add as many as desired here
     // and set initial conditions. Some may have awkward custom pointer setters.
@@ -39,7 +40,17 @@ DashboardScene::DashboardScene()
     m_antPane.m_tx.SetDefaultOrientation(ori);
     m_antPane.m_tx.SetOrientation(ori);
 
+    {
+        const glm::vec3 pos(1.0f, 0.0f, -1.0f);
+        m_pngPane.m_tx.SetPosition(pos);
+        m_pngPane.m_tx.SetDefaultPosition(pos);
+        const glm::mat4 ori = glm::rotate(glm::mat4(1.0f), -0.6f, glm::vec3(0,1,0));
+        m_pngPane.m_tx.SetDefaultOrientation(ori);
+        m_pngPane.m_tx.SetOrientation(ori);
+    }
+
     m_panes.push_back(&m_antPane);
+    m_panes.push_back(&m_pngPane);
 }
 
 DashboardScene::~DashboardScene()

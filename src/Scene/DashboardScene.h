@@ -14,6 +14,7 @@
 
 #include "PaneScene.h"
 #include "AntPane.h"
+#include "PngPane.h"
 
 ///@brief 
 class DashboardScene : public PaneScene
@@ -28,6 +29,7 @@ public:
 
 protected:
     AntPane m_antPane;
+    PngPane m_pngPane;
 
 private: // Disallow copy ctor and assignment operator
     DashboardScene(const DashboardScene&);

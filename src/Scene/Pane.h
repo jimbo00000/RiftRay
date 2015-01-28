@@ -80,8 +80,8 @@ public:
         const glm::mat4& modelview,
         const glm::mat4& projection,
         const glm::mat4& object) const;
-protected:
 
+protected:
     virtual void _InitPointerAttributes();
     virtual void _InitPlaneAttributes();
 
