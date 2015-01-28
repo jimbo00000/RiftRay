@@ -912,8 +912,8 @@ void RiftAppSkeleton::_drawSceneMono() const
         m_chassisYaw,
         m_chassisPos);
 
-    const int w = m_renderBuffer.w;
-    const int h = m_renderBuffer.h;
+    const int w = static_cast<int>(m_fboScale * static_cast<float>(m_renderBuffer.w));
+    const int h = static_cast<int>(m_fboScale * static_cast<float>(m_renderBuffer.h));
     const glm::mat4 persp = glm::perspective(
         90.0f,
         static_cast<float>(w)/static_cast<float>(h),
