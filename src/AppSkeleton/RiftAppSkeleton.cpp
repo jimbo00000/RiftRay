@@ -824,9 +824,6 @@ void RiftAppSkeleton::_ToggleShaderWorld()
         const std::string& name = it->first;
         const shaderVariable& var = it->second;
 
-        const glm::vec4& tv = var.value;
-        const std::string vn = name;
-
         std::ostringstream oss;
         oss << " group='Shader' ";
 
@@ -859,7 +856,8 @@ void RiftAppSkeleton::_ToggleShaderWorld()
             {
             }
         }
-
+        const glm::vec4& tv = var.value;
+        const std::string vn = name;
         TwAddVarRW(m_pShaderTweakbar, vn.c_str(), t, (void*)glm::value_ptr(tv), oss.str().c_str());
     }
 #endif
@@ -1087,12 +1085,13 @@ void RiftAppSkeleton::display_sdk() const
 
         const ovrGLTexture& otex = m_EyeTexture[e];
         const ovrRecti& rvp = otex.OGL.Header.RenderViewport;
-        glViewport(
+        const ovrRecti rsc = {
             static_cast<int>(m_fboScale * rvp.Pos.x),
             static_cast<int>(m_fboScale * rvp.Pos.y),
             static_cast<int>(m_fboScale * rvp.Size.w),
             static_cast<int>(m_fboScale * rvp.Size.h)
-            );
+        };
+        glViewport(rsc.Pos.x, rsc.Pos.y, rsc.Size.w, rsc.Size.h);
 
         const OVR::Matrix4f proj = ovrMatrix4f_Projection(
             m_EyeRenderDesc[e].Fov,
@@ -1113,7 +1112,7 @@ void RiftAppSkeleton::display_sdk() const
 
         _resetGLState();
 
-        _DrawScenes(&view.Transposed().M[0][0], &proj.Transposed().M[0][0], rvp, &scaledView.Transposed().M[0][0]);
+        _DrawScenes(&view.Transposed().M[0][0], &proj.Transposed().M[0][0], rsc, &scaledView.Transposed().M[0][0]);
     }
     unbindFBO();
 
