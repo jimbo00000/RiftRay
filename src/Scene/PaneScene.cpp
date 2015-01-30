@@ -118,12 +118,16 @@ void PaneScene::DrawScene(
     const glm::mat4& modelview,
     const glm::mat4& projection) const
 {
-    const glm::vec3 sumOffset =
-        m_pFm->GetChassisPos();
-    const glm::mat4 mvLocal = glm::rotate(
-        glm::translate(modelview, sumOffset),
-        -m_pFm->GetChassisYaw(), glm::vec3(0.f,1.f,0.f));
-    const glm::mat4& mv = m_chassisLocalSpace ? mvLocal : modelview;
+    glm::mat4 mv = modelview;
+    if ((m_pFm != NULL) && m_chassisLocalSpace)
+    {
+        const glm::vec3 sumOffset =
+            m_pFm->GetChassisPos();
+        const glm::mat4 mvLocal = glm::rotate(
+            glm::translate(modelview, sumOffset),
+            -m_pFm->GetChassisYaw(), glm::vec3(0.f,1.f,0.f));
+        mv = mvLocal;
+    }
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
