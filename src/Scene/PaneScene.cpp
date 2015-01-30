@@ -123,6 +123,7 @@ void PaneScene::DrawScene(
     const glm::mat4 mvLocal = glm::rotate(
         glm::translate(modelview, sumOffset),
         -m_pFm->GetChassisYaw(), glm::vec3(0.f,1.f,0.f));
+    const glm::mat4& mv = m_chassisLocalSpace ? mvLocal : modelview;
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -135,7 +136,6 @@ void PaneScene::DrawScene(
             continue;
 
         const glm::mat4 object = pP->m_tx.GetMatrix();
-        const glm::mat4& mv = m_chassisLocalSpace ? mvLocal : modelview;
 
         ///@todo Extract function
         //pP->DrawInScene(m_chassisLocalSpace ? mvLocal : modelview, projection, pP->m_tx.GetMatrix());
