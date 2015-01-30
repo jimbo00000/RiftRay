@@ -124,6 +124,8 @@ void PaneScene::DrawScene(
         glm::translate(modelview, sumOffset),
         -m_pFm->GetChassisYaw(), glm::vec3(0.f,1.f,0.f));
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     for (std::vector<Pane*>::const_iterator it = m_panes.begin();
         it != m_panes.end();
         ++it)
@@ -146,6 +148,7 @@ void PaneScene::DrawScene(
         }
         glUseProgram(0);
     }
+    glDisable(GL_BLEND);
 }
 
 void PaneScene::RenderPrePass() const
