@@ -231,7 +231,7 @@ void PaneScene::_SetHeldPanePositionAndOrientation(Pane* pP)
     const glm::vec3 hmd_origin3 = *m_pHmdRo;
     const glm::vec3 hmd_dir3 = *m_pHmdRd;
 
-    holdingState& hold = pP->m_holdState;
+    const holdingState& hold = pP->m_holdState;
     const glm::vec3 hmdHitPt = hmd_origin3 + hold.m_holdingTPoint * hmd_dir3;
     const glm::vec3 originalPos = hold.m_holdingPosAtClick;
     const glm::vec3 delta = hmdHitPt - hold.m_holdingPoint3;
@@ -433,9 +433,8 @@ void PaneScene::SetHoldingFlag(int state)
             const bool hmdInPane = _GetHmdViewRayIntersectionCoordinates(pP, hmdPt, tHmd);
             //if (hmdInPane)
             {
-                glm::vec3 hmd_origin3 = *m_pHmdRo;
-                glm::vec3 hmd_dir3 = *m_pHmdRd;
-
+                const glm::vec3 hmd_origin3 = *m_pHmdRo;
+                const glm::vec3 hmd_dir3 = *m_pHmdRd;
                 const glm::vec3 hmdHitPt = hmd_origin3 + tHmd * hmd_dir3;
                 const glm::vec3 originalPos = glm::vec3(pP->m_tx.GetMatrix() * glm::vec4(0.,0.,0.,1.));
 
