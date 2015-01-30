@@ -5,6 +5,21 @@
 // @var headSize 0.75
 // @var eyePos 0.429 0.064 -0.421
 
+// @var float bobspeed 12 0.5 240 0.1
+// @var float bobscale 0.05 0.0 1.0 0.001
+// @var float squarespeed 0.2 0.0 2.0 0.01
+
+#ifdef RIFTRAY
+uniform float bobspeed;
+uniform float bobscale;
+uniform float squarespeed;
+#else
+float bobspeed = 12.0;
+float bobscale = 0.05;
+float squarespeed = 0.2;
+#endif
+
+
 #define USE_IQ_SMIN 0
 
 float time=0.0;
@@ -254,7 +269,7 @@ vec2 unitSquareInterval(vec2 ro, vec2 rd)
 
 vec3 squaresColours(vec2 p)
 {
-	p+=vec2(time*0.2);
+	p+=vec2(time*squarespeed);
 	
 	vec3 orange=vec3(1.0,0.4,0.1)*2.0;
 	vec3 purple=vec3(1.0,0.2,0.5)*0.8;
@@ -346,7 +361,7 @@ vec3 room(vec3 ro,vec3 rd,out vec3 rp,out vec3 n)
 vec3 getSceneColor( in vec3 ro, in vec3 rd )
 {
 	time=iGlobalTime+1.0;
-	bob=cos(time*12.0)*0.05;
+	bob=cos(time*bobspeed)*bobscale;
 	scroll=-15.0+mod(time*wc_scale,wlen)*2.0;
 
 	float robot_t=robot(ro,rd);
@@ -396,7 +411,6 @@ vec3 scene(vec2 p)
 void main()
 {
 	time=iGlobalTime+1.0;
-	bob=cos(time*12.0)*0.05;
 	scroll=-15.0+mod(time*wc_scale,wlen)*2.0;
 	vec2 uv = gl_FragCoord.xy / iResolution.xy;
 	vec2 q=uv;

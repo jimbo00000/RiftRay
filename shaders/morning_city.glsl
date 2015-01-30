@@ -5,6 +5,15 @@
 // @var url https://www.shadertoy.com/view/XsBSRG
 // @var headSize 1.0
 // @var eyePos 0.0 2.0 0.0
+
+// @var vec3 winSz 0.65 0.35 0.0 color
+#ifdef RIFTRAY
+uniform vec3 winSz;
+#else
+vec3 winSz = vec3(0.65,0.35,0.0);
+#endif
+
+
 //#define CARS
 #define I_MAX 70
 
@@ -64,7 +73,7 @@ vec3 textureWall(vec2 pos, vec2 maxPos, vec2 squarer,float s,float height,float 
     float randB = rand(squarer*2.0);
     vec3 windowColor =(-0.4+randB*0.8)*vec3(0.3,0.3,0.0)+(-0.4+fract(randB*10.0)*0.8)*vec3(0.0,0.0,0.3)+(-0.4+fract(randB*10000.0)*0.8)*vec3(0.3,0.0,0.0);
     float floorFactor = 1.0;
-    vec2 windowSize = vec2(0.65,0.35);
+    vec2 windowSize = winSz.xy;
     vec3 wallColor = s*(0.3+1.4*fract(randB*100.0))*vec3(0.1,0.1,0.1)+(-0.7+1.4*fract(randB*1000.0))*vec3(0.02,0.,0.);
 	wallColor*=1.3;
     

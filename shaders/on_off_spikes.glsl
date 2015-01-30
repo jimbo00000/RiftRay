@@ -4,19 +4,32 @@
 // @var url https://www.shadertoy.com/view/XsBSRV
 // @var eyePos 0.11 0.0 -2.78
 
+// @var float NUM_TENTACLES 9 1 12 1
+// @var vec3 SPHERE_COL 0.6 0.3 0.1 color
+// @var vec3 MOUTH_COL 0.9 0.6 0.1 color
+// @var vec3 TENTACLE_COL 0.06 0.06 0.06 color
+
+#ifdef RIFTRAY
+uniform float NUM_TENTACLES;
+uniform vec3 SPHERE_COL;
+uniform vec3 MOUTH_COL;
+uniform vec3 TENTACLE_COL;
+#else
+float NUM_TENTACLES = 9;
+vec3 SPHERE_COL = vec3(0.6, 0.3, 0.1);
+vec3 MOUTH_COL = vec3(0.9, 0.6, 0.1);
+vec3 TENTACLE_COL = vec3(0.06, 0.06, 0.06);
+#endif
+
 #define HARD_SHADOW
 #define GLOW
 #define EDGES
-#define NUM_TENTACLES 6
 #define BUMPS
 #define NUM_BUMPS 8
 #define BACKGROUND
 #define SUN_POS vec3(15.0, 15.0, -15.0)
 //#define SUN_SPHERE
 
-#define SPHERE_COL vec3(0.6, 0.3, 0.1)
-#define MOUTH_COL vec3(0.9, 0.6, 0.1)
-#define TENTACLE_COL vec3(0.06)
 
 #define GAMMA 2.2
 

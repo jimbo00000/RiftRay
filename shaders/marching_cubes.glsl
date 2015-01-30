@@ -6,6 +6,20 @@
 
 // @var eyePos -0.93 1.395 -0.4
 
+// @var float speed 0.2 0.0 2.0 0.01
+// @var float cubesize 0.1 0.0001 2.0 0.001
+// @var float cubevariance 0.07 0.0001 0.2 0.001
+#ifdef RIFTRAY
+uniform float speed;
+uniform float cubesize;
+uniform float cubevariance;
+#else
+float speed = 0.2;
+float cubesize = 0.1;
+float cubevariance = 0.07;
+#endif
+
+
 #define EPS vec2(1e-3, 0.0)
 
 vec3 rotateX(float a, vec3 v)
@@ -35,9 +49,9 @@ float circular(float t)
 
 float processionOfCubes(vec3 p)
 {
-   float t = -iGlobalTime * 0.2;
+   float t = -iGlobalTime * speed;
    p.z -= t * 2.5;
-   float rad = 0.1 + cos(floor(p.z) * 10.0) * 0.07;
+   float rad = cubesize + cos(floor(p.z) * 10.0) * cubevariance;
    p.x += cos(floor(p.z) * 2.0) * 0.3;
    p.z -= floor(p.z);
    t /= rad;

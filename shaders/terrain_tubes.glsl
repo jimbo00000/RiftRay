@@ -10,6 +10,13 @@
 // @var tex1 tex16.png
 // @var tex2 tex09.jpg
 
+// @var float sep 400. 100. 1000. 2.
+uniform float sep;
+// @var vec3 light1 -0.8 0.2 0.5 dir
+uniform vec3 light1;
+//float sep = 400.0;
+//vec3 light1 = normalize( vec3(-0.8,0.2,0.5) );
+
 #define USE_COSINE
 
 const mat2 m2 = mat2(1.6,-1.2,1.2,1.6);
@@ -78,7 +85,6 @@ float terrainHigh( vec2 p )
 
 float tubes( in vec3 pos, float time )
 {
-    float sep = 400.0;
     vec3 qos = mod( pos + sep*0.5, sep ) - sep*0.5; 
     qos.y = pos.y - 70.0;
     qos.x += sep*0.3*cos( 0.01*pos.z);
@@ -204,7 +210,6 @@ vec3 getSceneColor( in vec3 ro, in vec3 rd )
 
     float time = 16.5 + (0.0+iGlobalTime-0.0)*0.25 + 70.5*camid;
     
-    vec3 light1 = normalize( vec3(-0.8,0.2,0.5) );
     float tmin = 10.0;
     float tmax = 5000.0;
 #if 0
