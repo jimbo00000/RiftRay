@@ -4,7 +4,7 @@
 // @var url https://www.shadertoy.com/view/XsBSRV
 // @var eyePos 0.11 0.0 -2.78
 
-// @var float NUM_TENTACLES 9 1 12 1
+// @var float NUM_TENTACLES 6 1 12 1
 // @var vec3 SPHERE_COL 0.6 0.3 0.1 color
 // @var vec3 MOUTH_COL 0.9 0.6 0.1 color
 // @var vec3 TENTACLE_COL 0.06 0.06 0.06 color
