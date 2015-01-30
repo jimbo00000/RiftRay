@@ -165,9 +165,7 @@ void PaneScene::RenderPrePass() const
             continue;
 
         bindFBO(pP->m_paneRenderBuffer);
-
         pP->DrawToFBO();
-
         unbindFBO();
     }
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, bound_fbo);
@@ -182,7 +180,6 @@ void PaneScene::RenderForOneEye(const float* pMview, const float* pPersp) const
     const glm::mat4 projection = glm::make_mat4(pPersp);
     DrawScene(modelview, projection);
 }
-
 
 bool PaneScene::_GetFlyingMouseRightHandPaneRayIntersectionCoordinates(Pane* pPane, glm::vec2& planePt)
 {
