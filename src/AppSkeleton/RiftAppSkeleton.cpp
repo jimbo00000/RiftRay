@@ -1240,18 +1240,7 @@ void RiftAppSkeleton::display_client() const
             glUniform2f(eyeShader.GetUniLoc("EyeToSourceUVOffset"), uvoff.x, uvoff.y);
             glUniform2f(eyeShader.GetUniLoc("EyeToSourceUVScale"), uvscale.x, uvscale.y);
 
-
 #if 0
-            // Setup shader constants
-            DistortionData.Shaders->SetUniform2f(
-                "EyeToSourceUVScale",
-                DistortionData.UVScaleOffset[eyeNum][0].x,
-                DistortionData.UVScaleOffset[eyeNum][0].y);
-            DistortionData.Shaders->SetUniform2f(
-                "EyeToSourceUVOffset",
-                DistortionData.UVScaleOffset[eyeNum][1].x,
-                DistortionData.UVScaleOffset[eyeNum][1].y);
-
             if (distortionCaps & ovrDistortionCap_TimeWarp)
             { // TIMEWARP - Additional shader constants required
                 ovrMatrix4f timeWarpMatrices[2];
@@ -1272,9 +1261,7 @@ void RiftAppSkeleton::display_client() const
             glBindTexture(GL_TEXTURE_2D, m_renderBuffer.tex);
             glUniform1i(eyeShader.GetUniLoc("fboTex"), 0);
 
-            // This is the only uniform that changes per-frame
             glUniform1f(eyeShader.GetUniLoc("fboScale"), m_fboScale);
-
 
             glDrawElements(
                 GL_TRIANGLES,
