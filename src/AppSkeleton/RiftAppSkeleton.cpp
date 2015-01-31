@@ -541,6 +541,14 @@ void RiftAppSkeleton::timestep(float dt)
     {
         m_dashScene.m_bDraw = !m_dashScene.m_bDraw;
     }
+    if (m_fm.WasJustPressed(FlyingMouse::Right, SIXENSE_BUTTON_2))
+    {
+        m_dashScene.SetHoldingFlag(1);
+    }
+    if (m_fm.WasJustReleased(FlyingMouse::Right, SIXENSE_BUTTON_2))
+    {
+        m_dashScene.SetHoldingFlag(0);
+    }
 
     ///@todo Extract function here - duplicated code in glfw_main's joystick function
     ///@todo Hand ids may switch if re-ordered on base
