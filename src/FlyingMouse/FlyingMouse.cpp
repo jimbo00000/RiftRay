@@ -236,13 +236,21 @@ float FlyingMouse::GetTriggerValue(Hand h) const
 ///@param [in] h Right or Left hand controller
 ///@param [out] origin
 ///@param [out] direction
-void FlyingMouse::GetControllerOriginAndDirection(Hand h, glm::vec3& origin, glm::vec3& direction) const
+void FlyingMouse::GetControllerOriginAndDirection(Hand h, glm::vec3& origin, glm::vec3& direction, bool chassisLocalSpace) const
 {
     const glm::mat4 mR = glm::make_mat4(h == Right ? mtxR : mtxL);
     const glm::vec4 ori4 = mR * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
     const glm::vec4 dir4 = mR * glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
 
-    origin = glm::vec3(ori4) + m_baseOffset + GetChassisPos();
+    origin = glm::vec3(ori4);
+    if (chassisLocalSpace == false)
+    {
+        origin += m_baseOffset + GetChassisPos();
+    }
+    else
+    {
+        origin += m_baseOffset;
+    }
     direction = glm::normalize(glm::vec3(dir4));
 }
 

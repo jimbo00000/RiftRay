@@ -199,7 +199,7 @@ bool PaneScene::_GetFlyingMouseRightHandPaneRayIntersectionCoordinates(Pane* pPa
 
     glm::vec3 origin3;
     glm::vec3 dir3;
-    m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, origin3, dir3);
+    m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, origin3, dir3, m_chassisLocalSpace);
     return pPane->GetPaneRayIntersectionCoordinates(origin3, dir3, planePt, tParam);
 }
 

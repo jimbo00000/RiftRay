@@ -64,7 +64,7 @@ public:
     bool TriggerIsOverThreshold(Hand h, float thresh) const;
     float GetTriggerValue(Hand h) const;
 
-    void GetControllerOriginAndDirection(Hand h, glm::vec3& origin, glm::vec3& direction) const;
+    void GetControllerOriginAndDirection(Hand h, glm::vec3& origin, glm::vec3& direction, bool chassisLocalSpace=true) const;
     bool ControllerIsOnBase(Hand h) const;
     void SetChassisPosPointer(glm::vec3* pPos) { m_pChassisPos = pPos; }
     void SetChassisYawPointer(float* pYaw) { m_pChassisYaw = pYaw; }
