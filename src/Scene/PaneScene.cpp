@@ -185,7 +185,9 @@ void PaneScene::RenderForOneEye(const float* pMview, const float* pPersp) const
     DrawScene(modelview, projection);
 }
 
-bool PaneScene::_GetFlyingMouseRightHandPaneRayIntersectionCoordinates(Pane* pPane, glm::vec2& planePt)
+///@param planePt Intersection point in plane locap coordinates
+///@param tParam [out] t parameter along ray of intersection point
+bool PaneScene::_GetFlyingMouseRightHandPaneRayIntersectionCoordinates(Pane* pPane, glm::vec2& planePt, float& tParam)
 {
     if (pPane == NULL)
         return false;
@@ -198,9 +200,7 @@ bool PaneScene::_GetFlyingMouseRightHandPaneRayIntersectionCoordinates(Pane* pPa
     glm::vec3 origin3;
     glm::vec3 dir3;
     m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, origin3, dir3);
-
-    float t;
-    return pPane->GetPaneRayIntersectionCoordinates(origin3, dir3, planePt, t);
+    return pPane->GetPaneRayIntersectionCoordinates(origin3, dir3, planePt, tParam);
 }
 
 bool PaneScene::_GetHmdViewRayIntersectionCoordinates(Pane* pPane, glm::vec2& planePt, float& tParam)
@@ -284,22 +284,16 @@ void PaneScene::timestep(float dt)
 
 
 
-#if 0
+#if 1
         glm::vec2 fmPt(0.0f);
-        bool fmInPane = _GetFlyingMouseRightHandPaneRayIntersectionCoordinates(pP, fmPt);
+        float tHydra = 0.f;
+        bool fmInPane = _GetFlyingMouseRightHandPaneRayIntersectionCoordinates(pP, fmPt, tHydra);
         if (fmInPane)
         {
             pP->m_pointerCoords = fmPt;
             pP->m_cursorInPane = true;
         }
 
-        glm::vec2 hmdPt(0.0f);
-        bool hmdInPane = _GetHmdViewRayIntersectionCoordinates(pP, hmdPt);
-        if (hmdInPane)
-        {
-            pP->m_pointerCoords = hmdPt;
-            pP->m_cursorInPane = true;
-        }
 #endif
 
 
@@ -326,11 +320,11 @@ void PaneScene::timestep(float dt)
             {
                 if (m_pFm->WasJustPressed(FlyingMouse::Right, SIXENSE_BUTTON_1))
                 {
-                    pP->OnHydraButton(1);
+                    //pP->OnHydraButton(1);
                 }
                 if (m_pFm->WasJustPressed(FlyingMouse::Right, SIXENSE_BUTTON_3))
                 {
-                    pP->OnHydraButton(2);
+                    //pP->OnHydraButton(2);
                 }
             }
 #endif

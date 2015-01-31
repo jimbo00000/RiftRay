@@ -53,7 +53,7 @@ protected:
         const glm::mat4& modelview,
         const glm::mat4& projection) const;
 
-    virtual bool _GetFlyingMouseRightHandPaneRayIntersectionCoordinates(Pane* pPane, glm::vec2& planePt);
+    virtual bool _GetFlyingMouseRightHandPaneRayIntersectionCoordinates(Pane* pPane, glm::vec2& planePt, float& tParam);
     virtual bool _GetHmdViewRayIntersectionCoordinates(Pane* pPane, glm::vec2& planePt, float& tParam);
     virtual void _SetHeldPanePositionAndOrientation(Pane* pP);
 
