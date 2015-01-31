@@ -25,12 +25,14 @@ struct holdingState
     float m_holdingTPoint;
     glm::vec3 m_holdingPoint3;
     glm::vec3 m_holdingPosAtClick;
+    int m_holdingDevice; ///@todo Use an enum
 
     holdingState()
         : m_holding(false)
         , m_holdingTPoint(0.f)
         , m_holdingPoint3(glm::vec3(0.f))
         , m_holdingPosAtClick(glm::vec3(0.f))
+        , m_holdingDevice(-1)
     {
     }
 };

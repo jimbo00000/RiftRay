@@ -227,22 +227,37 @@ void PaneScene::_SetHeldPanePositionAndOrientation(Pane* pP)
 {
     if (pP == NULL)
         return;
-    if (m_pHmdRo == NULL)
-        return;
-    if (m_pHmdRd == NULL)
-        return;
-
-    const glm::vec3 hmd_origin3 = *m_pHmdRo;
-    const glm::vec3 hmd_dir3 = *m_pHmdRd;
-
     const holdingState& hold = pP->m_holdState;
-    const glm::vec3 hmdHitPt = hmd_origin3 + hold.m_holdingTPoint * hmd_dir3;
+
+    glm::vec3 origin3;
+    glm::vec3 dir3;
+    if (hold.m_holdingDevice == 0)
+    {
+        if (m_pHmdRo == NULL)
+            return;
+        if (m_pHmdRd == NULL)
+            return;
+        origin3 = *m_pHmdRo;
+        dir3 = *m_pHmdRd;
+    }
+    else if (hold.m_holdingDevice == 1)
+    {
+        if (m_pFm == NULL)
+            return;
+        m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, origin3, dir3, m_chassisLocalSpace);
+    }
+    else
+    {
+        return;
+    }
+
+    const glm::vec3 hmdHitPt = origin3 + hold.m_holdingTPoint * dir3;
     const glm::vec3 originalPos = hold.m_holdingPosAtClick;
     const glm::vec3 delta = hmdHitPt - hold.m_holdingPoint3;
     pP->m_tx.SetPosition(originalPos + delta);
 
     // Orient pane towards the viewer
-    const glm::vec3 fwd = glm::normalize(hmd_dir3);
+    const glm::vec3 fwd = glm::normalize(dir3);
     const glm::vec3 upGuess(0.f, 1.f, 0.f);
     const glm::vec3 rightGuess = glm::normalize(glm::cross(fwd, upGuess));
     const glm::vec3 up = glm::cross(rightGuess, fwd);
@@ -395,7 +410,6 @@ void PaneScene::SetHoldingFlag(int state)
         Pane* pP = *it;
         if (pP == NULL)
             continue;
-        //pP->OnHmdTap();
 
         holdingState& hold = pP->m_holdState;
         if (state == 0)
@@ -407,12 +421,13 @@ void PaneScene::SetHoldingFlag(int state)
         if (pP->m_cursorInPane)
         {
             hold.m_holding = (state == 1);
+            hold.m_holdingDevice = -1;
 
             // Store t param
             glm::vec2 hmdPt(0.0f);
             float tHmd = 0.f;
             const bool hmdInPane = _GetHmdViewRayIntersectionCoordinates(pP, hmdPt, tHmd);
-            //if (hmdInPane)
+            if (hmdInPane)
             {
                 const glm::vec3 hmd_origin3 = *m_pHmdRo;
                 const glm::vec3 hmd_dir3 = *m_pHmdRd;
@@ -422,7 +437,29 @@ void PaneScene::SetHoldingFlag(int state)
                 hold.m_holdingTPoint = tHmd;
                 hold.m_holdingPoint3 = hmdHitPt;
                 hold.m_holdingPosAtClick = originalPos;
+                hold.m_holdingDevice = 0;
             }
+#ifdef USE_SIXENSE
+            if (m_pFm != NULL)
+            {
+                glm::vec2 fmPt(0.0f);
+                float tFm = 0.f;
+                bool fmInPane = _GetFlyingMouseRightHandPaneRayIntersectionCoordinates(pP, fmPt, tFm);
+                if (fmInPane)
+                {
+                    glm::vec3 fm_origin3;
+                    glm::vec3 fm_dir3;
+                    m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, fm_origin3, fm_dir3, m_chassisLocalSpace);
+                    const glm::vec3 fmHitPt = fm_origin3 + tFm * fm_dir3;
+                    const glm::vec3 originalPos = glm::vec3(pP->m_tx.GetMatrix() * glm::vec4(0.,0.,0.,1.));
+
+                    hold.m_holdingTPoint = tFm;
+                    hold.m_holdingPoint3 = fmHitPt;
+                    hold.m_holdingPosAtClick = originalPos;
+                    hold.m_holdingDevice = 1;
+                }
+            }
+#endif
         }
     }
 }
