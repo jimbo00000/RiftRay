@@ -515,8 +515,9 @@ void RiftAppSkeleton::timestep(float dt)
     glm::vec3 hydraMove = glm::vec3(0.0f, 0.0f, 0.0f);
 #ifdef USE_SIXENSE
     const sixenseAllControllerData& state = m_fm.GetCurrentState();
-    for (int i = 0; i<2; ++i)
+    //for (int i = 0; i<2; ++i)
     {
+        const int i = 0;
         const sixenseControllerData& cd = state.controllers[i];
         const float moveScale = pow(10.0f, cd.trigger);
         hydraMove.x += cd.joystick_x * moveScale;
@@ -533,6 +534,52 @@ void RiftAppSkeleton::timestep(float dt)
         ToggleShaderWorld();
     }
 
+    ///@todo Extract function here - duplicated code in glfw_main's joystick function
+    ///@todo Hand ids may switch if re-ordered on base
+    const sixenseControllerData& cd = state.controllers[1];
+    const float x = cd.joystick_x;
+    const float y = cd.joystick_y;
+    const float deadZone = 0.1f;
+    if (fabs(y) > deadZone)
+    {
+        // Absolute "farthest push"
+        const float resMin = m_fboMinScale;
+        const float resMax = 1.f;
+        const float d = (-y - deadZone)/(1. - deadZone); // [0,1]
+        const float u = ( y - deadZone)/(1. - deadZone);
+        // Push up on stick to increase resolution, down to decrease
+        const float s = GetFBOScale();
+        if (d > 0.f)
+        {
+            SetFBOScale(std::min(s, 1.f - d));
+        }
+        else if (u > 0.f)
+        {
+            SetFBOScale(std::max(s, u * resMax));
+        }
+    }
+    if (fabs(x) > deadZone)
+    {
+        const float cinMin = 0.f;
+        const float cinMax = .95f;
+        const float l = (-x - deadZone)/(1. - deadZone);
+        const float r = ( x - deadZone)/(1. - deadZone);
+        // Push left on stick to close cinemascope, right to open
+        if (l > 0.f)
+        {
+            m_cinemaScopeFactor = std::max(
+                m_cinemaScopeFactor,
+                l * cinMax);
+        }
+        else if (r > 0.f)
+        {
+            m_cinemaScopeFactor = std::min(
+                m_cinemaScopeFactor,
+                1.f - r);
+        }
+    }
+
+#if 0
     // Adjust cinemascope feel with left trigger
     // Mouse wheel will still work if Hydra is not present or not pressed(0.0 trigger value).
     const float trigger = m_fm.GetTriggerValue(FlyingMouse::Left); // [0,1]
@@ -543,6 +590,8 @@ void RiftAppSkeleton::timestep(float dt)
         const float trigScaled = (trigger - deadzone) / (1.0f - deadzone);
         m_cinemaScopeFactor = std::max(0.0f, topval * trigScaled);
     }
+#endif
+
 #endif
 
     const glm::vec3 move_dt = m_headSize * (m_keyboardMove + m_joystickMove + m_mouseMove + hydraMove) * dt;
