@@ -282,9 +282,7 @@ void PaneScene::timestep(float dt)
             pP->m_cursorInPane = true;
         }
 
-
-
-#if 1
+#ifdef USE_SIXENSE
         glm::vec2 fmPt(0.0f);
         float tHydra = 0.f;
         bool fmInPane = _GetFlyingMouseRightHandPaneRayIntersectionCoordinates(pP, fmPt, tHydra);
@@ -293,9 +291,7 @@ void PaneScene::timestep(float dt)
             pP->m_pointerCoords = fmPt;
             pP->m_cursorInPane = true;
         }
-
 #endif
-
 
         pP->m_tx.m_lock = !pP->m_cursorInPane;
 
@@ -306,26 +302,13 @@ void PaneScene::timestep(float dt)
             pP->OnMouseMove(mx, my);
 
 #ifdef USE_SIXENSE
-            if (m_pFm->WasJustPressed(FlyingMouse::Right, SIXENSE_BUTTON_START))
+            if (m_pFm->WasJustPressed(FlyingMouse::Right, SIXENSE_BUTTON_1))
             {
                 pP->OnMouseClick(1, mx, my);
             }
-            else if (m_pFm->WasJustReleased(FlyingMouse::Right, SIXENSE_BUTTON_START))
+            else if (m_pFm->WasJustReleased(FlyingMouse::Right, SIXENSE_BUTTON_1))
             {
                 pP->OnMouseClick(0, mx, my);
-            }
-
-            const int modifier = SIXENSE_BUTTON_BUMPER; // match button used in FlyingMouse
-            if (m_pFm->IsPressed(FlyingMouse::Right, modifier) == false)
-            {
-                if (m_pFm->WasJustPressed(FlyingMouse::Right, SIXENSE_BUTTON_1))
-                {
-                    //pP->OnHydraButton(1);
-                }
-                if (m_pFm->WasJustPressed(FlyingMouse::Right, SIXENSE_BUTTON_3))
-                {
-                    //pP->OnHydraButton(2);
-                }
             }
 #endif
         }
