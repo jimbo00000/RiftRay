@@ -8,36 +8,52 @@ Tap the side of the Rift with one finger to dismiss the Health and Safety Warnin
 
 
 ## Features  
+- Floating AntTweakbar pane for live shader parameter editing  
 - Dynamic framebuffer scaling  
+- Vertical FOV adjustment(per developer guide section 8.5.4)  
+- Xbox controller, Gamepad support  
+- Sixense Razer Hydra support  
 - Tracking volume display(on when near the boundary)  
 - Auxiliary window display mirroring  
-- Gamepad support  
-- Sixense Razer Hydra support  
-- Vertical FOV adjustment(per developer guide section 8.5.4)  
 
 
 ## Controls  
 Gamepad and Hydra are supported, but optional. You can get by with only the HMD for input by tapping on it to select a shader in the gallery. To highlight a shader's thumbnail in the gallery, look straight at it or point the right Hydra controller at it.  
 
 #### HMD:  
-- Tap on Headset - select shader/return to gallery  
+- **Tap on Headset** - Enter shader/return to gallery  
 
 #### Keyboard:  
-- Space bar - recenter  
-- Enter - select shader/return to gallery  
-- WASD - movement  
-- QE13 - movement(elevation/yaw)  
-- Shift/Control - slow/fast movement  
-- Page Up/Page Down - Open/Close cinemascope(letterbox)  
-- F5-F8 - Adjust render target size manually  
-- F9 - VSync Off  
-- F10 Vsync On  
-- F11 Vsync Adaptive  
+- **Space** - Recenter view  
+- **Enter** - Select shader/return to gallery  
+- **Escape** - Quit
+- **WASD** - Movement  
+- **QE13** - Movement(elevation/yaw)  
+- **Shift/Control** - Slow/fast movement  
+- **PgUp/PgDn** - Open/Close cinemascope(letterbox)  
+- **F5-F8** - Adjust render target size manually  
+- **F9-F11** - VSync Off/On/Adaptive  
+- **Tab** - Toggle Tweakbar pane  
+- **\\(Backslash)** - Click in pane  
+- **/(Slash)** - Reposition pane  
+- **R** - Reset world position  
 
-#### Mouse
-- Wheel - adjust vertical FOV
-- Right click & drag - movement in horizontal plane  
-- Left click & drag - yaw  
+#### Mouse:  
+- **Wheel - adjust vertical** - Cinemascope | Letterbox | vFOV  
+- **Left click & drag** - Yaw  
+- **Right click & drag** - Movement in horizontal plane  
+- **Middle click & drag** - Movement in vertical plane  
+
+#### Xbox Controller:  
+- **XYAB** - Movement  
+- **Start** - Enter shader  
+- **Left analog stick** - Yaw, Height  
+- **Right analog stick** - Resolution, vFOV  
+- **Left Trigger** - Move Quickly  
+- **Right Trigger** - Move Slowly  
+- **Back** - Toggle Tweakbar pane  
+- **Left Bumper** - Reposition pane  
+- **Right Bumper** - Click in pane
 
 #### Gamepad:  
 - Right hand buttons - movement  
