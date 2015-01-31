@@ -49,19 +49,21 @@ Gamepad and Hydra are supported, but optional. You can get by with only the HMD 
 - **Start** - Enter shader  
 - **Left analog stick** - Yaw, Height  
 - **Right analog stick** - Resolution, vFOV  
-- **Left Trigger** - Move Quickly  
-- **Right Trigger** - Move Slowly  
+- **Left Trigger** - Move quickly  
+- **Right Trigger** - Move slowly  
 - **Back** - Toggle Tweakbar pane  
 - **Left Bumper** - Reposition pane  
-- **Right Bumper** - Click in pane
+- **Right Bumper** - Click in pane  
 
-#### Gamepad:  
-- Right hand buttons - movement  
-- Shoulder buttons - height adjustment/speed boost  
-- "Start" button - select shader/return to gallery  
-- Hold "select" and press Left Shoulder buttons - adjust vertical FOV  
+#### Gravis Gamepad Pro:  
+- **Right side buttons** - Movement  
+- **Left Shoulder 1(upper)** - Move quickly/Reposition pane  
+- **Left Shoulder 2(lower)** - Move slowly  
+- **Start** - Enter shader  
+- **Select** - Toggle Tweakbar pane  
+- **Right Shoulder 1(upper)** - Click in pane  
 
-#### Hydra:  
+#### Razer Hydra:  
 - Right stick - movement  
   - Press in and move stick for vertical movement
 - Trigger - speed boost  
