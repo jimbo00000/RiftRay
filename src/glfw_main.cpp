@@ -119,6 +119,19 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
     const float ff = 0.99f;
     ShaderToyGlobalState& gs = g_app.m_galleryScene.m_globalShadertoyState;
 
+    switch (key)
+    {
+        default: break;
+        case GLFW_KEY_BACKSLASH:
+            {
+                if (action==GLFW_PRESS)
+                    g_app.m_dashScene.SendMouseClick(1);
+                else if (action==GLFW_RELEASE)
+                    g_app.m_dashScene.SendMouseClick(0);
+            }
+            break;
+    }
+
     if (action == GLFW_PRESS)
     {
     g_app.DismissHealthAndSafetyWarning();
