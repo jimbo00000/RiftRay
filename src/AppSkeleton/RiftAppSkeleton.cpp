@@ -533,6 +533,14 @@ void RiftAppSkeleton::timestep(float dt)
     {
         ToggleShaderWorld();
     }
+    if (m_fm.WasJustPressed(FlyingMouse::Left, SIXENSE_BUTTON_START))
+    {
+        ToggleShaderWorld();
+    }
+    if (m_fm.WasJustPressed(FlyingMouse::Right, SIXENSE_BUTTON_BUMPER))
+    {
+        m_dashScene.m_bDraw = !m_dashScene.m_bDraw;
+    }
 
     ///@todo Extract function here - duplicated code in glfw_main's joystick function
     ///@todo Hand ids may switch if re-ordered on base
