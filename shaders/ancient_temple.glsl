@@ -14,7 +14,7 @@
 // @var vec3 colamb .9 .85 1 color
 // @var vec3 coldiff 1. .9 .9 color
 // @var vec3 colspec 1 .9 .5 color
-// @var vec3 ptx 0.5 1. 0.5 color
+// @var vec3 ptx 0.5 1. 0.5 dir
 
 const int Iterations=14;
 const float detail=.00002;

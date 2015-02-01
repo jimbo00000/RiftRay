@@ -112,7 +112,7 @@ void ShaderToy::_ParseVariableLine(const std::string& vardecl)
             if (!tokens[5].compare("dir"))
             {
                 var.varType = shaderVariable::Direction;
-                var.value = glm::vec4(glm::normalize(glm::vec3(var.value)), var.value.w);
+                //var.value = glm::vec4(glm::normalize(glm::vec3(var.value)), var.value.w);
             }
             else if (!tokens[5].compare("color"))
             {
