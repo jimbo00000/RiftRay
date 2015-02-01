@@ -6,7 +6,7 @@ import os
 import shutil
 import glob
 
-version = "2.0.2-2014.12.29"
+version = "2.1-2015.01.31"
 dstDir = "RiftRay-" + version
 if not os.path.exists(dstDir):
     os.mkdir(dstDir)
