@@ -64,11 +64,14 @@ Gamepad and Hydra are supported, but optional. You can get by with only the HMD 
 - **Right Shoulder 1(upper)** - Click in pane  
 
 #### Razer Hydra:  
-- Right stick - movement  
-  - Press in and move stick for vertical movement
-- Trigger - speed boost  
-- Start button - select shader/return to gallery  
-- Left trigger - adjust vertical FOV  
+- **Right Controller translation/rotation** - Select shader, pointer in pane  
+- **Right Stick** - Movement(press in for vertical plane)  
+- **Right Trigger** - Move quickly  
+- **Right Start Button** - Enter shader  
+- **Right Bumper** - Toggle Tweakbar pane  
+- **Right Button 1** - Click in pane  
+- **Right Button 2** - Reposition pane  
+- **Left Stick** - Resolution, vFOV  
 
 ## Related work
   - [Shadertoy VR](http://www.reddit.com/r/oculus/comments/2q0ard/new_build_of_shadertoy_vr/) - Qt-enabled shader editing in VR  
