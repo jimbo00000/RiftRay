@@ -15,17 +15,21 @@
 vec3 sunDir  = normalize( vec3(  0.35, 0.1,  0.3 ) );
 const vec3 sunColour = vec3(1.0, .95, .8);
 
+// @var float SCALE 2.8 0.5 4.0 0.004
+// @var vec3 surfaceColour2 .4 .4 .5 color
+// @var vec3 surfaceColour3 .5 .3 0. color
+// @var vec3 fogCol .4 .4 .4 color
+uniform float SCALE; // 2.8
+uniform vec3 surfaceColour2;// = vec3(.4, .4, 0.5);
+uniform vec3 surfaceColour3;// = vec3(.5, 0.3, 0.00);
+uniform vec3 fogCol;// = vec3(0.4, 0.4, 0.4);
 
-#define SCALE 2.8
+vec3 surfaceColour1 = vec3(.8, .0, 0.);
 #define MINRAD2 .25
 float minRad2 = clamp(MINRAD2, 1.0e-9, 1.0);
 vec4 scale = vec4(SCALE, SCALE, SCALE, abs(SCALE)) / minRad2;
 float absScalem1 = abs(SCALE - 1.0);
 float AbsScaleRaisedTo1mIters = pow(abs(SCALE), float(1-10));
-vec3 surfaceColour1 = vec3(.8, .0, 0.);
-vec3 surfaceColour2 = vec3(.4, .4, 0.5);
-vec3 surfaceColour3 = vec3(.5, 0.3, 0.00);
-vec3 fogCol = vec3(0.4, 0.4, 0.4);
 float gTime = 15.;
 
 //----------------------------------------------------------------------------------------

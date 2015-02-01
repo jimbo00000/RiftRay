@@ -14,6 +14,16 @@
 // @var tex2 tex09.jpg
 // @var tex3 tex07.jpg
 
+// @var float mushSca 2.0 0.1 5.0 0.1
+// @var float mushSpeed 0.5 0.05 5.0 0.05
+// @var float mushAmpl 0.1 0.0 0.5 0.01
+// @var float chsca 0.2 0.0 0.5 0.01
+
+uniform float mushSca; // = 2.0;
+uniform float mushSpeed; // =0.5
+uniform float mushAmpl; // =0.1
+uniform float chsca; // = 0.2;
+
 #define LIGHTRIG 1 // 0 or 1
 //#define GODRAYS
 //#define HIGH_QUALITY_NOISE 
@@ -131,7 +141,6 @@ vec3 texturize( sampler2D sa, vec3 p, vec3 n )
 
 float treeBase( vec2 pos )
 {
-	float chsca = 0.2;
 	vec2 chos = fract(chsca*pos) - 0.5;
 	return length( chos );
 }	
@@ -155,11 +164,11 @@ vec2 grassDistr( in vec2 pos )
 
 float mushroomAnim( float t )
 {
-    float f = sin( 0.5*t );		
+    float f = sin( mushSpeed*t );		
 	
 	f = -1.0 + 2.0*smoothstep( 0.45, 0.55, 0.5 + 0.5*f );
 	
-	return 1.0 + 0.1*f;
+	return 1.0 + mushAmpl*f;
 }
 	
 float map( in vec3 pos, out vec4 suvw, out float info )
@@ -183,7 +192,6 @@ float map( in vec3 pos, out vec4 suvw, out float info )
 
 
 	// mushroom position	
-	float mushSca = 2.0;
 	vec2  mushWPos = (0.5+floor(mushSca*pos.xz))/mushSca;
 	vec3  mushPos = vec3( fract(mushSca*pos.x)-0.5, mushSca*(pos.y-h), fract(mushSca*pos.z)-0.5 );
     float mushID  = hash( floor(mushSca*pos.xz) );
@@ -198,7 +206,6 @@ float map( in vec3 pos, out vec4 suvw, out float info )
 	//-----------------------------
 	// trees
 	{
-	float chsca = 0.2;
 	vec3 chos = vec3( fract(chsca*pos.x)-0.5, chsca*(pos.y-h), fract(chsca*pos.z)-0.5 );
 	float y = chos.y;
 	float r = length( chos.xz );
@@ -277,7 +284,6 @@ float map2( in vec3 pos )
 	//-----------------------------
 	// trees
 	{
-	float chsca = 0.2;
 	vec3 chos = vec3( fract(chsca*pos.x)-0.5, chsca*(pos.y-h), fract(chsca*pos.z)-0.5 );
 	float y = chos.y;
 	float r = length( chos.xz );
