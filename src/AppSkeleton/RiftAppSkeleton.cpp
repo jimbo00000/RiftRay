@@ -826,6 +826,7 @@ void RiftAppSkeleton::_ToggleShaderWorld()
         m_galleryScene.SetActiveShaderToyPane(NULL);
 
 #ifdef USE_ANTTWEAKBAR
+        m_dashScene.SendMouseClick(0); // Leaving a drag in progress can cause a crash!
         TwRemoveVar(m_pTweakbar, "title");
         TwRemoveVar(m_pTweakbar, "author");
         TwRemoveVar(m_pTweakbar, "gotourl");
