@@ -14,7 +14,6 @@
 // @var vec3 colamb .9 .85 1 color
 // @var vec3 coldiff 1. .9 .9 color
 // @var vec3 colspec 1 .9 .5 color
-// @var vec3 ptx 0.5 1. 0.5 dir
 
 const int Iterations=14;
 const float detail=.00002;
@@ -24,7 +23,35 @@ uniform vec3 lightdir; //=normalize(vec3(0.,-0.3,-1.));
 uniform vec3 colamb;
 uniform vec3 coldiff;
 uniform vec3 colspec;
-uniform vec3 ptx;
+
+// @var float tx 0.5 -1. 1. 0.001
+uniform float tx;
+// @var float ty 1.0 -1. 5. 0.001
+uniform float ty;
+// @var float tz 0.5 -1. 1. 0.001
+uniform float tz;
+
+// @var float clmin 0.4 -1. 1. 0.001
+uniform float clmin;
+// @var float clmax 1. -1. 2. 0.001
+uniform float clmax;
+
+
+// @var float px 0.0 -1. 1. 0.001
+uniform float px;
+// @var float py 2.0 -1. 5. 0.001
+uniform float py;
+// @var float pz 0.0 -1. 1. 0.001
+uniform float pz;
+
+
+// @var float mx 0.0 -1. 1. 0.001
+uniform float mx;
+// @var float mz 0.0 -1. 1. 0.001
+uniform float mz;
+
+
+vec3 ptx = vec3(tx, ty, tz);
 
 float ot=0.;
 float det=0.;
@@ -38,10 +65,11 @@ float de(vec3 pos) {
 	float DEfactor=1.;
 	ot=1000.;
 	for (int i=0; i<Iterations; i++) {
-		p = abs(p)-vec3(0.,2.,0.);  
+		p = abs(p)-vec3(px,py,pz);  
 		float r2 = dot(p, p);
 		ot = min(ot,abs(length(p)));
-		float sc=Scale/clamp(r2,0.4,1.);
+		float clm = clmax + mx*floor(pos.x) + mz*floor(pos.z);
+		float sc=Scale/clamp(r2,clmin,clm);
 		p*=sc; 
 		DEfactor*=sc;
 		p = p - ptx;

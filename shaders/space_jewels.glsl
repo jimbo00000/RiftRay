@@ -7,6 +7,11 @@
 
 // @var tex0 tex09.jpg
 
+// @var float maxNum 1.1 0.1 4.0 0.0005
+uniform float maxNum;
+// @var float maxArg .03 0.0 1.0 0.00005
+uniform float maxArg;
+
 //--------------------------------------------------------------------------
 #define SUN_COLOUR vec3(1., .9, .85)
 #define FOG_COLOUR vec3(0.07, 0.05, 0.05)
@@ -35,7 +40,7 @@ vec3 Colour( vec3 p)
 		col += abs(p.z-p1.z);
 		p = p1;
 		r2 = dot(p,p);
-		float k = max((1.1)/(r2), .03);
+		float k = max((maxNum)/(r2), maxArg);
 		p *= k;
 	}
 	return (0.5+0.5*sin(col*vec3(1.647,-1.0,4.9)));
@@ -51,7 +56,7 @@ float Map( vec3 p )
 	{
 		p = 2.0*clamp(p, -CSize, CSize) - p;
 		float r2 = dot(p,p);
-		float k = max((1.1)/(r2), .03);
+		float k = max((maxNum)/(r2), maxArg);
 		p     *= k;
 		scale *= k;
 	}

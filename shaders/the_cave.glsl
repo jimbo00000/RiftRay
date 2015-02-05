@@ -11,13 +11,25 @@
 // @var tex1 tex01.jpg
 // @var tex2 tex09.jpg
 
+// @var float cama_x -2.6943 -2.6 2.7 0.0001
+uniform float cama_x;
+// @var float cama_y 3.0483 3.0 3.1 0.0001
+uniform float cama_y;
+// @var float lighta_x 1.4301 1.4 1.5 0.0001
+uniform float lighta_x;
+// @var float lighta_y 4.0985 4.0 4.1 0.0001
+uniform float lighta_y;
+
+// @var float threshold 1.20 0.05 10.0 0.01
+uniform float threshold; //defines the thickness of tunnels
+
 // constants for the camera tunnel
-const vec2 cama=vec2(-2.6943,3.0483);
+vec2 cama=vec2(cama_x,cama_y);
 const vec2 camb=vec2(0.2516,0.1749);
 const vec2 camc=vec2(-3.7902,2.4478);
 const vec2 camd=vec2(0.0865,-0.1664);
 
-const vec2 lighta=vec2(1.4301,4.0985);
+vec2 lighta=vec2(lighta_x,lighta_y);
 const vec2 lightb=vec2(-0.1276,0.2347);
 const vec2 lightc=vec2(-2.2655,1.5066);
 const vec2 lightd=vec2(-0.1284,0.0731);
@@ -90,7 +102,6 @@ vec3 getSceneColor( in vec3 Pos, in vec3 Dir )
 	float fade=0.0;
 	
 	const float numit=75.0; //raymarch precision
-	const float threshold=1.20; //defines the thickness of tunnels
 	const float scale=1.5; //tunnel z depth
 	
 	vec3 Posm1=Pos;

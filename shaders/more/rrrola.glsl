@@ -10,6 +10,16 @@
 // @var headSize 0.19
 // @var eyePos 1.613 1.615 -2.150
 
+// @var float minRad2 0.1 0.001 1.0 0.001
+uniform float minRad2; //const float minRad2 = 0.1;
+// @var float MB_SCALE -1.77 -3.0 0.01 0.01
+uniform float MB_SCALE; //const float MB_SCALE = -1.77;
+// @var float DIST_MULTIPLIER 1.0 0.01 10.0 0.01
+uniform float DIST_MULTIPLIER; //const float DIST_MULTIPLIER = 1.0;
+
+const float absScalePowIters = 0.001;
+
+
 mat3  rotationMatrix3(vec3 v, float angle)
 {
 	float c = cos(radians(angle));
@@ -46,12 +56,6 @@ float noise( in vec2 x ) {
 
 const int iters = 14;
 mat3 rotationMatrix = mat3(1,0,0, 0,1,0, 0,0,1);
-const float minRad2 = 0.1;
-const float MB_SCALE = -1.77;
-
-const float absScalePowIters = 0.001;
-const float DIST_MULTIPLIER = 1.0;
-
 vec4 scale = vec4(MB_SCALE, MB_SCALE, MB_SCALE, abs(MB_SCALE)) / minRad2;
 
 

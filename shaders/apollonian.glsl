@@ -20,7 +20,7 @@
 // @var vec3 col1 1.0 0.80 0.2 color
 // @var vec3 col2 1.0 0.55 0.0 color
 // @var float ss 1.1 0.5 2.0 0.01
-
+// @var float km 0.1 0.0 20.0 0.01
 
 #ifdef RIFTRAY
 uniform vec3 light1;
@@ -28,12 +28,14 @@ uniform vec3 light2;
 uniform vec3 col1;
 uniform vec3 col2;
 uniform float ss;
+uniform float km;
 #else
 vec3 light1 = vec3(0.577, 0.577, -0.577);
 vec3 light2 = vec3(-0.707, 0.000, 0.707);
 vec3 col1 = vec3(1.0,0.80,0.92);
 vec3 col2 = vec3(1.0,0.55,0.90);
 float ss = 1.1;
+float km = 0.1;
 #endif
 
 vec4 orb = vec4(1000.0);
@@ -51,7 +53,7 @@ float map( vec3 p )
 		
         orb = min( orb, vec4(abs(p),r2) );
 		
-		float k = max(ss/r2,0.1);
+		float k = max(ss/r2,km);
 		p     *= k;
 		scale *= k;
 	}
