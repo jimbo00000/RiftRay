@@ -48,26 +48,9 @@ public:
     void RecenterPose();
     void ResetAllTransformations();
     void SetChassisPosition(ovrVector3f p) { m_chassisPos = p; }
-    ovrSizei getHmdResolution() const;
-    ovrVector2i getHmdWindowPos() const;
-    GLuint getRenderBufferTex() const { return m_renderBuffer.tex; }
-    float GetFboScale() const { return m_fboScale; }
-    bool UsingDebugHmd() const { return m_usingDebugHmd; }
-    bool UsingDirectMode() const { return m_directHmdMode; }
-    void AttachToWindow(void* pWindow) { ovrHmd_AttachToWindow(m_Hmd, pWindow, NULL, NULL); }
 
     int ConfigureSDKRendering();
     int ConfigureClientRendering();
-
-#if defined(OVR_OS_WIN32)
-    void setWindow(HWND w) { m_Cfg.OGL.Window = w; }
-#elif defined(OVR_OS_LINUX)
-    void setWindow(Window Win, Display* Disp)
-    {
-        m_Cfg.OGL.Win = Win;
-        m_Cfg.OGL.Disp = Disp;
-    }
-#endif
 
     void DismissHealthAndSafetyWarning() const;
     bool CheckForTapOnHmd();
@@ -78,6 +61,15 @@ public:
     void display_stereo_undistorted() const;
     void display_sdk() const;
     void display_client() const;
+
+    // Direct mode and SDK rendering hooks
+    void AttachToWindow(void* pWindow) { ovrHmd_AttachToWindow(m_Hmd, pWindow, NULL, NULL); }
+#if defined(OVR_OS_WIN32)
+    void setWindow(HWND w) { m_Cfg.OGL.Window = w; }
+#elif defined(OVR_OS_LINUX)
+    void setWindow(_XDisplay* Disp) { m_Cfg.OGL.Disp = Disp; }
+#endif
+
     void timestep(float dt);
 
     void resize(int w, int h);
@@ -92,6 +84,13 @@ public:
 #ifdef USE_ANTTWEAKBAR
     float* GetFBOScalePointer() { return &m_fboScale; }
 #endif
+
+    GLuint getRenderBufferTex() const { return m_renderBuffer.tex; }
+    float GetFboScale() const { return m_fboScale; }
+    ovrSizei getHmdResolution() const;
+    ovrVector2i getHmdWindowPos() const;
+    bool UsingDebugHmd() const { return m_usingDebugHmd; }
+    bool UsingDirectMode() const { return m_directHmdMode; }
 
 protected:
     void _initPresentFbo();
