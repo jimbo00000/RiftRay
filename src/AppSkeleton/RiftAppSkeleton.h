@@ -44,14 +44,12 @@ public:
     void initHMD();
     void initVR();
     void exitVR();
-
     void RecenterPose();
     void ResetAllTransformations();
     void SetChassisPosition(ovrVector3f p) { m_chassisPos = p; }
-
+    int ConfigureRendering();
     int ConfigureSDKRendering();
     int ConfigureClientRendering();
-
     void DismissHealthAndSafetyWarning() const;
     bool CheckForTapOnHmd();
 

@@ -240,17 +240,6 @@ void RiftAppSkeleton::initHMD()
         m_directHmdMode = false;
     }
 
-    m_ovrScene.SetHmdPointer(m_Hmd);
-    m_ovrScene.SetChassisPosPointer(&m_chassisPos);
-    m_ovrScene.SetChassisYawPointer(&m_chassisYaw);
-
-    // Both ovrVector3f and glm::vec3 are at heart a float[3], so this works fine.
-    m_fm.SetChassisPosPointer(reinterpret_cast<glm::vec3*>(&m_chassisPos));
-    m_fm.SetChassisYawPointer(&m_chassisYaw);
-}
-
-void RiftAppSkeleton::initVR()
-{
     if (m_Hmd != NULL)
     {
         const ovrBool ret = ovrHmd_ConfigureTracking(m_Hmd,
@@ -262,13 +251,20 @@ void RiftAppSkeleton::initVR()
         }
     }
 
-    // The BackBufferSize fields are used by all rendering paths
-    ovrSizei l_ClientSize;
-    l_ClientSize = getHmdResolution();
-    m_Cfg.OGL.Header.BackBufferSize.w = l_ClientSize.w;
-    m_Cfg.OGL.Header.BackBufferSize.h = l_ClientSize.h;
+    m_ovrScene.SetHmdPointer(m_Hmd);
+    m_ovrScene.SetChassisPosPointer(&m_chassisPos);
+    m_ovrScene.SetChassisYawPointer(&m_chassisYaw);
 
-    ///@todo Do we need to choose here?
+    // Both ovrVector3f and glm::vec3 are at heart a float[3], so this works fine.
+    m_fm.SetChassisPosPointer(reinterpret_cast<glm::vec3*>(&m_chassisPos));
+    m_fm.SetChassisYawPointer(&m_chassisYaw);
+}
+
+void RiftAppSkeleton::initVR()
+{
+    m_Cfg.OGL.Header.BackBufferSize = getHmdResolution();
+
+    ConfigureRendering();
     ConfigureSDKRendering();
     ConfigureClientRendering();
 
@@ -343,20 +339,62 @@ void RiftAppSkeleton::exitVR()
     ovr_Shutdown();
 }
 
-// Active GL context is required for the following
+/// Add together the render target size fields of the HMD laid out side-by-side.
+ovrSizei calculateCombinedTextureSize(ovrHmd pHmd)
+{
+    ovrSizei texSz = {0};
+    if (pHmd == NULL)
+        return texSz;
+
+    const ovrSizei szL = ovrHmd_GetFovTextureSize(pHmd, ovrEye_Left, pHmd->DefaultEyeFov[ovrEye_Left], 1.f);
+    const ovrSizei szR = ovrHmd_GetFovTextureSize(pHmd, ovrEye_Right, pHmd->DefaultEyeFov[ovrEye_Right], 1.f);
+    texSz.w = szL.w + szR.w;
+    texSz.h = std::max(szL.h, szR.h);
+    return texSz;
+}
+
+///@brief Writes to m_EyeTexture and m_EyeFov
+int RiftAppSkeleton::ConfigureRendering()
+{
+    if (m_Hmd == NULL)
+        return 1;
+
+    const ovrSizei texSz = calculateCombinedTextureSize(m_Hmd);
+    deallocateFBO(m_renderBuffer);
+    allocateFBO(m_renderBuffer, texSz.w, texSz.h);
+
+    ovrGLTexture& texL = m_EyeTexture[ovrEye_Left];
+    ovrGLTextureData& texDataL = texL.OGL;
+    ovrTextureHeader& hdrL = texDataL.Header;
+
+    hdrL.API = ovrRenderAPI_OpenGL;
+    hdrL.TextureSize.w = texSz.w;
+    hdrL.TextureSize.h = texSz.h;
+    hdrL.RenderViewport.Pos.x = 0;
+    hdrL.RenderViewport.Pos.y = 0;
+    hdrL.RenderViewport.Size.w = texSz.w / 2;
+    hdrL.RenderViewport.Size.h = texSz.h;
+    texDataL.TexId = m_renderBuffer.tex;
+
+    // Right eye the same, except for the x-position in the texture.
+    ovrGLTexture& texR = m_EyeTexture[ovrEye_Right];
+    texR = texL;
+    texR.OGL.Header.RenderViewport.Pos.x = (texSz.w + 1) / 2;
+
+    for (int ei=0; ei<ovrEye_Count; ++ei)
+    {
+        m_EyeFov[ei] = m_Hmd->DefaultEyeFov[ei];
+    }
+
+    return 0;
+}
+
+///@brief Active GL context is required for the following
+/// Writes to m_Cfg
 int RiftAppSkeleton::ConfigureSDKRendering()
 {
     if (m_Hmd == NULL)
         return 1;
-    ovrSizei l_TextureSizeLeft = ovrHmd_GetFovTextureSize(m_Hmd, ovrEye_Left, m_Hmd->DefaultEyeFov[0], 1.0f);
-    ovrSizei l_TextureSizeRight = ovrHmd_GetFovTextureSize(m_Hmd, ovrEye_Right, m_Hmd->DefaultEyeFov[1], 1.0f);
-    ovrSizei l_TextureSize;
-    l_TextureSize.w = l_TextureSizeLeft.w + l_TextureSizeRight.w;
-    l_TextureSize.h = (l_TextureSizeLeft.h>l_TextureSizeRight.h ? l_TextureSizeLeft.h : l_TextureSizeRight.h);
-
-    // Oculus Rift eye configurations...
-    m_EyeFov[0] = m_Hmd->DefaultEyeFov[0];
-    m_EyeFov[1] = m_Hmd->DefaultEyeFov[1];
 
     m_Cfg.OGL.Header.API = ovrRenderAPI_OpenGL;
     m_Cfg.OGL.Header.Multisample = 0;
@@ -367,69 +405,32 @@ int RiftAppSkeleton::ConfigureSDKRendering()
         ovrDistortionCap_Vignette;
     ovrHmd_ConfigureRendering(m_Hmd, &m_Cfg.Config, distortionCaps, m_EyeFov, m_EyeRenderDesc);
 
-    m_EyeTexture[0].OGL.Header.API = ovrRenderAPI_OpenGL;
-    m_EyeTexture[0].OGL.Header.TextureSize.w = l_TextureSize.w;
-    m_EyeTexture[0].OGL.Header.TextureSize.h = l_TextureSize.h;
-    m_EyeTexture[0].OGL.Header.RenderViewport.Pos.x = 0;
-    m_EyeTexture[0].OGL.Header.RenderViewport.Pos.y = 0;
-    m_EyeTexture[0].OGL.Header.RenderViewport.Size.w = l_TextureSize.w/2;
-    m_EyeTexture[0].OGL.Header.RenderViewport.Size.h = l_TextureSize.h;
-    m_EyeTexture[0].OGL.TexId = m_renderBuffer.tex;
-
-    // Right eye the same, except for the x-position in the texture...
-    m_EyeTexture[1] = m_EyeTexture[0];
-    m_EyeTexture[1].OGL.Header.RenderViewport.Pos.x = (l_TextureSize.w+1) / 2;
-
     return 0;
 }
 
+///@brief Writes to m_EyeRenderDesc, m_EyeRenderDesc and m_DistMeshes
 int RiftAppSkeleton::ConfigureClientRendering()
 {
     if (m_Hmd == NULL)
         return 1;
 
-    ovrSizei l_TextureSizeLeft = ovrHmd_GetFovTextureSize(m_Hmd, ovrEye_Left, m_Hmd->DefaultEyeFov[0], 1.0f);
-    ovrSizei l_TextureSizeRight = ovrHmd_GetFovTextureSize(m_Hmd, ovrEye_Right, m_Hmd->DefaultEyeFov[1], 1.0f);
-    ovrSizei l_TextureSize;
-    l_TextureSize.w = l_TextureSizeLeft.w + l_TextureSizeRight.w;
-    l_TextureSize.h = std::max(l_TextureSizeLeft.h, l_TextureSizeRight.h);
-
-    // Renderbuffer init - we can use smaller subsets of it easily
-    deallocateFBO(m_renderBuffer);
-    allocateFBO(m_renderBuffer, l_TextureSize.w, l_TextureSize.h);
-
-
-    m_EyeTexture[0].OGL.Header.API = ovrRenderAPI_OpenGL;
-    m_EyeTexture[0].OGL.Header.TextureSize.w = l_TextureSize.w;
-    m_EyeTexture[0].OGL.Header.TextureSize.h = l_TextureSize.h;
-    m_EyeTexture[0].OGL.Header.RenderViewport.Pos.x = 0;
-    m_EyeTexture[0].OGL.Header.RenderViewport.Pos.y = 0;
-    m_EyeTexture[0].OGL.Header.RenderViewport.Size.w = l_TextureSize.w/2;
-    m_EyeTexture[0].OGL.Header.RenderViewport.Size.h = l_TextureSize.h;
-    m_EyeTexture[0].OGL.TexId = m_renderBuffer.tex;
-
-    // Right eye the same, except for the x-position in the texture...
-    m_EyeTexture[1] = m_EyeTexture[0];
-    m_EyeTexture[1].OGL.Header.RenderViewport.Pos.x = (l_TextureSize.w+1) / 2;
-
-    m_RenderViewports[0] = m_EyeTexture[0].OGL.Header.RenderViewport;
-    m_RenderViewports[1] = m_EyeTexture[1].OGL.Header.RenderViewport;
-
     const int distortionCaps =
         ovrDistortionCap_Chromatic |
         ovrDistortionCap_TimeWarp |
         ovrDistortionCap_Vignette;
-
-    // Generate distortion mesh for each eye
-    for (int eyeNum = 0; eyeNum < 2; eyeNum++)
+    for (int eyeIndex = 0; eyeIndex < ovrEye_Count; eyeIndex++)
     {
-        // Allocate & generate distortion mesh vertices.
+        // Using an idiomatic loop though initializing in eye render order is not necessary.
+        const ovrEyeType eye = m_Hmd->EyeRenderOrder[eyeIndex];
+
+        m_EyeRenderDesc[eye] = ovrHmd_GetRenderDesc(m_Hmd, eye, m_EyeFov[eye]);
+        m_RenderViewports[eye] = m_EyeTexture[eye].OGL.Header.RenderViewport;
         ovrHmd_CreateDistortionMesh(
             m_Hmd,
-            m_EyeRenderDesc[eyeNum].Eye,
-            m_EyeRenderDesc[eyeNum].Fov,
+            m_EyeRenderDesc[eye].Eye,
+            m_EyeRenderDesc[eye].Fov,
             distortionCaps,
-            &m_DistMeshes[eyeNum]);
+            &m_DistMeshes[eye]);
     }
     return 0;
 }
