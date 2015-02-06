@@ -52,6 +52,8 @@ void InitializeBar()
                " min=0.001 max=1.0 step=0.001 group='Performance' ");
     TwAddVarRW(g_pTweakbar, "FPS Delta Threshold", TW_TYPE_FLOAT, &g_fpsDeltaThreshold,
                " min=0.0 max=100.0 step=1.0 group='Performance' ");
+    TwAddVarRW(g_pTweakbar, "Draw to Aux Window", TW_TYPE_BOOLCPP, &g_drawToAuxWindow,
+               "  group='Performance' ");
     TwAddVarRW(g_pTweakbar, "CinemaScope", TW_TYPE_FLOAT, &g_app.m_cinemaScopeFactor,
                " min=0.0 max=0.95 step=0.005 group='Performance' ");
 
