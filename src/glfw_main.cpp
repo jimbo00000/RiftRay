@@ -1052,7 +1052,9 @@ int main(int argc, char** argv)
     }
     else
     {
+#ifndef _LINUX
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+#endif
     }
 
     glfwWindowHint(GLFW_SAMPLES, 0);
