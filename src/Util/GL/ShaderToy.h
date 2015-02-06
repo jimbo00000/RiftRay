@@ -22,7 +22,7 @@
 
 struct shaderVariable {
     enum variableType {
-        None=0,
+        NoType,
         Scalar,
         Direction,
         Color,
@@ -45,7 +45,7 @@ struct shaderVariable {
         , maxVal(0.f)
         , incr(1.f)
         , width(1)
-        , varType(None)
+        , varType(NoType)
     {
     }
 };
