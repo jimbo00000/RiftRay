@@ -1058,12 +1058,15 @@ int main(int argc, char** argv)
 
     const ovrSizei sz = g_app.getHmdResolution();
     const ovrVector2i pos = g_app.getHmdWindowPos();
+    std::string windowTitle = "";
 
     if (g_app.UsingDebugHmd() == true)
     {
         // Create a normal, decorated application window
         LOG_INFO("Using Debug HMD mode.");
-        l_Window = glfwCreateWindow(sz.w, sz.h, "GLFW Oculus Rift Test", NULL, NULL);
+        windowTitle = "RiftRay-GLFW-DebugHMD";
+
+        l_Window = glfwCreateWindow(sz.w, sz.h, windowTitle.c_str(), NULL, NULL);
         g_app.m_dashScene.m_bDraw = false;
     }
     else
@@ -1072,8 +1075,9 @@ int main(int argc, char** argv)
         if (g_app.UsingDirectMode())
         {
             LOG_INFO("Using Direct to Rift mode.");
+            windowTitle = "RiftRay-GLFW-Direct";
 
-            l_Window = glfwCreateWindow(sz.w, sz.h, "GLFW Oculus Rift Test", NULL, NULL);
+            l_Window = glfwCreateWindow(sz.w, sz.h, windowTitle.c_str(), NULL, NULL);
             glfwSetWindowPos(l_Window, pos.x, pos.y);
 
 #if defined(_WIN32)
@@ -1083,9 +1087,10 @@ int main(int argc, char** argv)
         else
         {
             LOG_INFO("Using Extended desktop mode.");
+            windowTitle = "RiftRay-GLFW-Extended";
 
             glfwWindowHint(GLFW_DECORATED, 0);
-            l_Window = glfwCreateWindow(sz.w, sz.h, "GLFW Oculus Rift Test", NULL, NULL);
+            l_Window = glfwCreateWindow(sz.w, sz.h, windowTitle.c_str(), NULL, NULL);
             glfwWindowHint(GLFW_DECORATED, 1);
         }
 
@@ -1218,7 +1223,8 @@ int main(int argc, char** argv)
         // This is absolute death for performance in Ubuntu Linux 12.04
         {
             std::ostringstream oss;
-            oss << "GLFW Oculus Rift Test - "
+            oss << windowTitle
+                << " "
                 << static_cast<int>(g_fps.GetFPS())
                 << " fps";
             glfwSetWindowTitle(l_Window, oss.str().c_str());
