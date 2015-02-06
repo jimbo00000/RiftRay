@@ -981,6 +981,11 @@ int main(int argc, char** argv)
     useOpenGLCoreContext = true;
 #endif
 
+#ifdef _LINUX
+    // Linux driver seems to be lagging a bit
+    useOpenGLCoreContext = false;
+#endif
+
     // Command line options
     for (int i=0; i<argc; ++i)
     {
@@ -1008,6 +1013,8 @@ int main(int argc, char** argv)
 
     LoadConfigFile();
 
+    g_app.initHMD();
+
     GLFWwindow* l_Window = NULL;
     glfwSetErrorCallback(ErrorCallback);
     if (!glfwInit())
@@ -1028,12 +1035,14 @@ int main(int argc, char** argv)
         chdir(path);
 #endif
 
+#ifndef _LINUX
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-#if defined(_MACOS)
+#  if defined(_MACOS)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-#else
+#  else
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-#endif
+#  endif
+#endif //ndef _LINUX
     if (useOpenGLCoreContext)
     {
         LOG_INFO("Using OpenGL core context.");
@@ -1047,7 +1056,6 @@ int main(int argc, char** argv)
 
     glfwWindowHint(GLFW_SAMPLES, 0);
 
-    g_app.initHMD();
     const ovrSizei sz = g_app.getHmdResolution();
     const ovrVector2i pos = g_app.getHmdWindowPos();
 
