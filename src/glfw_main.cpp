@@ -351,6 +351,55 @@ void joystick_XboxController(
     int numButtons,
     const char* pLastButtonStates)
 {
+    // Xbox controller layout in glfw:
+    // numAxes 5, numButtons 14
+    // 0 A (down position)
+    // 1 B (right position)
+    // 2 X (left position)
+    // 3 Y (up position)
+    // 4 L bumper
+    // 5 R bumper
+    // 6 Back (left center)
+    // 7 Start (right center)
+    // 8 Left stick push
+    // 9 Right stick push
+    // 10 Dpad Up
+    // 11 Dpad right
+    // 12 Dpad down
+    // 13 Dpad left
+    // Axis 0 1 Left stick x y
+    // Axis 2 triggers, left positive right negative
+    // Axis 3 4 right stick x y
+
+    glm::vec3 joystickMove(0.0f, 0.0f, 0.0f);
+    // Xbox controller Left stick controls movement
+    if (numAxes >= 2)
+    {
+        const float x_move = pAxisStates[0];
+        const float y_move = pAxisStates[1];
+        const glm::vec3 forward(0.f, 0.f, -1.f);
+        const glm::vec3 right(1.f, 0.f, 0.f);
+        const float deadzone = 0.5f;
+        if (fabs(x_move) > deadzone)
+            joystickMove += x_move * right;
+        if (fabs(y_move) > deadzone)
+            joystickMove += y_move * forward;
+    }
+
+    if (pButtonStates[0] == GLFW_PRESS) // A button
+        joystickMove += glm::vec3( 0.f,  1.f,  0.f);
+    if (pButtonStates[1] == GLFW_PRESS) // B button
+        joystickMove += glm::vec3( 0.f, -1.f,  0.f);
+
+    float mag = 1.f;
+    if (numAxes > 2)
+    {
+        // Xbox left and right analog triggers control speed
+        mag = pow(10.f, pAxisStates[2]);
+    }
+    g_app.m_joystickMove = mag * joystickMove;
+
+
     // Right stick on Xbox controller changes render resolution
     if (numAxes >= 5)
     {
@@ -464,25 +513,6 @@ void joystick()
     int buttonSendMouseClick = 5;
     int buttonToggleDashboard = 8;
 
-    // Xbox controller layout in glfw:
-    // numAxes 5, numButtons 14
-    // 0 A (down position)
-    // 1 B (right position)
-    // 2 X (left position)
-    // 3 Y (up position)
-    // 4 L bumper
-    // 5 R bumper
-    // 6 Back (left center)
-    // 7 Start (right center)
-    // 8 Left stick push
-    // 9 Right stick push
-    // 10 Dpad Up
-    // 11 Dpad right
-    // 12 Dpad down
-    // 13 Dpad left
-    // Axis 0 1 Left stick x y
-    // Axis 2 triggers, left positive right negative
-    // Axis 3 4 right stick x y
     const glm::vec3 moveDirsXboxController[8] = {
         glm::vec3( 0.f,  1.f,  0.f),
         glm::vec3( 0.f, -1.f,  0.f),
@@ -580,21 +610,8 @@ void joystick()
     }
 #endif
 
-    // Xbox controller Left stick controls movement
-    if (numAxes >= 2)
-    {
-        const float x_move = pAxisStates[0];
-        const float y_move = pAxisStates[1];
-        const glm::vec3 forward(0.f, 0.f, -1.f);
-        const glm::vec3 right(1.f, 0.f, 0.f);
-        const float deadzone = 0.5f;
-        if (fabs(x_move) > deadzone)
-            joystickMove += x_move * right;
-        if (fabs(y_move) > deadzone)
-            joystickMove += y_move * forward;
-    }
 
-
+#if 0
     float mag = 1.f;
     if (numAxes > 2)
     {
@@ -610,6 +627,7 @@ void joystick()
             mag /= speedFactor;
     }
     g_app.m_joystickMove = mag * joystickMove;
+#endif
 
 
     if (xboxController)
