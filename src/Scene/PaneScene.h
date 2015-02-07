@@ -20,6 +20,7 @@
 #include "Pane.h"
 #include "VirtualTrackball.h"
 #include "BMFont.h"
+#include "Timer.h"
 
 ///@brief 
 class PaneScene : public IScene
@@ -36,6 +37,7 @@ public:
     virtual std::vector<Transformation*> GetTransformationPointers();
     virtual void ResetTransformation();
 
+    virtual void SendMouseMotion(int x, int y);
     virtual void SendMouseClick(int state);
     virtual void SendHmdTap();
     virtual void SetHoldingFlag(int state);
@@ -68,7 +70,7 @@ public:
     std::vector<Pane*> m_panes;
     std::vector<glm::vec3> m_panePts;
     bool m_chassisLocalSpace;
-
+    Timer m_mouseMotionCooldown;
 
 private: // Disallow copy ctor and assignment operator
     PaneScene(const PaneScene&);

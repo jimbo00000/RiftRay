@@ -36,12 +36,12 @@ PaneScene::PaneScene(bool chassisLocal)
 , m_panes()
 , m_panePts()
 , m_chassisLocalSpace(chassisLocal)
+, m_mouseMotionCooldown()
 {
     m_panePts.push_back(glm::vec3(-0.5f, -0.5f, 0.0f));
     m_panePts.push_back(glm::vec3(0.5f, -0.5f, 0.0f));
     m_panePts.push_back(glm::vec3(0.5f, 0.5f, 0.0f));
     m_panePts.push_back(glm::vec3(-0.5f, 0.5f, 0.0f));
-
 }
 
 PaneScene::~PaneScene()
@@ -286,6 +286,15 @@ void PaneScene::timestep(float dt)
             continue;
         pP->timestep(dt);
 
+        if (pP->m_holdState.m_holding)
+        {
+            _SetHeldPanePositionAndOrientation(pP);
+        }
+
+        // Leave mouse alone for one second to resume HMD gaze controls.
+        if (m_mouseMotionCooldown.seconds() < 1.f)
+            continue;
+
         pP->m_cursorInPane = false;
 
         glm::vec2 hmdPt(0.0f);
@@ -327,11 +336,6 @@ void PaneScene::timestep(float dt)
             }
 #endif
         }
-
-        if (pP->m_holdState.m_holding)
-        {
-            _SetHeldPanePositionAndOrientation(pP);
-        }
     }
 }
 
@@ -364,6 +368,32 @@ void PaneScene::ResetTransformation()
             continue;
         pP->ResetTransformation();
     }
+}
+
+///@brief Override HMD gaze direction and Hydra mouse motion action for a limited
+/// time after each mouse motion input event.
+void PaneScene::SendMouseMotion(int x, int y)
+{
+    if (m_bDraw == false)
+        return;
+    if (m_panes.empty())
+        return;
+
+    // Pass mouse events only to the first pane in the set(AntPane for DashboardScene)
+    std::vector<Pane*>::iterator it = m_panes.begin();
+    Pane* pP = *it;
+    if (pP == NULL)
+        return;
+
+    const glm::ivec2 fbsz = pP->GetFBOSize();
+    const glm::vec2 normPt(
+        static_cast<float>(x) / static_cast<float>(fbsz.x),
+        static_cast<float>(y) / static_cast<float>(fbsz.y));
+    pP->m_pointerCoords = normPt;
+    pP->m_cursorInPane = true;
+
+    pP->OnMouseMove(x, y);
+    m_mouseMotionCooldown.reset();
 }
 
 void PaneScene::SendMouseClick(int state)

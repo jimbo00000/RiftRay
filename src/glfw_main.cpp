@@ -208,10 +208,13 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
             break;
 
         case GLFW_KEY_TAB:
-            g_app.m_dashScene.m_bDraw = !g_app.m_dashScene.m_bDraw;
-            if (g_app.m_dashScene.m_bDraw)
+            if (g_app.UsingDebugHmd() == false)
             {
-                g_app.m_dashScene.ResizeTweakbar();
+                g_app.m_dashScene.m_bDraw = !g_app.m_dashScene.m_bDraw;
+                if (g_app.m_dashScene.m_bDraw)
+                {
+                    g_app.m_dashScene.ResizeTweakbar();
+                }
             }
             break;
 
@@ -582,6 +585,9 @@ void mouseDown(GLFWwindow* pWindow, int button, int action, int mods)
     {
         which_button = -1;
     }
+
+    if      (action==GLFW_PRESS  ) g_app.m_dashScene.SendMouseClick(1);
+    else if (action==GLFW_RELEASE) g_app.m_dashScene.SendMouseClick(0);
 }
 
 void mouseMove(GLFWwindow* pWindow, double xd, double yd)
@@ -600,12 +606,17 @@ void mouseMove(GLFWwindow* pWindow, double xd, double yd)
     g_app.m_mouseDeltaYaw = 0.0f;
     g_app.m_mouseMove = glm::vec3(0.0f);
 
-    if (which_button == GLFW_MOUSE_BUTTON_1)
+    if (g_app.UsingDebugHmd() == true)
     {
-        const float spinMagnitude = 0.05f;
-        g_app.m_mouseDeltaYaw += static_cast<float>(mmx) * spinMagnitude;
+        // Only allow mouse yaw adjustment when using DebugHMD rendering
+        if (which_button == GLFW_MOUSE_BUTTON_1)
+        {
+            const float spinMagnitude = 0.05f;
+            g_app.m_mouseDeltaYaw += static_cast<float>(mmx) * spinMagnitude;
+        }
     }
-    else if (which_button == GLFW_MOUSE_BUTTON_2) // Right click
+
+    if (which_button == GLFW_MOUSE_BUTTON_2) // Right click
     {
         const float moveMagnitude = 0.5f;
         g_app.m_mouseMove.x += static_cast<float>(mmx) * moveMagnitude;
@@ -617,6 +628,8 @@ void mouseMove(GLFWwindow* pWindow, double xd, double yd)
         g_app.m_mouseMove.x += static_cast<float>(mmx) * moveMagnitude;
         g_app.m_mouseMove.y -= static_cast<float>(mmy) * moveMagnitude;
     }
+
+    g_app.m_dashScene.SendMouseMotion(x, y);
 }
 
 void mouseWheel(GLFWwindow* pWindow, double x, double y)
