@@ -484,10 +484,10 @@ void joystick()
     // Axis 2 triggers, left positive right negative
     // Axis 3 4 right stick x y
     const glm::vec3 moveDirsXboxController[8] = {
-        glm::vec3( 0.f,  0.f,  1.f),
-        glm::vec3( 1.f,  0.f,  0.f),
-        glm::vec3(-1.f,  0.f,  0.f),
-        glm::vec3( 0.f,  0.f, -1.f),
+        glm::vec3( 0.f,  1.f,  0.f),
+        glm::vec3( 0.f, -1.f,  0.f),
+        glm::vec3( 0.f,  0.f,  0.f),
+        glm::vec3( 0.f,  0.f,  0.f),
         glm::vec3( 0.f,  0.f,  0.f),
         glm::vec3( 0.f,  0.f,  0.f),
         glm::vec3( 0.f,  0.f,  0.f),
