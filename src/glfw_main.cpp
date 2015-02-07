@@ -305,8 +305,121 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
     g_app.m_keyboardMove = mag * keyboardMove;
 }
 
+void joystick_GravisGamepadPro(
+    int joyidx,
+    const float* pAxisStates,
+    int numAxes,
+    const unsigned char* pButtonStates,
+    int numButtons,
+    const char* pLastButtonStates)
+{
+    int buttonAdjustVfov = 8;
+    int buttonCloseVfov = 4;
+    int buttonOpenVfov = 6;
+
+    // Left shoulder buttons - if "select" is pressed, adjust vertical FOV.
+    // Otherwise, boost or limit movement speed.
+    if (pButtonStates[buttonAdjustVfov] == GLFW_PRESS)
+    {
+        const float incr = 0.05f;
+        float scope = g_app.m_cinemaScopeFactor;
+        if (
+            (pButtonStates[buttonCloseVfov] == GLFW_PRESS) &&
+            (pLastButtonStates[buttonCloseVfov] != GLFW_PRESS)
+            )
+        {
+            scope += incr;
+        }
+        else if (
+            (pButtonStates[buttonOpenVfov] == GLFW_PRESS) &&
+            (pLastButtonStates[buttonOpenVfov] != GLFW_PRESS)
+            )
+        {
+            scope -= incr;
+        }
+        scope = std::max(0.0f, scope);
+        scope = std::min(0.95f, scope);
+        g_app.m_cinemaScopeFactor = scope;
+    }
+}
+
+void joystick_XboxController(
+    int joyidx,
+    const float* pAxisStates,
+    int numAxes,
+    const unsigned char* pButtonStates,
+    int numButtons,
+    const char* pLastButtonStates)
+{
+    // Left stick controls yaw
+    float x_move = pAxisStates[0];
+    const float deadzone = 0.2f;
+    if (fabs(x_move) < deadzone)
+        x_move = 0.0f;
+    g_app.m_joystickYaw = 0.5f * static_cast<float>(x_move);
+
+
+    // Right stick on Xbox controller changes render resolution
+    if (numAxes >= 5)
+    {
+        const float x = pAxisStates[4];
+        const float y = -pAxisStates[3];
+        const float deadZone = 0.1f;
+        if (fabs(y) > deadZone)
+        {
+            g_dynamicallyScaleFBO = false;
+#if 0
+            // Relative motion
+            const float curve = 1.f - sqrt(1-y*y);
+            const float increment = 0.03f * curve;
+            const float coeff = 1.f + increment * y;
+            g_app.SetFBOScale(coeff * g_app.GetFBOScale());
+#else
+            // Absolute "farthest push"
+            const float resMin = g_app.m_fboMinScale;
+            const float resMax = 1.f;
+            const float d = (-y - deadZone)/(1. - deadZone); // [0,1]
+            const float u = ( y - deadZone)/(1. - deadZone);
+            // Push up on stick to increase resolution, down to decrease
+            const float s = g_app.GetFBOScale();
+            if (d > 0.f)
+            {
+                g_app.SetFBOScale(std::min(s, 1.f - d));
+            }
+            else if (u > 0.f)
+            {
+                g_app.SetFBOScale(std::max(s, u * resMax));
+            }
+#endif
+        }
+        if (fabs(x) > deadZone)
+        {
+            const float cinMin = 0.f;
+            const float cinMax = .95f;
+            const float l = (-x - deadZone)/(1. - deadZone);
+            const float r = ( x - deadZone)/(1. - deadZone);
+            // Push left on stick to close cinemascope, right to open
+            if (l > 0.f)
+            {
+                g_app.m_cinemaScopeFactor = std::max(
+                    g_app.m_cinemaScopeFactor,
+                    l * cinMax);
+            }
+            else if (r > 0.f)
+            {
+                g_app.m_cinemaScopeFactor = std::min(
+                    g_app.m_cinemaScopeFactor,
+                    1.f - r);
+            }
+        }
+    }
+}
+
 void joystick()
 {
+    static char s_lastButtons[256] = {0};
+
+    ///@todo Handle multiple joysticks and live plugging/unplugging
     if (g_joystickIdx == -1)
         return;
 
@@ -322,7 +435,6 @@ void joystick()
     if (numAxes < 2)
         return;
 
-    static char s_lastButtons[256] = {0};
     int numButtons = 0;
     const unsigned char* pButtonStates = glfwGetJoystickButtons(g_joystickIdx, &numButtons);
     if (numButtons < 10)
@@ -370,6 +482,12 @@ void joystick()
     // 5 R bumper
     // 6 Back (left center)
     // 7 Start (right center)
+    // 8 Left stick push
+    // 9 Right stick push
+    // 10 Dpad Up
+    // 11 Dpad right
+    // 12 Dpad down
+    // 13 Dpad left
     // Axis 0 1 Left stick x y
     // Axis 2 triggers, left positive right negative
     // Axis 3 4 right stick x y
@@ -384,12 +502,15 @@ void joystick()
         glm::vec3( 0.f,  0.f,  0.f),
     };
 
-    ///@todo Different mappings for different controllers.
     const glm::vec3* moveDirs = moveDirsGravisGamepadPro;
+
     // Take an educated guess that this is an Xbox controller - glfw's
     // id string says "Microsoft PC Joystick" for most gamepad types.
+    ///@todo Why does GLFW on Linux return a different, more descriptive string?
+    bool xboxController = false;
     if (numAxes == 5 && numButtons == 14)
     {
+        xboxController = true;
         moveDirs = moveDirsXboxController;
         buttonToggleWorld = 7;
         buttonAdjustVfov = 6;
@@ -456,31 +577,6 @@ void joystick()
     memcpy(s_lastButtons, pButtonStates, numButtons);
 
 
-    // Left shoulder buttons - if "select" is pressed, adjust vertical FOV.
-    // Otherwise, boost or limit movement speed.
-    if (pButtonStates[buttonAdjustVfov] == GLFW_PRESS)
-    {
-        const float incr = 0.05f;
-        float scope = g_app.m_cinemaScopeFactor;
-        if (
-            (pButtonStates[buttonCloseVfov] == GLFW_PRESS) &&
-            (s_lastButtons[buttonCloseVfov] != GLFW_PRESS)
-            )
-        {
-            scope += incr;
-        }
-        else if (
-            (pButtonStates[buttonOpenVfov] == GLFW_PRESS) &&
-            (s_lastButtons[buttonOpenVfov] != GLFW_PRESS)
-            )
-        {
-            scope -= incr;
-        }
-        scope = std::max(0.0f, scope);
-        scope = std::min(0.95f, scope);
-        g_app.m_cinemaScopeFactor = scope;
-    }
-
     if (numAxes > 1)
     {
         const float y_move = pAxisStates[1];
@@ -506,66 +602,10 @@ void joystick()
     }
     g_app.m_joystickMove = mag * joystickMove;
 
-    // Left stick controls yaw
-    float x_move = pAxisStates[0];
-    const float deadzone = 0.2f;
-    if (fabs(x_move) < deadzone)
-        x_move = 0.0f;
-    g_app.m_joystickYaw = 0.5f * static_cast<float>(x_move);
 
-    // Right stick on Xbox controller changes render resolution
-    if (numAxes >= 5)
+    if (xboxController)
     {
-        const float x = pAxisStates[4];
-        const float y = -pAxisStates[3];
-        const float deadZone = 0.1f;
-        if (fabs(y) > deadZone)
-        {
-            g_dynamicallyScaleFBO = false;
-#if 0
-            // Relative motion
-            const float curve = 1.f - sqrt(1-y*y);
-            const float increment = 0.03f * curve;
-            const float coeff = 1.f + increment * y;
-            g_app.SetFBOScale(coeff * g_app.GetFBOScale());
-#else
-            // Absolute "farthest push"
-            const float resMin = g_app.m_fboMinScale;
-            const float resMax = 1.f;
-            const float d = (-y - deadZone)/(1. - deadZone); // [0,1]
-            const float u = ( y - deadZone)/(1. - deadZone);
-            // Push up on stick to increase resolution, down to decrease
-            const float s = g_app.GetFBOScale();
-            if (d > 0.f)
-            {
-                g_app.SetFBOScale(std::min(s, 1.f - d));
-            }
-            else if (u > 0.f)
-            {
-                g_app.SetFBOScale(std::max(s, u * resMax));
-            }
-#endif
-        }
-        if (fabs(x) > deadZone)
-        {
-            const float cinMin = 0.f;
-            const float cinMax = .95f;
-            const float l = (-x - deadZone)/(1. - deadZone);
-            const float r = ( x - deadZone)/(1. - deadZone);
-            // Push left on stick to close cinemascope, right to open
-            if (l > 0.f)
-            {
-                g_app.m_cinemaScopeFactor = std::max(
-                    g_app.m_cinemaScopeFactor,
-                    l * cinMax);
-            }
-            else if (r > 0.f)
-            {
-                g_app.m_cinemaScopeFactor = std::min(
-                    g_app.m_cinemaScopeFactor,
-                    1.f - r);
-            }
-        }
+        joystick_XboxController(g_joystickIdx, pAxisStates, numAxes, pButtonStates, numButtons, s_lastButtons);
     }
 }
 
