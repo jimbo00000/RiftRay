@@ -127,7 +127,6 @@ void RiftAppSkeleton::ResetAllTransformations()
     m_chassisYaw = 0.0f;
 
     m_raymarchScene.ResetTransformation();
-    m_dashScene.ResetTransformation();
 }
 
 ovrSizei RiftAppSkeleton::getHmdResolution() const
