@@ -351,14 +351,6 @@ void joystick_XboxController(
     int numButtons,
     const char* pLastButtonStates)
 {
-    // Left stick controls yaw
-    float x_move = pAxisStates[0];
-    const float deadzone = 0.2f;
-    if (fabs(x_move) < deadzone)
-        x_move = 0.0f;
-    g_app.m_joystickYaw = 0.5f * static_cast<float>(x_move);
-
-
     // Right stick on Xbox controller changes render resolution
     if (numAxes >= 5)
     {
@@ -577,6 +569,7 @@ void joystick()
     memcpy(s_lastButtons, pButtonStates, numButtons);
 
 
+#if 0
     if (numAxes > 1)
     {
         const float y_move = pAxisStates[1];
@@ -585,6 +578,22 @@ void joystick()
         if (fabs(y_move) > deadzone)
             joystickMove += y_move * up;
     }
+#endif
+
+    // Xbox controller Left stick controls movement
+    if (numAxes >= 2)
+    {
+        const float x_move = pAxisStates[0];
+        const float y_move = pAxisStates[1];
+        const glm::vec3 forward(0.f, 0.f, -1.f);
+        const glm::vec3 right(1.f, 0.f, 0.f);
+        const float deadzone = 0.5f;
+        if (fabs(x_move) > deadzone)
+            joystickMove += x_move * right;
+        if (fabs(y_move) > deadzone)
+            joystickMove += y_move * forward;
+    }
+
 
     float mag = 1.f;
     if (numAxes > 2)
