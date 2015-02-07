@@ -432,6 +432,16 @@ void joystick_XboxController(
                 g_dynamicallyScaleFBO = false;
                 g_app.SetFBOScale((1.f/f) * g_app.GetFBOScale());
             }
+            if (i == 10) // Dpad up
+            {
+                g_app.m_cinemaScopeFactor -= 0.1f;
+                g_app.m_cinemaScopeFactor = std::max(0.f, g_app.m_cinemaScopeFactor);
+            }
+            if (i == 12) // Dpad down
+            {
+                g_app.m_cinemaScopeFactor += 0.1f;
+                g_app.m_cinemaScopeFactor = std::min(0.95f, g_app.m_cinemaScopeFactor);
+            }
         }
     }
 
