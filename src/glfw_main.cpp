@@ -411,6 +411,30 @@ void joystick_XboxController(
         g_app.m_joystickYaw = 0.75f * static_cast<float>(x_move);
     }
 
+    // Check for recent button pushes
+    const float f = 0.9f;
+    const float ff = 0.99f;
+    for (int i=0; i<numButtons; ++i)
+    {
+        const bool pressed = (pButtonStates[i] == GLFW_PRESS) &&
+                             (pLastButtonStates[i] != GLFW_PRESS);
+        const bool released = (pButtonStates[i] != GLFW_PRESS) &&
+                              (pLastButtonStates[i] == GLFW_PRESS);
+        if (pressed)
+        {
+            if (i == 13) // Dpad left
+            {
+                g_dynamicallyScaleFBO = false;
+                g_app.SetFBOScale(f * g_app.GetFBOScale());
+            }
+            if (i == 11) // Dpad right
+            {
+                g_dynamicallyScaleFBO = false;
+                g_app.SetFBOScale((1.f/f) * g_app.GetFBOScale());
+            }
+        }
+    }
+
 #if 0
     // Right stick on Xbox controller changes render resolution
     if (numAxes >= 5)
@@ -610,7 +634,6 @@ void joystick()
             }
         }
     }
-    memcpy(s_lastButtons, pButtonStates, numButtons);
 
 
 #if 0
@@ -648,6 +671,7 @@ void joystick()
     {
         joystick_XboxController(g_joystickIdx, pAxisStates, numAxes, pButtonStates, numButtons, s_lastButtons);
     }
+    memcpy(s_lastButtons, pButtonStates, numButtons);
 }
 
 void mouseDown(GLFWwindow* pWindow, int button, int action, int mods)
