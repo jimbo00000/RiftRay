@@ -442,6 +442,14 @@ void joystick_XboxController(
                 g_app.m_cinemaScopeFactor += 0.1f;
                 g_app.m_cinemaScopeFactor = std::min(0.95f, g_app.m_cinemaScopeFactor);
             }
+            if (i == 4) // Left Bumper
+            {
+                g_app.RecenterPose();
+            }
+            if (i == 5) // Right Bumper
+            {
+                g_app.ResetAllTransformations();
+            }
         }
     }
 
