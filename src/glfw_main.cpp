@@ -313,9 +313,52 @@ void joystick_GravisGamepadPro(
     int numButtons,
     const char* pLastButtonStates)
 {
+    // Map joystick buttons to move directions
+    // Gravis Gamepad Pro layout in glfw:
+    // 0 Red (left position)
+    // 1 Yellow (down position)
+    // 2 Green (right position)
+    // 3 Blue (up position)
+    // 4 Left top shoulder
+    // 5 Right top shoulder
+    // 6 Left bottom shoulder
+    // 7 Right bottom shoulder
+    // 8 Select (left center)
+    // 9 Start (right center)
+    const glm::vec3 moveDirsGravisGamepadPro[8] = {
+        glm::vec3(-1.f,  0.f,  0.f),
+        glm::vec3( 0.f,  0.f,  1.f),
+        glm::vec3( 1.f,  0.f,  0.f),
+        glm::vec3( 0.f,  0.f, -1.f),
+        glm::vec3( 0.f,  0.f,  0.f),
+        glm::vec3( 0.f,  0.f,  0.f),
+        glm::vec3( 0.f,  0.f,  0.f),
+        glm::vec3( 0.f,  0.f,  0.f),
+    };
+    glm::vec3 joystickMove(0.0f, 0.0f, 0.0f);
+    for (int i=0; i<std::min(8,numButtons); ++i)
+    {
+        if (pButtonStates[i] == GLFW_PRESS)
+        {
+            joystickMove += moveDirsGravisGamepadPro[i];
+        }
+    }
+    
+    float mag = 1.f;
+    if (numAxes > 2)
+    {
+    }
+    g_app.m_joystickMove = mag * joystickMove;
+
+    int buttonToggleWorld = 9;
     int buttonAdjustVfov = 8;
     int buttonCloseVfov = 4;
     int buttonOpenVfov = 6;
+    int buttonIncreaseSpeed = 4;
+    int buttonDecreaseSpeed = 6;
+    int buttonGrabPane = 4;
+    int buttonSendMouseClick = 5;
+    int buttonToggleDashboard = 8;
 
     // Left shoulder buttons - if "select" is pressed, adjust vertical FOV.
     // Otherwise, boost or limit movement speed.
@@ -556,37 +599,6 @@ void joystick()
     if (numButtons < 10)
         return;
 
-    // Map joystick buttons to move directions
-    // Gravis Gamepad Pro layout in glfw:
-    // 0 Red (left position)
-    // 1 Yellow (down position)
-    // 2 Green (right position)
-    // 3 Blue (up position)
-    // 4 Left top shoulder
-    // 5 Right top shoulder
-    // 6 Left bottom shoulder
-    // 7 Right bottom shoulder
-    // 8 Select (left center)
-    // 9 Start (right center)
-    const glm::vec3 moveDirsGravisGamepadPro[8] = {
-        glm::vec3(-1.f,  0.f,  0.f),
-        glm::vec3( 0.f,  0.f,  1.f),
-        glm::vec3( 1.f,  0.f,  0.f),
-        glm::vec3( 0.f,  0.f, -1.f),
-        glm::vec3( 0.f,  0.f,  0.f),
-        glm::vec3( 0.f,  0.f,  0.f),
-        glm::vec3( 0.f,  0.f,  0.f),
-        glm::vec3( 0.f,  0.f,  0.f),
-    };
-    int buttonToggleWorld = 9;
-    int buttonAdjustVfov = 8;
-    int buttonCloseVfov = 4;
-    int buttonOpenVfov = 6;
-    int buttonIncreaseSpeed = 4;
-    int buttonDecreaseSpeed = 6;
-    int buttonGrabPane = 4;
-    int buttonSendMouseClick = 5;
-    int buttonToggleDashboard = 8;
 
     const glm::vec3 moveDirsXboxController[8] = {
         glm::vec3( 0.f,  1.f,  0.f),
@@ -599,7 +611,6 @@ void joystick()
         glm::vec3( 0.f,  0.f,  0.f),
     };
 
-    const glm::vec3* moveDirs = moveDirsGravisGamepadPro;
 
     // Take an educated guess that this is an Xbox controller - glfw's
     // id string says "Microsoft PC Joystick" for most gamepad types.
@@ -608,26 +619,14 @@ void joystick()
     if (numAxes == 5 && numButtons == 14)
     {
         xboxController = true;
-        moveDirs = moveDirsXboxController;
-        buttonToggleWorld = 7;
-        buttonAdjustVfov = 6;
-        buttonCloseVfov = 4;
-        buttonOpenVfov = 6;
-        buttonIncreaseSpeed = 4;
-        buttonDecreaseSpeed = 6;
-        buttonGrabPane = 4;
-        buttonSendMouseClick = 5;
-        buttonToggleDashboard = 6;
     }
 
-    glm::vec3 joystickMove(0.0f, 0.0f, 0.0f);
-    for (int i=0; i<std::min(8,numButtons); ++i)
+    if (numAxes == 2 && numButtons == 10)
     {
-        if (pButtonStates[i] == GLFW_PRESS)
-        {
-            joystickMove += moveDirs[i];
-        }
+        joystick_GravisGamepadPro(g_joystickIdx, pAxisStates, numAxes, pButtonStates, numButtons, s_lastButtons);
+        return;
     }
+
 
 #if 0
     // Check for recent button pushes
