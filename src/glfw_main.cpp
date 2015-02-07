@@ -369,7 +369,7 @@ void joystick_XboxController(
     // 13 Dpad left
     // Axis 0 1 Left stick x y
     // Axis 2 triggers, left positive right negative
-    // Axis 3 4 right stick x y
+    // Axis 3 4 right stick y x
 
     glm::vec3 joystickMove(0.0f, 0.0f, 0.0f);
     // Xbox controller Left stick controls movement
@@ -399,7 +399,19 @@ void joystick_XboxController(
     }
     g_app.m_joystickMove = mag * joystickMove;
 
+    // Right stick controls yaw
+    ///@todo Pitch, Roll(instant nausea!)
+    if (numAxes > 3)
+    {
+        float x_move = pAxisStates[4];
+        const glm::vec3 up(0.f, 1.f, 0.f);
+        const float deadzone = 0.2f;
+        if (fabs(x_move) < deadzone)
+            x_move = 0.f;
+        g_app.m_joystickYaw = 0.75f * static_cast<float>(x_move);
+    }
 
+#if 0
     // Right stick on Xbox controller changes render resolution
     if (numAxes >= 5)
     {
@@ -454,6 +466,8 @@ void joystick_XboxController(
             }
         }
     }
+#endif
+
 }
 
 void joystick()
