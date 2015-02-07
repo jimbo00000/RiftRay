@@ -465,6 +465,10 @@ void joystick_XboxController(
             {
                 g_app.m_dashScene.SendMouseClick(pressed?1:0);
             }
+            if (i == 9) // Right stick push
+            {
+                g_app.m_dashScene.SetHoldingFlag(pressed?1:0);
+            }
         }
     }
 
