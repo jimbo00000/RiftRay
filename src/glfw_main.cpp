@@ -450,6 +450,21 @@ void joystick_XboxController(
             {
                 g_app.ResetAllTransformations();
             }
+            if (i == 7) // Start
+            {
+                g_app.ToggleShaderWorld();
+            }
+            if (i == 3) // Y button
+            {
+                g_app.m_dashScene.m_bDraw = !g_app.m_dashScene.m_bDraw;
+            }
+        }
+        if (pressed || released)
+        {
+            if (i == 2) // X button
+            {
+                g_app.m_dashScene.SendMouseClick(pressed?1:0);
+            }
         }
     }
 
@@ -610,6 +625,7 @@ void joystick()
         }
     }
 
+#if 0
     // Check for recent button pushes
     for (int i=0; i<numButtons; ++i)
     {
@@ -652,6 +668,7 @@ void joystick()
             }
         }
     }
+#endif
 
 
 #if 0
