@@ -72,6 +72,8 @@ void InitializeBar()
                "  group='Scene' ");
     TwAddVarRW(g_pTweakbar, "Panes as Portals", TW_TYPE_BOOLCPP, &g_app.m_galleryScene.m_globalShadertoyState.panesAsPortals,
                "  group='Scene' ");
+    TwAddVarRW(g_pTweakbar, "Show Controls", TW_TYPE_BOOLCPP, &g_app.m_dashScene.m_pngPane.m_visible,
+               "  group='Scene' ");
 
     TwAddButton(g_pTweakbar, "Reset Timer", ResetTimerCB, &g_app.m_galleryScene,
         " label='Reset Timer' group='Shader' ");

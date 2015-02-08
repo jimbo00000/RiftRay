@@ -60,6 +60,9 @@ void PngPane::DrawPaneWithShader(
     const glm::mat4& projection,
     const ShaderWithVariables& sh) const
 {
+    if (m_visible == false)
+        return;
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_paneRenderBuffer.tex);
     glUniform1i(sh.GetUniLoc("fboTex"), 0);

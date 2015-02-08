@@ -27,7 +27,6 @@ public:
     virtual glm::ivec2 GetAntFBOSize() const { return m_antPane.GetFBOSize(); }
     virtual void ResizeTweakbar() { m_antPane.ResizeTweakbar(); }
 
-protected:
     AntPane m_antPane;
     PngPane m_pngPane;
 

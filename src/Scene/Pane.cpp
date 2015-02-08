@@ -15,6 +15,7 @@ Pane::Pane()
 , m_pointerCoords(0.0f)
 , m_holdState()
 , m_acceptMouseMotion(false)
+, m_visible(true)
 {
     m_panePts.push_back(glm::vec3(-0.5f, -0.5f, 0.0f));
     m_panePts.push_back(glm::vec3(0.5f, -0.5f, 0.0f));
@@ -104,6 +105,9 @@ void Pane::_InitPlaneAttributes()
 
 void Pane::DrawCursor() const
 {
+    if (m_visible == false)
+        return;
+
     if (!m_cursorInPane)
         return;
 
@@ -137,6 +141,9 @@ void Pane::DrawTextOverlay(
     const ShaderWithVariables& sh,
     const BMFont& font) const
 {
+    if (m_visible == false)
+        return;
+
     const glm::mat4 modelview(1.0f);
     const glm::mat4 projection = glm::ortho(
         0.0f,
@@ -152,6 +159,9 @@ void Pane::DrawTextOverlay(
 
 void Pane::DrawPane() const
 {
+    if (m_visible == false)
+        return;
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_paneRenderBuffer.tex);
     glUniform1i(m_plane.GetUniLoc("fboTex"), 0);
@@ -165,6 +175,9 @@ void Pane::DrawPane() const
 
 void Pane::DrawToFBO() const
 {
+    if (m_visible == false)
+        return;
+
     if (m_cursorInPane || !m_tx.m_lockedAtClickPos)
         glClearColor(0.25f, 0.25f, 0.25f, 0.0f);
     else
@@ -182,6 +195,9 @@ void Pane::DrawInScene(
     const glm::mat4& projection,
     const glm::mat4& object) const
 {
+    if (m_visible == false)
+        return;
+
     glUseProgram(m_plane.prog());
     {
         const glm::mat4 objectMatrix = modelview * object;
@@ -221,6 +237,9 @@ bool Pane::GetPaneRayIntersectionCoordinates(
     glm::vec2& planePtOut, ///< [out] Intersection point in XY plane coordinates
     float& tParamOut) ///< [out] t parameter of ray intersection (ro + t*dt)
 {
+    if (m_visible == false)
+        return false;
+
     const std::vector<glm::vec3> pts = GetTransformedPanePoints();
     glm::vec3 retval1(0.0f);
     glm::vec3 retval2(0.0f);
@@ -273,6 +292,9 @@ bool Pane::GetPaneRayIntersectionCoordinates(
 
 void Pane::OnHmdTap()
 {
+    if (m_visible == false)
+        return;
+
     OnMouseClick(1, m_pointerCoords.x, m_pointerCoords.y);
     OnMouseClick(0, m_pointerCoords.x, m_pointerCoords.y);
 }
