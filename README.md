@@ -45,15 +45,18 @@ Gamepad and Hydra are supported, but optional. You can get by with only the HMD 
 - **Middle click & drag** - Movement in vertical plane  
 
 #### Xbox Controller:  
-- **XYAB** - Movement  
 - **Start** - Enter shader  
-- **Left analog stick** - Yaw, Height  
-- **Right analog stick** - Resolution, vFOV  
+- **Left analog stick** - Movement  
+- **Right analog stick** - Yaw  
+- **A** - Move up
+- **B** - Move down
+- **Y** - Toggle Tweakbar pane  
+- **X** - Click in pane
+- **Left Bumper** - Recenter view 
+- **Right Bumper** - Reset position  
 - **Left Trigger** - Move quickly  
 - **Right Trigger** - Move slowly  
-- **Back** - Toggle Tweakbar pane  
-- **Left Bumper** - Reposition pane  
-- **Right Bumper** - Click in pane  
+- **Dpad** - Resolution, vFOV  
 
 #### Gravis Gamepad Pro:  
 - **Right side buttons** - Movement  
