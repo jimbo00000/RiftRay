@@ -7,7 +7,7 @@
 // @var author iq
 // @var license CC BY-NC-SA 3.0
 
-// @var headSize 8.0
+// @var headSize 1.0
 // @var eyePos 4.5 31.0 0.0
 
 //@var tex0 tex16.png

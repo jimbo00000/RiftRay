@@ -4,7 +4,7 @@
 // @var author iq
 // @var license CC BY-NC-SA 3.0
 // @var url https://www.shadertoy.com/view/4sjXzG
-// @var headSize 10.0
+// @var headSize 4.0
 // @var eyePos 0.0 112.0 0.0
 // @var tex0 tex03.jpg
 // @var tex1 tex16.png
