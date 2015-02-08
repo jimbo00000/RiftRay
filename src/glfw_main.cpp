@@ -394,6 +394,13 @@ void joystick_XboxController(
     int numButtons,
     const char* pLastButtonStates)
 {
+    //ASSERT(numAxes == 5);
+    //ASSERT(numButtons == 14);
+    if (numAxes != 5)
+        return;
+    if (numButtons != 14)
+        return;
+
     // Xbox controller layout in glfw:
     // numAxes 5, numButtons 14
     // 0 A (down position)
