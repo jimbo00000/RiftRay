@@ -1010,8 +1010,8 @@ void RiftAppSkeleton::display_buffered(bool setViewport) const
 
     if (setViewport)
     {
-        const int w = m_Cfg.OGL.Header.BackBufferSize.w;
-        const int h = m_Cfg.OGL.Header.BackBufferSize.h;
+        const int w = m_windowSize.x;
+        const int h = m_windowSize.y;
         glViewport(0, 0, w, h);
     }
 
