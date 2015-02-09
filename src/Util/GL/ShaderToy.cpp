@@ -41,19 +41,22 @@ void ShaderToy::CompileShader()
         << m_sourceFile
         ;
 
+    const bool fulldome = false;
     const GLuint vertSrc = loadShaderFile(vs.c_str(), GL_VERTEX_SHADER);
-    const std::string src1 = GetShaderSourceFromTable("rwwtt_header.glsl");
-    const std::string src2 = GetShaderSourceFromFile(m_sourceFile.c_str(), s_shaderDir);
+    const std::string src0 = GetShaderSourceFromTable("rwwtt_header.glsl");
+    const std::string src1 = GetShaderSourceFromFile(m_sourceFile.c_str(), s_shaderDir);
+    const std::string src2 = fulldome ? "#define USE_FULLDOME_PROJECTION\n" : "";
     const std::string src3 = GetShaderSourceFromTable("rwwtt_footer.glsl");
 
     GLuint fragSrc = 0;
     GLuint shaderId = glCreateShader(GL_FRAGMENT_SHADER);
-    const GLchar* pSrcs[3] = {
+    const GLchar* pSrcs[4] = {
+        src0.c_str(),
         src1.c_str(),
         src2.c_str(),
         src3.c_str(),
     };
-    glShaderSource(shaderId, 3, pSrcs, NULL);
+    glShaderSource(shaderId, 4, pSrcs, NULL);
     glCompileShader(shaderId);
     fragSrc = shaderId;
 
