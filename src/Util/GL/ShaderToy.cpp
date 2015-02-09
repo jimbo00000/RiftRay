@@ -31,15 +31,11 @@ void ShaderToy::CompileShader()
     if (m_sourceFile.empty())
         return;
 
-    std::string vs("rwwtt");
-    std::string fs(m_sourceFile);
-    vs += ".vert";
-    fs += ".frag";
+    const std::string vs("rwwtt.vert");
 
     std::cout
         << std::endl
-        << m_sourceFile
-        ;
+        << m_sourceFile;
 
     const bool fulldome = false;
     const GLuint vertSrc = loadShaderFile(vs.c_str(), GL_VERTEX_SHADER);
