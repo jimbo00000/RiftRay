@@ -72,6 +72,7 @@ public:
 
 protected:
     virtual GLuint _GetVsSourceId();
+    virtual GLuint _GetFsSourceId(bool fulldome=false);
     virtual void _ParseVariableLine(const std::string&);
     virtual void _ParseVariableMap();
 
