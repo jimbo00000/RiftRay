@@ -208,8 +208,13 @@ ELSEIF( UNIX )
         MESSAGE("Using Sixense SDK.")
         SET( SIXENSE_ROOT "${LIBS_HOME}/sixenseSDK_linux_OSX" CACHE STRING "SixenseSDK root" )
         INCLUDE_DIRECTORIES( "${SIXENSE_ROOT}/include" )
-        LINK_DIRECTORIES   ( "${SIXENSE_ROOT}/lib/linux_x64/debug" )
-        SET( HYDRA_LIBS -lsixense_x64 -lsixense_utils_x64 )
+        LINK_DIRECTORIES   ( "${SIXENSE_ROOT}/lib/linux_x64/debug"
+                             "${SIXENSE_ROOT}/lib/linux_x64/release" )
+        SET( HYDRA_LIBS
+            optimized -lsixense_x64
+            optimized -lsixense_utils_x64
+            debug -lsixensed_x64
+            debug -lsixense_utilsd_x64 )
         ADD_DEFINITIONS( -DUSE_SIXENSE )
     ENDIF( USE_SIXENSE )
 
