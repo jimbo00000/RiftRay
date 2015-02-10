@@ -71,6 +71,7 @@ public:
     static std::string s_shaderDir;
 
 protected:
+    virtual GLuint _GetVsSourceId();
     virtual void _ParseVariableLine(const std::string&);
     virtual void _ParseVariableMap();
 

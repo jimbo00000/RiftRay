@@ -26,6 +26,12 @@ ShaderToy::~ShaderToy()
     glDeleteProgram(m_prog);
 }
 
+GLuint ShaderToy::_GetVsSourceId()
+{
+    const std::string vs("rwwtt.vert");
+    return loadShaderFile(vs.c_str(), GL_VERTEX_SHADER);
+}
+
 void ShaderToy::CompileShader()
 {
     if (m_sourceFile.empty())
@@ -34,8 +40,7 @@ void ShaderToy::CompileShader()
         << std::endl
         << m_sourceFile;
 
-    const std::string vs("rwwtt.vert");
-    const GLuint vertSrc = loadShaderFile(vs.c_str(), GL_VERTEX_SHADER);
+    const GLuint vertSrc = _GetVsSourceId();
     printShaderInfoLog(vertSrc);
 
     const bool fulldome = false;
