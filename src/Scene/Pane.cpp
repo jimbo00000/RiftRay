@@ -47,15 +47,15 @@ void Pane::initGL()
 void Pane::_InitPointerAttributes()
 {
     const glm::vec3 verts[] = {
-        glm::vec3(0.0f),
-        glm::vec3(0.1f, 0.05f, 0.0f),
-        glm::vec3(0.05f, 0.1f, 0.0f),
+        glm::vec3(0.f),
+        glm::vec3(.05f, .025f, .0f),
+        glm::vec3(.025f, .05f, .0f),
     };
 
     const glm::vec3 cols[] = {
-        glm::vec3(1.0f, 0.0f, 0.0f),
-        glm::vec3(0.0f, 1.0f, 0.0f),
-        glm::vec3(0.0f, 0.0f, 1.0f),
+        glm::vec3(1.f, 0.f, 0.f),
+        glm::vec3(0.f, 1.f, 0.f),
+        glm::vec3(0.f, 0.f, 1.f),
     };
 
     GLuint vertVbo = 0;
