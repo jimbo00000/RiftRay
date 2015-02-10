@@ -60,8 +60,8 @@ int modifier_mode = 0;
 ShaderWithVariables g_auxPresent;
 GLFWwindow* g_pHMDWindow = NULL;
 GLFWwindow* g_AuxWindow = NULL;
-int g_auxWindow_w = 330;
-int g_auxWindow_h = 800;
+int g_auxWindow_w = 600;
+int g_auxWindow_h = 600;
 
 int g_joystickIdx = -1;
 

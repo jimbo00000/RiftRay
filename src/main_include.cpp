@@ -37,8 +37,8 @@ void InitializeBar()
     TwDefine(" GLOBAL fontsize=3 ");
     TwDefine(" TweakBar size='300 420' ");
     TwDefine(" TweakBar position='10 10' ");
-    TwDefine(" ShaderTweakBar size='300 320' ");
-    TwDefine(" ShaderTweakBar position='10 430' ");
+    TwDefine(" ShaderTweakBar size='300 420' ");
+    TwDefine(" ShaderTweakBar position='290 170' ");
 
     TwAddVarCB(g_pTweakbar, "Display FPS", TW_TYPE_UINT32, NULL, GetDisplayFPS, NULL,
                " group='Performance' ");
