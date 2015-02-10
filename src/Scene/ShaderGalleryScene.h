@@ -49,6 +49,7 @@ protected:
 public:
     unsigned int m_paneDimensionPixels;
     ShaderToyGlobalState m_globalShadertoyState;
+    bool m_useFulldome;
 
 private: // Disallow copy ctor and assignment operator
     ShaderGalleryScene(const ShaderGalleryScene&);

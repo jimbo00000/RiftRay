@@ -14,6 +14,7 @@ ShaderGalleryScene::ShaderGalleryScene()
 , m_pTexLibrary(NULL)
 , m_paneDimensionPixels(400)
 , m_globalShadertoyState()
+, m_useFulldome(false)
 {
 }
 
@@ -154,14 +155,13 @@ void ShaderGalleryScene::RenderForOneEye(const float* pMview, const float* pPers
     const glm::mat4 modelview = glm::make_mat4(pMview);
     const glm::mat4 projection = glm::make_mat4(pPersp);
 
-    const bool fulldome = false;
     pP->DrawPaneAsPortal(
         modelview,
         projection,
         glm::mat4(1.0f),
         glm::mat4(1.f),
         1.f,
-        fulldome);
+        m_useFulldome);
 }
 
 void ShaderGalleryScene::RenderThumbnails() const

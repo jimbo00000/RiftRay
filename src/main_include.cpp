@@ -72,6 +72,8 @@ void InitializeBar()
                "  group='Scene' ");
     TwAddVarRW(g_pTweakbar, "Panes as Portals", TW_TYPE_BOOLCPP, &g_app.m_galleryScene.m_globalShadertoyState.panesAsPortals,
                "  group='Scene' ");
+    TwAddVarRW(g_pTweakbar, "Fulldome Projection", TW_TYPE_BOOLCPP, &g_app.m_galleryScene.m_useFulldome,
+               "  group='Scene' ");
     TwAddVarRW(g_pTweakbar, "Show Controls", TW_TYPE_BOOLCPP, &g_app.m_dashScene.m_pngPane.m_visible,
                "  group='Scene' ");
 
