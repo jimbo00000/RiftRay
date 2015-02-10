@@ -154,10 +154,14 @@ void ShaderGalleryScene::RenderForOneEye(const float* pMview, const float* pPers
     const glm::mat4 modelview = glm::make_mat4(pMview);
     const glm::mat4 projection = glm::make_mat4(pPersp);
 
+    const bool fulldome = false;
     pP->DrawPaneAsPortal(
         modelview,
         projection,
-        glm::mat4(1.0f));
+        glm::mat4(1.0f),
+        glm::mat4(1.f),
+        1.f,
+        fulldome);
 }
 
 void ShaderGalleryScene::RenderThumbnails() const

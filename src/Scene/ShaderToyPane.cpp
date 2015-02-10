@@ -37,14 +37,15 @@ void ShaderToyPane::DrawPaneAsPortal(
     const glm::mat4& projection,
     const glm::mat4& object,
     const glm::mat4& paneMatrix,
-    float panePointScale) const
+    float panePointScale,
+    bool fulldome) const
 {
     ///@todo Consolidate this duplicated code
     ShaderToy* pST = m_pShadertoy;
     if (pST == NULL)
         return;
 
-    const GLuint prog = pST->prog();
+    const GLuint prog = pST->prog(fulldome);
 
     glUseProgram(prog);
     {
@@ -195,7 +196,10 @@ void ShaderToyPane::RenderThumbnail() const
         DrawPaneAsPortal(
             modelview,
             persp,
-            glm::mat4(1.0f));
+            glm::mat4(1.f),
+            glm::mat4(1.f),
+            1.f,
+            false);
     }
     unbindFBO();
 }

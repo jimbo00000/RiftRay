@@ -60,7 +60,7 @@ public:
 
     void ResetTimer() { m_globalTime.reset(); }
 
-    GLuint prog() const { return m_prog; }
+    GLuint prog(bool fulldome=false) const { return fulldome ? m_progFulldome : m_prog; }
     const std::string GetSourceFile() const { return m_sourceFile; }
     const std::string GetTextureFilenameAtChannel(int idx) const;
     const std::string GetStringByName(const char* key) const;
@@ -79,6 +79,7 @@ protected:
 
     std::string m_sourceFile;
     GLuint m_prog;
+    GLuint m_progFulldome;
     std::map<std::string, std::string> m_varMap;
     Timer m_globalTime;
 

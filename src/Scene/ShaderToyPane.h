@@ -32,7 +32,8 @@ public:
         const glm::mat4& projection,
         const glm::mat4& object,
         const glm::mat4& paneMatrix=glm::mat4(1.0f),
-        float panePointScale=1.0f) const;
+        float panePointScale=1.0f,
+        bool fulldome=false) const;
 
     virtual void DrawShaderInfoText(
         const ShaderWithVariables& fsh,

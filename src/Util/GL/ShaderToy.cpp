@@ -15,6 +15,7 @@ std::string ShaderToy::s_shaderDir = "../shaders/";
 ShaderToy::ShaderToy(const std::string& sourceFile)
 : m_sourceFile(sourceFile)
 , m_prog(0)
+, m_progFulldome(0)
 , m_varMap()
 , m_globalTime()
 , m_tweakVars()
@@ -24,6 +25,7 @@ ShaderToy::ShaderToy(const std::string& sourceFile)
 ShaderToy::~ShaderToy()
 {
     glDeleteProgram(m_prog);
+    glDeleteProgram(m_progFulldome);
 }
 
 GLuint ShaderToy::_GetVsSourceId()
@@ -89,8 +91,8 @@ void ShaderToy::CompileShader()
         << std::endl
         << m_sourceFile;
 
-    const bool fulldome = false;
-    m_prog = _MakeProgram(fulldome);
+    m_prog = _MakeProgram(false);
+    m_progFulldome = _MakeProgram(true);
 
     _ParseVariableMap();
 }
