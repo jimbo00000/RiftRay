@@ -39,7 +39,7 @@ GLuint ShaderToy::_GetFsSourceId(bool fulldome)
     const std::string src2 = fulldome ? "#define USE_FULLDOME_PROJECTION\n" : "";
     const std::string src3 = GetShaderSourceFromTable("rwwtt_footer.glsl");
 
-    GLuint shaderId = glCreateShader(GL_FRAGMENT_SHADER);
+    const GLuint shaderId = glCreateShader(GL_FRAGMENT_SHADER);
     const GLchar* pSrcs[4] = {
         src0.c_str(),
         src1.c_str(),
@@ -51,21 +51,18 @@ GLuint ShaderToy::_GetFsSourceId(bool fulldome)
     return shaderId;
 }
 
-void ShaderToy::CompileShader()
+GLuint ShaderToy::_MakeProgram(bool fulldome)
 {
     if (m_sourceFile.empty())
-        return;
-    std::cout
-        << std::endl
-        << m_sourceFile;
+        return 0;
 
     const GLuint vertSrc = _GetVsSourceId();
     printShaderInfoLog(vertSrc);
 
-    GLuint fragSrc =_GetFsSourceId();
+    const GLuint fragSrc =_GetFsSourceId(fulldome);
     printShaderInfoLog(fragSrc);
 
-    GLuint program = glCreateProgram();
+    const GLuint program = glCreateProgram();
 
     glCompileShader(vertSrc);
     glCompileShader(fragSrc);
@@ -81,7 +78,19 @@ void ShaderToy::CompileShader()
     printProgramInfoLog(program);
 
     glUseProgram(0);
-    m_prog = program;
+    return program;
+}
+
+void ShaderToy::CompileShader()
+{
+    if (m_sourceFile.empty())
+        return;
+    std::cout
+        << std::endl
+        << m_sourceFile;
+
+    const bool fulldome = false;
+    m_prog = _MakeProgram(fulldome);
 
     _ParseVariableMap();
 }
