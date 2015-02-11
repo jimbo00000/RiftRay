@@ -79,6 +79,7 @@ TwBar* g_pShaderTweakbar = NULL;
 
 GLFWwindow* initializeAuxiliaryWindow(GLFWwindow* pRiftWindow);
 void destroyAuxiliaryWindow(GLFWwindow* pAuxWindow);
+void FindPreferredJoystick();
 
 // Set VSync is framework-dependent and has to come before the include
 ///@param state 0=off, 1=on, -1=adaptive
@@ -220,6 +221,11 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
 
         case GLFW_KEY_SPACE:
             g_app.RecenterPose();
+            FindPreferredJoystick();
+            break;
+
+        case 'J':
+            FindPreferredJoystick();
             break;
 
         case 'R':
@@ -523,11 +529,48 @@ void joystick_XboxController(
     }
 }
 
+///@brief Check all available joysticks for an Xbox Controller
+/// and store its idx in g_joystickIdx.
+/// Unfortunately, this operation is too time-consuming to call every frame
+/// in a VR app. The workaround is to call it on key press, space or 'G'.
+void FindPreferredJoystick()
+{
+    g_joystickIdx = -1;
+    for (int i=GLFW_JOYSTICK_1; i<=GLFW_JOYSTICK_LAST; ++i)
+    {
+        if (GL_FALSE == glfwJoystickPresent(i))
+            continue;
+
+        const char* pJoyName = glfwGetJoystickName(i);
+        if (pJoyName == NULL)
+            continue;
+
+        int numAxes = 0;
+        int numButtons = 0;
+        glfwGetJoystickAxes(i, &numAxes);
+        glfwGetJoystickButtons(i, &numButtons);
+        LOG_INFO("Glfw found Joystick #%d: %s w/ %d axes, %d buttons", i, pJoyName, numAxes, numButtons);
+
+        // Take an educated guess that this is an Xbox controller - glfw's
+        // id string says "Microsoft PC Joystick" for most gamepad types.
+        ///@todo Why does GLFW on Linux return a different, more descriptive string?
+        if (numAxes == 5 && numButtons == 14)
+        {
+            g_joystickIdx = i;
+            return;
+        }
+        else if (g_joystickIdx == -1)
+        {
+            g_joystickIdx = i;
+        }
+    }
+}
+
 void joystick()
 {
     static char s_lastButtons[256] = {0};
 
-    ///@todo Handle multiple joysticks and live plugging/unplugging
+    ///@todo Handle multiple joysticks
     if (g_joystickIdx == -1)
         return;
 
@@ -535,7 +578,10 @@ void joystick()
     int joyStick1Present = GL_FALSE;
     joyStick1Present = glfwJoystickPresent(g_joystickIdx);
     if (joyStick1Present != GL_TRUE)
-        return;
+    {
+        if (g_joystickIdx == -1)
+            return;
+    }
 
     // Poll joystick
     int numAxes = 0;
@@ -1126,25 +1172,7 @@ int main(int argc, char** argv)
 
     memset(m_keyStates, 0, GLFW_KEY_LAST*sizeof(int));
 
-    // joysticks
-    for (int i = GLFW_JOYSTICK_1; i <= GLFW_JOYSTICK_LAST; ++i)
-    {
-        if (GL_FALSE == glfwJoystickPresent(i))
-            continue;
-
-        const char* pJoyName = glfwGetJoystickName(i);
-        if (pJoyName == NULL)
-            continue;
-
-        int numAxes = 0;
-        int numButtons = 0;
-        glfwGetJoystickAxes(i, &numAxes);
-        glfwGetJoystickButtons(i, &numButtons);
-
-        LOG_INFO("Glfw opened Joystick #%d: %s w/ %d axes, %d buttons", i, pJoyName, numAxes, numButtons);
-        if (g_joystickIdx == -1)
-            g_joystickIdx = i;
-    }
+    FindPreferredJoystick();
 
     // Log system monitor information
     const GLFWmonitor* pPrimary = glfwGetPrimaryMonitor();
