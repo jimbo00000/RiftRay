@@ -15,6 +15,9 @@ void SetTweakUniforms(
     const ShaderToy* pST,
     const GLuint prog)
 {
+    if (pST == NULL)
+        return;
+
     const std::map<std::string, shaderVariable>& tweakVars = pST->m_tweakVars;
     for (std::map<std::string, shaderVariable>::const_iterator it = tweakVars.begin();
         it != tweakVars.end();
