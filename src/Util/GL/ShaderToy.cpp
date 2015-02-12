@@ -97,6 +97,17 @@ void ShaderToy::CompileShader()
     _ParseVariableMap();
 }
 
+void ShaderToy::ResetVariables()
+{
+    for (std::map<std::string, shaderVariable>::iterator it = m_tweakVars.begin();
+        it != m_tweakVars.end();
+        ++it)
+    {
+        shaderVariable& sv = it->second;
+        sv.value = sv.initialValue;
+    }
+}
+
 void ShaderToy::_ParseVariableLine(const std::string& vardecl)
 {
     if (vardecl.empty())
@@ -120,7 +131,8 @@ void ShaderToy::_ParseVariableLine(const std::string& vardecl)
             0.f);
 
         shaderVariable var;
-        var.value = initialVal;
+        var.initialValue = initialVal;
+        var.value = var.initialValue;
         var.width = 3;
 
         if (tokens.size() > 5)
@@ -143,7 +155,9 @@ void ShaderToy::_ParseVariableLine(const std::string& vardecl)
             return;
 
         shaderVariable var;
-        var.value = glm::vec4(atof(tokens[2].c_str()));
+        var.initialValue = glm::vec4(atof(tokens[2].c_str()));
+        var.value = var.initialValue;
+
         if (tokens.size() >= 4)
             var.minVal = glm::vec4(atof(tokens[3].c_str()));
         if (tokens.size() >= 5)

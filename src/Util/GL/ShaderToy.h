@@ -30,6 +30,7 @@ struct shaderVariable {
     };
     std::string name;
     GLint uniLoc;
+    glm::vec4 initialValue;
     glm::vec4 value;
     glm::vec4 minVal;
     glm::vec4 maxVal;
@@ -40,6 +41,7 @@ struct shaderVariable {
     shaderVariable()
         : name()
         , uniLoc(-1)
+        , initialValue(0.f)
         , value(0.f)
         , minVal(0.f)
         , maxVal(0.f)
@@ -59,6 +61,7 @@ public:
     virtual void CompileShader();
 
     void ResetTimer() { m_globalTime.reset(); }
+    virtual void ResetVariables();
 
     GLuint prog(bool fulldome=false) const { return fulldome ? m_progFulldome : m_prog; }
     const std::string GetSourceFile() const { return m_sourceFile; }

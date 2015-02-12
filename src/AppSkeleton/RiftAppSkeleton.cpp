@@ -803,6 +803,14 @@ static void TW_CALL GoToURLCB(void *clientData)
     system(command.c_str());
 #endif
 }
+
+static void TW_CALL ResetShaderVariablesCB(void *clientData)
+{
+    ShaderToy* pST = (ShaderToy*)clientData;
+    if (pST == NULL)
+        return;
+    pST->ResetVariables();
+}
 #endif
 
 ///@brief Initiate the change, timestep will call _ToggleShaderWorld after a small delay.
@@ -879,6 +887,7 @@ void RiftAppSkeleton::_ToggleShaderWorld()
 
     TwAddButton(m_pTweakbar, "gotourl", GoToURLCB, this, " label='Go to URL'  group='Shader' ");
 
+    TwAddButton(m_pShaderTweakbar, "Reset Variables", ResetShaderVariablesCB, pST, " label='Reset Variables' ");
 
     // for each var type, add vec3 direction control
     ///@todo Different type widths
