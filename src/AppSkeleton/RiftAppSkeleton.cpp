@@ -1052,19 +1052,41 @@ void RiftAppSkeleton::display_stereo_undistorted() const
         return;
 
     //ovrFrameTiming hmdFrameTiming =
-    ovrHmd_BeginFrameTiming(hmd, 0);
+    //ovrHmd_BeginFrame(m_Hmd, 0);
 
     bindFBO(m_renderBuffer, m_fboScale);
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    ovrVector3f e2v[2] = {
+        OVR::Vector3f(m_EyeRenderDesc[0].HmdToEyeViewOffset) * m_headSize,
+        OVR::Vector3f(m_EyeRenderDesc[1].HmdToEyeViewOffset) * m_headSize,
+    };
+
+    ovrTrackingState outHmdTrackingState;
+    ovrPosef outEyePoses[2];
+    ovrHmd_GetEyePoses(
+        hmd,
+        0,
+        e2v, // could this parameter be const?
+        outEyePoses,
+        &outHmdTrackingState);
+
+    // For passing to EndFrame once rendering is done
+    ovrPosef renderPose[2];
+    ovrTexture eyeTexture[2];
     for (int eyeIndex = 0; eyeIndex < ovrEye_Count; eyeIndex++)
     {
-        ovrEyeType eye = hmd->EyeRenderOrder[eyeIndex];
-        ovrPosef eyePose = ovrHmd_GetHmdPosePerEye(hmd, eye);
+        const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
 
-        const ovrGLTexture& otex = m_EyeTexture[eye];
+        const ovrPosef eyePose = outEyePoses[e];
+        renderPose[e] = eyePose;
+        eyeTexture[e] = m_EyeTexture[e].Texture;
+        m_eyeOri = eyePose.Orientation; // cache this for movement direction
+        _StoreHmdPose(eyePose);
+
+        const ovrGLTexture& otex = m_EyeTexture[e];
         const ovrRecti& rvp = otex.OGL.Header.RenderViewport;
         const ovrRecti rsc = {
             static_cast<int>(m_fboScale * rvp.Pos.x),
@@ -1074,28 +1096,39 @@ void RiftAppSkeleton::display_stereo_undistorted() const
         };
         glViewport(rsc.Pos.x, rsc.Pos.y, rsc.Size.w, rsc.Size.h);
 
-        OVR::Quatf orientation = OVR::Quatf(eyePose.Orientation);
-        OVR::Matrix4f proj = ovrMatrix4f_Projection(
-            m_EyeRenderDesc[eye].Fov,
+        const OVR::Matrix4f proj = ovrMatrix4f_Projection(
+            m_EyeRenderDesc[e].Fov,
             0.01f, 10000.0f, true);
 
-        //m_EyeRenderDesc[eye].DistortedViewport;
-        OVR::Vector3f EyePos = m_chassisPos;
-        OVR::Matrix4f view = OVR::Matrix4f(orientation.Inverted())
-            * OVR::Matrix4f::RotationY(m_chassisYaw)
-            * OVR::Matrix4f::Translation(-EyePos);
-        OVR::Matrix4f eyeview = OVR::Matrix4f::Translation(m_EyeRenderDesc[eye].HmdToEyeViewOffset) * view;
+        const OVR::Matrix4f view = _MakeModelviewMatrix(
+            eyePose,
+            OVR::Vector3f(0.0f),
+            m_chassisYaw,
+            m_chassisPos);
+
+        const OVR::Matrix4f scaledView = _MakeModelviewMatrix(
+            eyePose,
+            OVR::Vector3f(0.0f),
+            m_chassisYaw,
+            m_chassisPos,
+            m_headSize);
 
         _resetGLState();
-
-        _DrawScenes(&eyeview.Transposed().M[0][0], &proj.Transposed().M[0][0], rvp);
+        
+        _DrawScenes(&view.Transposed().M[0][0], &proj.Transposed().M[0][0], rsc, &scaledView.Transposed().M[0][0]);
     }
     unbindFBO();
+
+    //ovrHmd_EndFrame(m_Hmd, renderPose, eyeTexture);
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
+
+    const int w = m_Cfg.OGL.Header.BackBufferSize.w;
+    const int h = m_Cfg.OGL.Header.BackBufferSize.h;
+    glViewport(0, 0, w, h);
 
     // Present FBO to screen
     const GLuint prog = m_presentFbo.prog();
@@ -1105,16 +1138,11 @@ void RiftAppSkeleton::display_stereo_undistorted() const
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_renderBuffer.tex);
         glUniform1i(m_presentFbo.GetUniLoc("fboTex"), 0);
-
-        // This is the only uniform that changes per-frame
         glUniform1f(m_presentFbo.GetUniLoc("fboScale"), m_fboScale);
-
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     }
     glBindVertexArray(0);
     glUseProgram(0);
-
-    ovrHmd_EndFrameTiming(hmd);
 }
 
 void RiftAppSkeleton::display_sdk() const
