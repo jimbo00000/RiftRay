@@ -40,6 +40,10 @@ void InitializeBar()
     TwDefine(" ShaderTweakBar size='300 420' ");
     TwDefine(" ShaderTweakBar position='290 170' ");
 
+    const std::string versionStr = std::string("RiftRay version ") + pRiftRayVersion;
+    const std::string varStr = " label='" + versionStr + "' ";
+    TwAddButton(g_pTweakbar, "Version", NULL, NULL, varStr.c_str());
+
     TwAddVarCB(g_pTweakbar, "Display FPS", TW_TYPE_UINT32, NULL, GetDisplayFPS, NULL,
                " group='Performance' ");
     TwAddVarRW(g_pTweakbar, "Target FPS", TW_TYPE_INT32, &g_targetFPS,
