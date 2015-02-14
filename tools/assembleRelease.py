@@ -5,13 +5,27 @@ from __future__ import print_function
 import os
 import shutil
 import glob
+import datetime
 
-version = "2.1-2015.01.31"
+srcDir = ".."
+versionFile = os.path.join(srcDir, "src", "version.h")
+versionNumber = None
+with open(versionFile, "r") as vf:
+    vlines = vf.readlines()
+    for vl in vlines:
+        toks = vl.split('"')
+        if len(toks) > 1:
+            versionNumber = toks[1]
+
+if not versionNumber:
+    print("Could not find version. Exiting.")
+    quit()
+
+version = versionNumber + datetime.date.today().strftime('-%Y.%m.%d')
+print(version)
 dstDir = "RiftRay-" + version
 if not os.path.exists(dstDir):
     os.mkdir(dstDir)
-
-srcDir = ".."
 
 # data directories
 dirs = ["shaders", "textures"]
