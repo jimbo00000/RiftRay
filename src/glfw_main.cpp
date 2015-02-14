@@ -37,6 +37,7 @@
 #include "FPSTimer.h"
 #include "Logger.h"
 #include "StringFunctions.h"
+#include "version.h"
 
 #ifdef __APPLE__
 #include "CoreFoundation/CoreFoundation.h"
@@ -1020,6 +1021,7 @@ void StartShaderLoad()
 
 int main(int argc, char** argv)
 {
+    LOG_INFO("RiftRay version %s", pRiftRayVersion);
     bool useOpenGLCoreContext = false;
 
     RenderingMode renderMode;
@@ -1108,13 +1110,13 @@ int main(int argc, char** argv)
 
     const ovrSizei sz = g_app.getHmdResolution();
     const ovrVector2i pos = g_app.getHmdWindowPos();
-    std::string windowTitle = "";
+    std::string windowTitle = "RiftRay-v" + std::string(pRiftRayVersion);
 
     if (g_app.UsingDebugHmd() == true)
     {
         // Create a normal, decorated application window
         LOG_INFO("Using Debug HMD mode.");
-        windowTitle = "RiftRay-GLFW-DebugHMD";
+        windowTitle += "-GLFW-DebugHMD";
 
         l_Window = glfwCreateWindow(sz.w, sz.h, windowTitle.c_str(), NULL, NULL);
         g_app.m_dashScene.m_bDraw = false;
@@ -1125,7 +1127,7 @@ int main(int argc, char** argv)
         if (g_app.UsingDirectMode())
         {
             LOG_INFO("Using Direct to Rift mode.");
-            windowTitle = "RiftRay-GLFW-Direct";
+            windowTitle += "-GLFW-Direct";
 
             l_Window = glfwCreateWindow(sz.w, sz.h, windowTitle.c_str(), NULL, NULL);
             glfwSetWindowPos(l_Window, pos.x, pos.y);
@@ -1137,7 +1139,7 @@ int main(int argc, char** argv)
         else
         {
             LOG_INFO("Using Extended desktop mode.");
-            windowTitle = "RiftRay-GLFW-Extended";
+            windowTitle += "-GLFW-Extended";
 
             glfwWindowHint(GLFW_DECORATED, 0);
             l_Window = glfwCreateWindow(sz.w, sz.h, windowTitle.c_str(), NULL, NULL);

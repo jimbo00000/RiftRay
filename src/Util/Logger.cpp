@@ -10,7 +10,6 @@
 Logger::Logger()
 {
     m_stream.open("RiftRay-log.txt");
-    Write("RiftRay log");
 }
 
 /// Flush and close the output file.
