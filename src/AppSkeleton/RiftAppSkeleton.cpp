@@ -659,9 +659,8 @@ void RiftAppSkeleton::timestep(float dt)
 /// Scale the parallax translation and head pose motion vector by the head size
 /// dictated by the shader. Thanks to the elegant design decision of putting the
 /// head's default position at the origin, this is simple.
-OVR::Matrix4f _MakeModelviewMatrix(
+OVR::Matrix4f makeModelviewMatrix(
     ovrPosef eyePose,
-    ovrVector3f viewAdjust,
     float chassisYaw,
     ovrVector3f chassisPos,
     float headScale=1.0f)
@@ -981,9 +980,8 @@ void RiftAppSkeleton::_drawSceneMono() const
         OVR::Vector3f()
     };
     _StoreHmdPose(eyePose);
-    const OVR::Matrix4f view = _MakeModelviewMatrix(
+    const OVR::Matrix4f view = makeModelviewMatrix(
         eyePose,
-        OVR::Vector3f(0.0f),
         m_chassisYaw,
         m_chassisPos);
 
@@ -1100,15 +1098,13 @@ void RiftAppSkeleton::display_stereo_undistorted() const
             m_EyeRenderDesc[e].Fov,
             0.01f, 10000.0f, true);
 
-        const OVR::Matrix4f view = _MakeModelviewMatrix(
+        const OVR::Matrix4f view = makeModelviewMatrix(
             eyePose,
-            OVR::Vector3f(0.0f),
             m_chassisYaw,
             m_chassisPos);
 
-        const OVR::Matrix4f scaledView = _MakeModelviewMatrix(
+        const OVR::Matrix4f scaledView = makeModelviewMatrix(
             eyePose,
-            OVR::Vector3f(0.0f),
             m_chassisYaw,
             m_chassisPos,
             m_headSize);
@@ -1200,15 +1196,13 @@ void RiftAppSkeleton::display_sdk() const
             m_EyeRenderDesc[e].Fov,
             0.01f, 10000.0f, true);
 
-        const OVR::Matrix4f view = _MakeModelviewMatrix(
+        const OVR::Matrix4f view = makeModelviewMatrix(
             eyePose,
-            OVR::Vector3f(0.0f),
             m_chassisYaw,
             m_chassisPos);
 
-        const OVR::Matrix4f scaledView = _MakeModelviewMatrix(
+        const OVR::Matrix4f scaledView = makeModelviewMatrix(
             eyePose,
-            OVR::Vector3f(0.0f),
             m_chassisYaw,
             m_chassisPos,
             m_headSize);
@@ -1288,15 +1282,13 @@ void RiftAppSkeleton::display_client() const
         ///@todo Should we be using this variable?
         //m_EyeRenderDesc[eye].DistortedViewport;
 
-        const OVR::Matrix4f view = _MakeModelviewMatrix(
+        const OVR::Matrix4f view = makeModelviewMatrix(
             eyePose,
-            m_EyeRenderDesc[e].HmdToEyeViewOffset,
             m_chassisYaw,
             m_chassisPos);
 
-        const OVR::Matrix4f scaledView = _MakeModelviewMatrix(
+        const OVR::Matrix4f scaledView = makeModelviewMatrix(
             eyePose,
-            m_EyeRenderDesc[e].HmdToEyeViewOffset,
             m_chassisYaw,
             m_chassisPos,
             m_headSize);
