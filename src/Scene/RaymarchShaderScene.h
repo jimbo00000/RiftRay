@@ -25,7 +25,7 @@ public:
     virtual ~RaymarchShaderScene();
 
     virtual void initGL();
-    virtual void timestep(float dt);
+    virtual void timestep(double absTime, double dt);
     virtual void RenderForOneEye(const float* pMview, const float* pPersp) const;
 
     virtual void SetFlyingMousePointer(FlyingMouse* pFM) { m_pFm = pFM; }

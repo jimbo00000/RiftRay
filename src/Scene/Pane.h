@@ -45,7 +45,7 @@ public:
     virtual ~Pane();
 
     virtual void initGL();
-    virtual void timestep(float) {}
+    virtual void timestep(double, double) {}
 
     virtual void OnMouseClick(int, int, int) {}
     virtual void OnMouseMove(int, int) {}

@@ -10,7 +10,7 @@ public:
 
     virtual void initGL() = 0;
 
-    virtual void timestep(float dt) = 0;
+    virtual void timestep(double absTime, double dt) = 0;
 
     virtual void RenderPrePass() const {}
 

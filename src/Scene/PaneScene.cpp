@@ -272,7 +272,7 @@ void PaneScene::_SetHeldPanePositionAndOrientation(Pane* pP)
 }
 
 
-void PaneScene::timestep(float dt)
+void PaneScene::timestep(double absTime, double dt)
 {
     if (m_bDraw == false)
         return;
@@ -284,7 +284,7 @@ void PaneScene::timestep(float dt)
         Pane* pP = *it;
         if (pP == NULL)
             continue;
-        pP->timestep(dt);
+        pP->timestep(absTime, dt);
 
         if (pP->m_holdState.m_holding)
         {

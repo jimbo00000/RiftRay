@@ -111,7 +111,7 @@ void RaymarchShaderScene::RenderForOneEye(const float* pMview, const float* pPer
     DrawScene(modelview, projection, m_tx.GetMatrix());
 }
 
-void RaymarchShaderScene::timestep(float)
+void RaymarchShaderScene::timestep(double absTime, double dt)
 {
     if (m_pFm == NULL)
         return;

@@ -26,7 +26,7 @@ public:
     virtual ~OVRScene();
 
     virtual void initGL();
-    virtual void timestep(float dt);
+    virtual void timestep(double absTime, double dt);
     virtual void RenderForOneEye(const float* pMview, const float* pPersp) const;
 
     // Retain pointers to scene orientation parameters

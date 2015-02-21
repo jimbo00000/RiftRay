@@ -24,7 +24,7 @@ public:
     virtual ~Scene();
 
     virtual void initGL();
-    virtual void timestep(float) {}
+    virtual void timestep(double, double) {}
     virtual void RenderForOneEye(const float* pMview, const float* pPersp) const;
 
 protected:

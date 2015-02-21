@@ -18,7 +18,7 @@ public:
     virtual ~AntPane();
 
     virtual void initGL();
-    virtual void timestep(float dt);
+    virtual void timestep(double absTime, double dt);
 
     virtual void DrawPaneWithShader(
         const glm::mat4& modelview,

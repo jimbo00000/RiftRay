@@ -101,9 +101,9 @@ void AntPane::DrawPaneWithShader(
     glBindVertexArray(0);
 }
 
-void AntPane::timestep(float dt)
+void AntPane::timestep(double absTime, double dt)
 {
-    Pane::timestep(dt);
+    Pane::timestep(absTime, dt);
 }
 
 void AntPane::OnMouseClick(int state, int, int)

@@ -499,8 +499,9 @@ void RiftAppSkeleton::SetFBOScale(float s)
     m_fboScale = std::min(1.0f, m_fboScale);
 }
 
-void RiftAppSkeleton::timestep(float dt)
+void RiftAppSkeleton::timestep(double absTime, double dtd)
 {
+    const float dt = static_cast<float>(dtd);
     for (std::vector<IScene*>::iterator it = m_scenes.begin();
         it != m_scenes.end();
         ++it)
@@ -508,7 +509,7 @@ void RiftAppSkeleton::timestep(float dt)
         IScene* pScene = *it;
         if (pScene != NULL)
         {
-            pScene->timestep(dt);
+            pScene->timestep(absTime, dt);
         }
     }
 

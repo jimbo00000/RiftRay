@@ -187,7 +187,7 @@ void OVRScene::RenderForOneEye(const float* pMview, const float* pPersp) const
     }
 }
 
-void OVRScene::timestep(float dt)
+void OVRScene::timestep(double absTime, double dt)
 {
     (void)dt;
 

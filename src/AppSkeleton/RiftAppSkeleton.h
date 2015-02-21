@@ -68,8 +68,7 @@ public:
     void setWindow(_XDisplay* Disp) { m_Cfg.OGL.Disp = Disp; }
 #endif
 
-    void timestep(float dt);
-
+    void timestep(double absTime, double dt);
     void resize(int w, int h);
 
     void DiscoverShaders(bool recurse=true);

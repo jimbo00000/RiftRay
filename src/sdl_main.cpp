@@ -32,6 +32,7 @@
 RiftAppSkeleton g_app;
 RenderingMode g_renderMode;
 Timer g_timer;
+double g_lastFrameTime = 0.0;
 FPSTimer g_fps;
 
 int m_keyStates[4096];
@@ -70,9 +71,10 @@ static void SetVsync(int state) {}
 
 void timestep()
 {
-    float dt = (float)g_timer.seconds();
-    g_timer.reset();
-    g_app.timestep(dt);
+    const double absT = g_timer.seconds();
+    const double dt = absT - g_lastFrameTime;
+    g_lastFrameTime = absT;
+    g_app.timestep(absT, dt);
 }
 
 
