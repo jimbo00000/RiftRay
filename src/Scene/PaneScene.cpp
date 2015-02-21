@@ -35,9 +35,9 @@ PaneScene::PaneScene(bool chassisLocal)
 , m_font("../textures/arial.fnt")
 , m_panes()
 , m_panePts()
-, m_chassisLocalSpace(chassisLocal)
 , m_mouseMotionCooldown()
 {
+    m_bChassisLocalSpace = chassisLocal;
     m_panePts.push_back(glm::vec3(-0.5f, -0.5f, 0.0f));
     m_panePts.push_back(glm::vec3(0.5f, -0.5f, 0.0f));
     m_panePts.push_back(glm::vec3(0.5f, 0.5f, 0.0f));
@@ -119,7 +119,7 @@ void PaneScene::DrawScene(
     const glm::mat4& projection) const
 {
     glm::mat4 mv = modelview;
-    if ((m_pFm != NULL) && m_chassisLocalSpace)
+    if ((m_pFm != NULL) && m_bChassisLocalSpace)
     {
         const glm::vec3 sumOffset =
             m_pFm->GetChassisPos();
@@ -142,7 +142,7 @@ void PaneScene::DrawScene(
         const glm::mat4 object = pP->m_tx.GetMatrix();
 
         ///@todo Extract function
-        //pP->DrawInScene(m_chassisLocalSpace ? mvLocal : modelview, projection, pP->m_tx.GetMatrix());
+        //pP->DrawInScene(m_bChassisLocalSpace ? mvLocal : modelview, projection, pP->m_tx.GetMatrix());
         glUseProgram(m_paneShader.prog());
         {
             const glm::mat4 objectMatrix = mv * object;
@@ -199,7 +199,7 @@ bool PaneScene::_GetFlyingMouseRightHandPaneRayIntersectionCoordinates(Pane* pPa
 
     glm::vec3 origin3;
     glm::vec3 dir3;
-    m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, origin3, dir3, m_chassisLocalSpace);
+    m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, origin3, dir3, m_bChassisLocalSpace);
     return pPane->GetPaneRayIntersectionCoordinates(origin3, dir3, planePt, tParam);
 }
 
@@ -244,7 +244,7 @@ void PaneScene::_SetHeldPanePositionAndOrientation(Pane* pP)
     {
         if (m_pFm == NULL)
             return;
-        m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, origin3, dir3, m_chassisLocalSpace);
+        m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, origin3, dir3, m_bChassisLocalSpace);
     }
     else
     {
@@ -479,7 +479,7 @@ void PaneScene::SetHoldingFlag(int state)
                 {
                     glm::vec3 fm_origin3;
                     glm::vec3 fm_dir3;
-                    m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, fm_origin3, fm_dir3, m_chassisLocalSpace);
+                    m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, fm_origin3, fm_dir3, m_bChassisLocalSpace);
                     const glm::vec3 fmHitPt = fm_origin3 + tFm * fm_dir3;
                     const glm::vec3 originalPos = glm::vec3(pP->m_tx.GetMatrix() * glm::vec4(0.,0.,0.,1.));
 

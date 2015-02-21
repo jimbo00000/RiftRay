@@ -6,7 +6,10 @@
 class IScene
 {
 public:
-    IScene() : m_bDraw(true) {}
+    IScene()
+      : m_bDraw(true)
+      , m_bChassisLocalSpace(false)
+      {}
 
     virtual void initGL() = 0;
 
@@ -19,4 +22,5 @@ public:
         const float* pPersp) const = 0;
 
     bool m_bDraw;
+    bool m_bChassisLocalSpace;
 };

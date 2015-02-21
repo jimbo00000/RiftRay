@@ -69,7 +69,6 @@ protected:
 public:
     std::vector<Pane*> m_panes;
     std::vector<glm::vec3> m_panePts;
-    bool m_chassisLocalSpace;
     Timer m_mouseMotionCooldown;
 
 private: // Disallow copy ctor and assignment operator
