@@ -301,14 +301,8 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
     // Yaw keys
     g_app.m_keyboardYaw = 0.0f;
     const float dyaw = 0.5f * mag; // radians at 60Hz timestep
-    if (m_keyStates['1'] != GLFW_RELEASE)
-    {
-        g_app.m_keyboardYaw = -dyaw;
-    }
-    if (m_keyStates['3'] != GLFW_RELEASE)
-    {
-        g_app.m_keyboardYaw = dyaw;
-    }
+    if (m_keyStates['1'] != GLFW_RELEASE) { g_app.m_keyboardYaw = -dyaw; }
+    if (m_keyStates['3'] != GLFW_RELEASE) { g_app.m_keyboardYaw = dyaw; }
 
     g_app.m_keyboardMove = mag * keyboardMove;
 }
