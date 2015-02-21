@@ -28,6 +28,7 @@
 #include "Timer.h"
 #include "FPSTimer.h"
 #include "Logger.h"
+#include "version.h"
 
 RiftAppSkeleton g_app;
 RenderingMode g_renderMode;
@@ -35,6 +36,7 @@ Timer g_timer;
 double g_lastFrameTime = 0.0;
 FPSTimer g_fps;
 
+bool g_receivedFirstTap = false;
 int m_keyStates[4096];
 
 // mouse motion internal state
@@ -55,10 +57,12 @@ SDL_Joystick* g_pJoy = NULL;
 float g_fpsSmoothingFactor = 0.02f;
 float g_fpsDeltaThreshold = 5.0f;
 bool g_dynamicallyScaleFBO = true;
-int g_targetFPS = 100;
+int g_targetFPS = 70;
+bool g_drawToAuxWindow = false;
 
 #ifdef USE_ANTTWEAKBAR
 TwBar* g_pTweakbar = NULL;
+TwBar* g_pShaderTweakbar = NULL;
 #endif
 
 SDL_Window* initializeAuxiliaryWindow();
@@ -571,7 +575,13 @@ int main(void)
     int quit = 0;
     while (quit == 0)
     {
-        g_app.CheckForTapToDismissHealthAndSafetyWarning();
+        const bool tapped = g_app.CheckForTapOnHmd();
+        if (tapped && (g_receivedFirstTap == false))
+        {
+            g_app.RecenterPose();
+            g_receivedFirstTap = true;
+        }
+
         PollEvents();
         timestep();
         g_fps.OnFrame();
@@ -602,18 +612,23 @@ int main(void)
             // SDL allows us to share contexts, so we can just call display on g_app
             // and use all of the VAOs resident in the HMD window's context.
             SDL_GL_MakeCurrent(g_pAuxWindow, glContext);
+            glClearColor(0.f, 0.f, 0.f, 0.f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            // Get window size from SDL - is this worth caching?
-            int w, h;
-            SDL_GetWindowSize(g_pAuxWindow, &w, &h);
-
-            glPushAttrib(GL_VIEWPORT_BIT);
-            glViewport(0, 0, w, h);
-            g_app.display_buffered(false);
-            glPopAttrib(); // GL_VIEWPORT_BIT - if this is not misused!
+            if (g_drawToAuxWindow)
+            {
+                // Get window size from SDL - is this worth caching?
+                int w, h;
+                SDL_GetWindowSize(g_pAuxWindow, &w, &h);
+                glPushAttrib(GL_VIEWPORT_BIT);
+                glViewport(0, 0, w, h);
+                g_app.display_buffered(false);
+                glPopAttrib(); // GL_VIEWPORT_BIT - if this is not misused!
+            }
 
 #ifdef USE_ANTTWEAKBAR
             TwRefreshBar(g_pTweakbar);
+            TwRefreshBar(g_pShaderTweakbar);
             TwDraw(); ///@todo Should this go first? Will it write to a depth buffer?
 #endif
 
