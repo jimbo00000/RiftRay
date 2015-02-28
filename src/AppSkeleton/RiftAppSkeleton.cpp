@@ -699,7 +699,7 @@ void RiftAppSkeleton::_DrawScenes(
         // Show the warning box if we get too close to edge of tracking cam's fov.
         glDisable(GL_DEPTH_TEST);
         m_ovrScene.RenderForOneEye(pMvLocal, pPersp); // m_bChassisLocalSpace
-        m_dashScene.RenderForOneEye(pMvLocalScaled, pPersp);
+        m_dashScene.RenderForOneEye(pMvLocal, pPersp);
         glEnable(GL_DEPTH_TEST);
     }
     else
