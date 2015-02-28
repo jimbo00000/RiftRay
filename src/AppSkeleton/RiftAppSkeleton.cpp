@@ -122,12 +122,19 @@ void RiftAppSkeleton::RecenterPose()
 
 void RiftAppSkeleton::ResetChassisTransformations()
 {
-    m_chassisPos.x = 0.0f;
-    m_chassisPos.y = 1.27f; // my sitting height
-    m_chassisPos.z = 1.0f;
-    m_chassisYaw = 0.0f;
+    m_chassisPos = glm::vec3(0.f, 1.27f, 1.f); // my sitting height
+    m_chassisYaw = 0.f;
+    m_chassisPitch = 0.f;
+    m_chassisRoll = 0.f;
 
     m_raymarchScene.ResetTransformation();
+
+    const ShaderToy* pST = m_galleryScene.GetActiveShaderToy();
+    if (pST != NULL)
+    {
+        m_chassisPos = pST->GetHeadPos();
+        m_chassisYaw = static_cast<float>(M_PI);
+    }
 }
 
 glm::mat4 RiftAppSkeleton::makeWorldToChassisMatrix() const
