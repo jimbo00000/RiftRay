@@ -1030,12 +1030,16 @@ void RiftAppSkeleton::display_stereo_undistorted() const
 
     bindFBO(m_renderBuffer, m_fboScale);
 
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor(0.f, 0.f, 0.f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     ovrVector3f e2v[2] = {
         OVR::Vector3f(m_EyeRenderDesc[0].HmdToEyeViewOffset) * m_headSize,
         OVR::Vector3f(m_EyeRenderDesc[1].HmdToEyeViewOffset) * m_headSize,
+    };
+    ovrVector3f e2vScaled[2] = {
+        OVR::Vector3f(e2v[0]) * m_headSize,
+        OVR::Vector3f(e2v[1]) * m_headSize,
     };
 
     ovrTrackingState outHmdTrackingState;
@@ -1045,6 +1049,14 @@ void RiftAppSkeleton::display_stereo_undistorted() const
         0,
         e2v, // could this parameter be const?
         outEyePoses,
+        &outHmdTrackingState);
+
+    ovrPosef outEyePosesScaled[2];
+    ovrHmd_GetEyePoses(
+        hmd,
+        0, ///@todo Frame index
+        e2vScaled, // could this parameter be const?
+        outEyePosesScaled,
         &outHmdTrackingState);
 
     // For passing to EndFrame once rendering is done
@@ -1074,9 +1086,10 @@ void RiftAppSkeleton::display_stereo_undistorted() const
             m_EyeRenderDesc[e].Fov,
             0.01f, 10000.0f, true);
 
+        const ovrPosef eyePoseScaled = outEyePosesScaled[e];
         const glm::mat4 viewLocal = makeMatrixFromPose(eyePose);
-        const glm::mat4 viewLocalScaled = makeMatrixFromPose(eyePose, m_headSize);
-        const glm::mat4 viewWorld = makeWorldToChassisMatrix() * viewLocal;
+        const glm::mat4 viewLocalScaled = makeMatrixFromPose(eyePoseScaled, m_headSize);
+        const glm::mat4 viewWorld = makeWorldToChassisMatrix() * viewLocalScaled;
 
         _resetGLState();
 
@@ -1225,12 +1238,16 @@ void RiftAppSkeleton::display_client() const
 
     bindFBO(m_renderBuffer, m_fboScale);
 
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor(0.f, 0.f, 0.f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     ovrVector3f e2v[2] = {
         OVR::Vector3f(m_EyeRenderDesc[0].HmdToEyeViewOffset) * m_headSize,
         OVR::Vector3f(m_EyeRenderDesc[1].HmdToEyeViewOffset) * m_headSize,
+    };
+    ovrVector3f e2vScaled[2] = {
+        OVR::Vector3f(e2v[0]) * m_headSize,
+        OVR::Vector3f(e2v[1]) * m_headSize,
     };
 
     ovrTrackingState outHmdTrackingState;
@@ -1240,6 +1257,14 @@ void RiftAppSkeleton::display_client() const
         0,
         e2v,
         outEyePoses,
+        &outHmdTrackingState);
+
+    ovrPosef outEyePosesScaled[2];
+    ovrHmd_GetEyePoses(
+        hmd,
+        0, ///@todo Frame index
+        e2vScaled, // could this parameter be const?
+        outEyePosesScaled,
         &outHmdTrackingState);
 
     for (int eyeIndex = 0; eyeIndex < ovrEye_Count; eyeIndex++)
@@ -1266,10 +1291,10 @@ void RiftAppSkeleton::display_client() const
 
         ///@todo Should we be using this variable?
         //m_EyeRenderDesc[eye].DistortedViewport;
-
+        const ovrPosef eyePoseScaled = outEyePosesScaled[e];
         const glm::mat4 viewLocal = makeMatrixFromPose(eyePose);
-        const glm::mat4 viewLocalScaled = makeMatrixFromPose(eyePose, m_headSize);
-        const glm::mat4 viewWorld = makeWorldToChassisMatrix() * viewLocal;
+        const glm::mat4 viewLocalScaled = makeMatrixFromPose(eyePoseScaled, m_headSize);
+        const glm::mat4 viewWorld = makeWorldToChassisMatrix() * viewLocalScaled;
 
         _resetGLState();
 
