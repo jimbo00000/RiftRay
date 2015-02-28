@@ -622,8 +622,8 @@ void RiftAppSkeleton::timestep(double absTime, double dtd)
 
     m_chassisPos += glm::vec3(mv4);
     m_chassisYaw += (m_keyboardYaw + m_joystickYaw + m_mouseDeltaYaw) * dt;
-    //m_chassisPitch += m_keyboardPitch * dt;
-    //m_chassisRoll += m_keyboardRoll * dt;
+    m_chassisPitch += m_keyboardDeltaPitch * dt;
+    m_chassisRoll += m_keyboardDeltaRoll * dt;
 
     m_fm.updateHydraData();
     m_hyif.updateHydraData(m_fm, 1.0f);

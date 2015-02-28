@@ -69,7 +69,8 @@ void InitializeBar()
     TwAddButton(g_pTweakbar, "Recenter Pose", RecenterPoseCB, NULL, " group='Position' ");
     TwAddButton(g_pTweakbar, "Standing", StandingCB, NULL, " group='Position' ");
     TwAddButton(g_pTweakbar, "Sitting", SittingCB, NULL, " group='Position' ");
-
+    TwAddVarRW(g_pTweakbar, "Allow Pitch", TW_TYPE_BOOLCPP, &g_allowPitch, " group='Position' ");
+    TwAddVarRW(g_pTweakbar, "Allow Roll", TW_TYPE_BOOLCPP, &g_allowRoll, " group='Position' ");
 
 
     TwAddVarRW(g_pTweakbar, "Animated Thumbnails", TW_TYPE_BOOLCPP, &g_app.m_galleryScene.m_globalShadertoyState.animatedThumbnails,

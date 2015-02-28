@@ -167,8 +167,8 @@ public:
     float m_keyboardYaw;
     float m_joystickYaw;
     float m_mouseDeltaYaw;
-    float m_keyboardPitch;
-    float m_keyboardRoll;
+    float m_keyboardDeltaPitch;
+    float m_keyboardDeltaRoll;
 
     float m_cinemaScopeFactor;
     float m_fboMinScale;

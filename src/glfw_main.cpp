@@ -73,6 +73,8 @@ bool g_dynamicallyScaleFBO = true;
 int g_targetFPS = 70;
 bool g_drawToAuxWindow = false;
 bool g_loadShadertoysRecursive = true;
+bool g_allowPitch = false;
+bool g_allowRoll = false;
 
 #ifdef USE_ANTTWEAKBAR
 TwBar* g_pTweakbar = NULL;
@@ -304,16 +306,21 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
     if (m_keyStates['1'] != GLFW_RELEASE) { g_app.m_keyboardYaw = -dyaw; }
     if (m_keyStates['3'] != GLFW_RELEASE) { g_app.m_keyboardYaw = dyaw; }
 
-#if 0
     // Pitch and roll controls - if yaw is VR poison,
     // this is torture and death!
-    g_app.m_keyboardPitch = 0.0f;
-    if (m_keyStates['2'] != GLFW_RELEASE) { g_app.m_keyboardPitch = -dyaw; }
-    if (m_keyStates['X'] != GLFW_RELEASE) { g_app.m_keyboardPitch = dyaw; }
-    g_app.m_keyboardRoll = 0.0f;
-    if (m_keyStates['Z'] != GLFW_RELEASE) { g_app.m_keyboardRoll = -dyaw; }
-    if (m_keyStates['C'] != GLFW_RELEASE) { g_app.m_keyboardRoll = dyaw; }
-#endif
+    g_app.m_keyboardDeltaPitch = 0.0f;
+    g_app.m_keyboardDeltaRoll = 0.0f;
+    if (g_allowPitch)
+    {
+        if (m_keyStates['2'] != GLFW_RELEASE) { g_app.m_keyboardDeltaPitch = -dyaw; }
+        if (m_keyStates['X'] != GLFW_RELEASE) { g_app.m_keyboardDeltaPitch = dyaw; }
+    }
+    if (g_allowRoll)
+    {
+        if (m_keyStates['Z'] != GLFW_RELEASE) { g_app.m_keyboardDeltaRoll = -dyaw; }
+        if (m_keyStates['C'] != GLFW_RELEASE) { g_app.m_keyboardDeltaRoll = dyaw; }
+    }
+
     g_app.m_keyboardMove = mag * keyboardMove;
 }
 
