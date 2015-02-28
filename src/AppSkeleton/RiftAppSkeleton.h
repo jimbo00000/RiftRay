@@ -99,8 +99,7 @@ protected:
         const float* pPersp,
         const ovrRecti& rvp,
         const float* pMvLocal,
-        const float* pMvLocalScaled,
-        const float* pScaledMview=NULL) const;
+        const float* pMvLocalScaled) const;
     void _StoreHmdPose(const ovrPosef& eyePose) const;
     void _ToggleShaderWorld();
 

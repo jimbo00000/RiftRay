@@ -679,8 +679,7 @@ void RiftAppSkeleton::_DrawScenes(
     const float* pPersp,
     const ovrRecti& rvp,
     const float* pMvLocal,
-    const float* pMvLocalScaled,
-    const float* pScaledMview) const
+    const float* pMvLocalScaled) const
 {
     // Clip off top and bottom letterboxes
     glEnable(GL_SCISSOR_TEST);
@@ -695,7 +694,7 @@ void RiftAppSkeleton::_DrawScenes(
     // with rasterized world pixels.
     if (m_galleryScene.GetActiveShaderToy() != NULL)
     {
-        m_galleryScene.RenderForOneEye(pScaledMview ? pScaledMview : pMvWorld, pPersp);
+        m_galleryScene.RenderForOneEye(pMvWorld, pPersp);
 
         // Show the warning box if we get too close to edge of tracking cam's fov.
         glDisable(GL_DEPTH_TEST);
@@ -967,7 +966,13 @@ void RiftAppSkeleton::_drawSceneMono() const
         500.0f);
 
     const ovrRecti rvp = {0,0,w,h};
-    _DrawScenes(glm::value_ptr(mvWorld), glm::value_ptr(persp), rvp, glm::value_ptr(mvLocal), glm::value_ptr(mvLocal));
+    _DrawScenes(
+        glm::value_ptr(mvWorld),
+        glm::value_ptr(persp),
+        rvp,
+        glm::value_ptr(mvLocal),
+        glm::value_ptr(mvLocal)
+        );
 }
 
 void RiftAppSkeleton::display_raw() const
