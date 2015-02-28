@@ -678,8 +678,7 @@ void RiftAppSkeleton::_DrawScenes(
     const float* pMvWorld,
     const float* pPersp,
     const ovrRecti& rvp,
-    const float* pMvLocal,
-    const float* pMvLocalScaled) const
+    const float* pMvLocal) const
 {
     // Clip off top and bottom letterboxes
     glEnable(GL_SCISSOR_TEST);
@@ -970,7 +969,6 @@ void RiftAppSkeleton::_drawSceneMono() const
         glm::value_ptr(mvWorld),
         glm::value_ptr(persp),
         rvp,
-        glm::value_ptr(mvLocal),
         glm::value_ptr(mvLocal)
         );
 }
@@ -1086,8 +1084,7 @@ void RiftAppSkeleton::display_stereo_undistorted() const
             glm::value_ptr(glm::inverse(viewWorld)),
             &proj.Transposed().M[0][0],
             rsc,
-            glm::value_ptr(glm::inverse(viewLocal)),
-            glm::value_ptr(glm::inverse(viewLocalScaled))
+            glm::value_ptr(glm::inverse(viewLocal))
             );
     }
     unbindFBO();
@@ -1196,8 +1193,7 @@ void RiftAppSkeleton::display_sdk() const
             glm::value_ptr(glm::inverse(viewWorld)),
             &proj.Transposed().M[0][0],
             rsc,
-            glm::value_ptr(glm::inverse(viewLocal)),
-            glm::value_ptr(glm::inverse(viewLocalScaled))
+            glm::value_ptr(glm::inverse(viewLocal))
             );
     }
     unbindFBO();
@@ -1281,8 +1277,7 @@ void RiftAppSkeleton::display_client() const
             glm::value_ptr(glm::inverse(viewWorld)),
             &proj.Transposed().M[0][0],
             rsc,
-            glm::value_ptr(glm::inverse(viewLocal)),
-            glm::value_ptr(glm::inverse(viewLocalScaled))
+            glm::value_ptr(glm::inverse(viewLocal))
             );
     }
     unbindFBO();
