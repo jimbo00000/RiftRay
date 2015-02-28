@@ -31,8 +31,6 @@ public:
 
     // Retain pointers to scene orientation parameters
     virtual void SetHmdPointer(ovrHmd pHmd) { m_pHmd = pHmd; }
-    virtual void SetChassisPosPointer(ovrVector3f* pPos) { m_pPos = pPos; }
-    virtual void SetChassisYawPointer(float* pYaw) { m_pYaw = pYaw; }
 
 protected:
     void _InitFrustumAttributes();
@@ -43,8 +41,6 @@ protected:
 
     ShaderWithVariables m_basic;
     ovrHmd m_pHmd;
-    ovrVector3f* m_pPos;
-    float* m_pYaw;
     std::vector<glm::vec3> m_frustumVerts;
     float m_distanceToFrustum;
     glm::vec2 m_tanFromCameraCenterline;

@@ -10,8 +10,8 @@ static void TW_CALL EnableVSyncCB(void*) { SetVsync(1); }
 static void TW_CALL DisableVSyncCB(void*) { SetVsync(0); }
 static void TW_CALL AdaptiveVSyncCB(void*) { SetVsync(-1); }
 static void TW_CALL RecenterPoseCB(void*) { g_app.RecenterPose(); }
-static void TW_CALL StandingCB(void*) { ovrVector3f p = {0,1.78f,2}; g_app.SetChassisPosition(p); }
-static void TW_CALL SittingCB(void*) { ovrVector3f p = {0,1.27f,2}; g_app.SetChassisPosition(p); }
+static void TW_CALL StandingCB(void*) { g_app.SetChassisPosition(glm::vec3(0.f, 1.78f, 2.f)); }
+static void TW_CALL SittingCB(void*) { g_app.SetChassisPosition(glm::vec3(0.f, 1.27f, 2.f)); }
 
 static void TW_CALL GetDisplayFPS(void* value, void*)
 {

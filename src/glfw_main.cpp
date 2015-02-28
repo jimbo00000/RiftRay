@@ -231,7 +231,7 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
             break;
 
         case 'R':
-            g_app.ResetAllTransformations();
+            g_app.ResetChassisTransformations();
             break;
 
         case GLFW_KEY_PAGE_DOWN:
@@ -304,6 +304,16 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
     if (m_keyStates['1'] != GLFW_RELEASE) { g_app.m_keyboardYaw = -dyaw; }
     if (m_keyStates['3'] != GLFW_RELEASE) { g_app.m_keyboardYaw = dyaw; }
 
+#if 0
+    // Pitch and roll controls - if yaw is VR poison,
+    // this is torture and death!
+    g_app.m_keyboardPitch = 0.0f;
+    if (m_keyStates['2'] != GLFW_RELEASE) { g_app.m_keyboardPitch = -dyaw; }
+    if (m_keyStates['X'] != GLFW_RELEASE) { g_app.m_keyboardPitch = dyaw; }
+    g_app.m_keyboardRoll = 0.0f;
+    if (m_keyStates['Z'] != GLFW_RELEASE) { g_app.m_keyboardRoll = -dyaw; }
+    if (m_keyStates['C'] != GLFW_RELEASE) { g_app.m_keyboardRoll = dyaw; }
+#endif
     g_app.m_keyboardMove = mag * keyboardMove;
 }
 
@@ -500,7 +510,7 @@ void joystick_XboxController(
             }
             if (i == 5) // Right Bumper
             {
-                g_app.ResetAllTransformations();
+                g_app.ResetChassisTransformations();
             }
             if (i == 7) // Start
             {

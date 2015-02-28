@@ -45,8 +45,8 @@ public:
     void initVR();
     void exitVR();
     void RecenterPose();
-    void ResetAllTransformations();
-    void SetChassisPosition(ovrVector3f p) { m_chassisPos = p; }
+    void ResetChassisTransformations();
+    void SetChassisPosition(glm::vec3 p) { m_chassisPos = p; }
     int ConfigureRendering();
     int ConfigureSDKRendering();
     int ConfigureClientRendering();
@@ -94,9 +94,18 @@ protected:
     void _initPresentDistMesh(ShaderWithVariables& shader, int eyeIdx);
     void _resetGLState() const;
     void _drawSceneMono() const;
-    void _DrawScenes(const float* pMview, const float* pPersp, const ovrRecti& rvp, const float* pScaledMview=NULL) const;
+    void _DrawScenes(
+        const float* pMview,
+        const float* pPersp,
+        const ovrRecti& rvp,
+        const float* pMvLocal,
+        const float* pMvLocalScaled,
+        const float* pScaledMview=NULL) const;
     void _StoreHmdPose(const ovrPosef& eyePose) const;
     void _ToggleShaderWorld();
+
+    virtual glm::mat4 makeWorldToEyeMatrix() const;
+    glm::mat4 makeWorldToChassisMatrix() const;
 
     ovrHmd m_Hmd;
     ovrFovPort m_EyeFov[2];
@@ -109,7 +118,7 @@ protected:
     // For client rendering
     ovrRecti m_RenderViewports[2];
     ovrDistortionMesh m_DistMeshes[2];
-    mutable ovrQuatf m_eyeOri;
+    mutable ovrPosef m_eyePoseCached;
 
     // For eye ray tracking - set during draw function
     mutable glm::vec3 m_hmdRo;
@@ -128,8 +137,10 @@ public:
     ShaderGalleryScene m_galleryScene;
     DashboardScene m_dashScene;
 
-    ovrVector3f m_chassisPos;
-    ovrVector3f m_chassisPosCached;
+    glm::vec3 m_chassisPos;
+    glm::vec3 m_chassisPosCached;
+    float m_chassisPitch;
+    float m_chassisRoll;
 
 protected:
     std::vector<IScene*> m_scenes;
@@ -158,6 +169,9 @@ public:
     float m_keyboardYaw;
     float m_joystickYaw;
     float m_mouseDeltaYaw;
+    float m_keyboardPitch;
+    float m_keyboardRoll;
+
     float m_cinemaScopeFactor;
     float m_fboMinScale;
 #ifdef USE_ANTTWEAKBAR

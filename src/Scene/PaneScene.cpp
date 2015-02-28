@@ -118,17 +118,7 @@ void PaneScene::DrawScene(
     const glm::mat4& modelview,
     const glm::mat4& projection) const
 {
-    glm::mat4 mv = modelview;
-    if ((m_pFm != NULL) && m_bChassisLocalSpace)
-    {
-        const glm::vec3 sumOffset =
-            m_pFm->GetChassisPos();
-        const glm::mat4 mvLocal = glm::rotate(
-            glm::translate(modelview, sumOffset),
-            -m_pFm->GetChassisYaw(), glm::vec3(0.f,1.f,0.f));
-        mv = mvLocal;
-    }
-
+    const glm::mat4& mv = modelview;
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     for (std::vector<Pane*>::const_iterator it = m_panes.begin();
@@ -141,8 +131,6 @@ void PaneScene::DrawScene(
 
         const glm::mat4 object = pP->m_tx.GetMatrix();
 
-        ///@todo Extract function
-        //pP->DrawInScene(m_bChassisLocalSpace ? mvLocal : modelview, projection, pP->m_tx.GetMatrix());
         glUseProgram(m_paneShader.prog());
         {
             const glm::mat4 objectMatrix = mv * object;
@@ -199,7 +187,7 @@ bool PaneScene::_GetFlyingMouseRightHandPaneRayIntersectionCoordinates(Pane* pPa
 
     glm::vec3 origin3;
     glm::vec3 dir3;
-    m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, origin3, dir3, m_bChassisLocalSpace);
+    m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, origin3, dir3);
     return pPane->GetPaneRayIntersectionCoordinates(origin3, dir3, planePt, tParam);
 }
 
@@ -244,7 +232,7 @@ void PaneScene::_SetHeldPanePositionAndOrientation(Pane* pP)
     {
         if (m_pFm == NULL)
             return;
-        m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, origin3, dir3, m_bChassisLocalSpace);
+        m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, origin3, dir3);
     }
     else
     {
@@ -479,7 +467,7 @@ void PaneScene::SetHoldingFlag(int state)
                 {
                     glm::vec3 fm_origin3;
                     glm::vec3 fm_dir3;
-                    m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, fm_origin3, fm_dir3, m_bChassisLocalSpace);
+                    m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, fm_origin3, fm_dir3);
                     const glm::vec3 fmHitPt = fm_origin3 + tFm * fm_dir3;
                     const glm::vec3 originalPos = glm::vec3(pP->m_tx.GetMatrix() * glm::vec4(0.,0.,0.,1.));
 

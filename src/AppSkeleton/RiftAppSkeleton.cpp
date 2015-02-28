@@ -23,6 +23,7 @@
 #include "ShaderToy.h"
 #include "ShaderFunctions.h"
 #include "DirectoryFunctions.h"
+#include "MatrixFunctions.h"
 #include "GLUtils.h"
 #include "Logger.h"
 
@@ -67,7 +68,7 @@ RiftAppSkeleton::RiftAppSkeleton()
 , m_pShaderTweakbar(NULL)
 #endif
 {
-    m_eyeOri = OVR::Quatf();
+    m_eyePoseCached = OVR::Posef();
 
     // Add as many scenes here as you like. They will share color and depth buffers,
     // so drawing one after the other should just result in pixel-perfect integration -
@@ -96,7 +97,7 @@ RiftAppSkeleton::RiftAppSkeleton()
     m_hyif.AddTransformation(m_raymarchScene.GetTransformationPointer());
 #endif
 
-    ResetAllTransformations();
+    ResetChassisTransformations();
 }
 
 RiftAppSkeleton::~RiftAppSkeleton()
@@ -119,7 +120,7 @@ void RiftAppSkeleton::RecenterPose()
     ovrHmd_RecenterPose(m_Hmd);
 }
 
-void RiftAppSkeleton::ResetAllTransformations()
+void RiftAppSkeleton::ResetChassisTransformations()
 {
     m_chassisPos.x = 0.0f;
     m_chassisPos.y = 1.27f; // my sitting height
@@ -127,6 +128,11 @@ void RiftAppSkeleton::ResetAllTransformations()
     m_chassisYaw = 0.0f;
 
     m_raymarchScene.ResetTransformation();
+}
+
+glm::mat4 RiftAppSkeleton::makeWorldToChassisMatrix() const
+{
+    return makeChassisMatrix_glm(m_chassisYaw, m_chassisPitch, m_chassisRoll, m_chassisPos);
 }
 
 ovrSizei RiftAppSkeleton::getHmdResolution() const
@@ -251,12 +257,6 @@ void RiftAppSkeleton::initHMD()
     }
 
     m_ovrScene.SetHmdPointer(m_Hmd);
-    m_ovrScene.SetChassisPosPointer(&m_chassisPos);
-    m_ovrScene.SetChassisYawPointer(&m_chassisYaw);
-
-    // Both ovrVector3f and glm::vec3 are at heart a float[3], so this works fine.
-    m_fm.SetChassisPosPointer(reinterpret_cast<glm::vec3*>(&m_chassisPos));
-    m_fm.SetChassisYawPointer(&m_chassisYaw);
 }
 
 void RiftAppSkeleton::initVR()
@@ -618,16 +618,12 @@ void RiftAppSkeleton::timestep(double absTime, double dtd)
     kbm.z = move_dt.z;
 
     // Move in the direction the viewer is facing.
-    const OVR::Matrix4f rotmtx = 
-          OVR::Matrix4f::RotationY(-m_chassisYaw)
-        * OVR::Matrix4f(m_eyeOri);
-    const OVR::Vector3f kbmVec = rotmtx.Transform(OVR::Vector3f(kbm));
+    const glm::vec4 mv4 = makeWorldToEyeMatrix() * glm::vec4(move_dt, 0.0f);
 
-    m_chassisPos.x += kbmVec.x;
-    m_chassisPos.y += kbmVec.y;
-    m_chassisPos.z += kbmVec.z;
-
+    m_chassisPos += glm::vec3(mv4);
     m_chassisYaw += (m_keyboardYaw + m_joystickYaw + m_mouseDeltaYaw) * dt;
+    //m_chassisPitch += m_keyboardPitch * dt;
+    //m_chassisRoll += m_keyboardRoll * dt;
 
     m_fm.updateHydraData();
     m_hyif.updateHydraData(m_fm, 1.0f);
@@ -657,25 +653,11 @@ void RiftAppSkeleton::timestep(double absTime, double dtd)
     }
 }
 
-/// Scale the parallax translation and head pose motion vector by the head size
-/// dictated by the shader. Thanks to the elegant design decision of putting the
-/// head's default position at the origin, this is simple.
-OVR::Matrix4f makeModelviewMatrix(
-    ovrPosef eyePose,
-    float chassisYaw,
-    ovrVector3f chassisPos,
-    float headScale=1.0f)
+/// Uses a cached copy of HMD orientation written to in display(which are const
+/// functions, but m_eyePoseCached is a mutable member).
+glm::mat4 RiftAppSkeleton::makeWorldToEyeMatrix() const
 {
-    const OVR::Matrix4f eyePoseMatrix =
-        OVR::Matrix4f::Translation(OVR::Vector3f(eyePose.Position) * headScale)
-        * OVR::Matrix4f(OVR::Quatf(eyePose.Orientation));
-
-    const OVR::Matrix4f view =
-        eyePoseMatrix.Inverted()
-        * OVR::Matrix4f::RotationY(chassisYaw)
-        * OVR::Matrix4f::Translation(-OVR::Vector3f(chassisPos));
-
-    return view;
+    return makeWorldToChassisMatrix() * makeMatrixFromPose(m_eyePoseCached, m_headSize);
 }
 
 void RiftAppSkeleton::DoSceneRenderPrePasses() const
@@ -693,9 +675,11 @@ void RiftAppSkeleton::DoSceneRenderPrePasses() const
 }
 
 void RiftAppSkeleton::_DrawScenes(
-    const float* pMview,
+    const float* pMvWorld,
     const float* pPersp,
     const ovrRecti& rvp,
+    const float* pMvLocal,
+    const float* pMvLocalScaled,
     const float* pScaledMview) const
 {
     // Clip off top and bottom letterboxes
@@ -711,12 +695,12 @@ void RiftAppSkeleton::_DrawScenes(
     // with rasterized world pixels.
     if (m_galleryScene.GetActiveShaderToy() != NULL)
     {
-        m_galleryScene.RenderForOneEye(pScaledMview ? pScaledMview : pMview, pPersp);
+        m_galleryScene.RenderForOneEye(pScaledMview ? pScaledMview : pMvWorld, pPersp);
 
         // Show the warning box if we get too close to edge of tracking cam's fov.
         glDisable(GL_DEPTH_TEST);
-        m_ovrScene.RenderForOneEye(pMview, pPersp);
-        m_dashScene.RenderForOneEye(pMview, pPersp);
+        m_ovrScene.RenderForOneEye(pMvLocal, pPersp); // m_bChassisLocalSpace
+        m_dashScene.RenderForOneEye(pMvLocalScaled, pPersp);
         glEnable(GL_DEPTH_TEST);
     }
     else
@@ -728,7 +712,8 @@ void RiftAppSkeleton::_DrawScenes(
             const IScene* pScene = *it;
             if (pScene != NULL)
             {
-                pScene->RenderForOneEye(pMview, pPersp);
+                const float* pMv = pScene->m_bChassisLocalSpace ? pMvLocal : pMvWorld;
+                pScene->RenderForOneEye(pMv, pPersp);
             }
         }
     }
@@ -826,7 +811,7 @@ void RiftAppSkeleton::_ToggleShaderWorld()
     {
         // Back into gallery
         LOG_INFO("Back to gallery");
-        ResetAllTransformations();
+        ResetChassisTransformations();
         m_chassisPos = m_chassisPosCached;
         m_chassisYaw = m_chassisYawCached;
         m_headSize = 1.0f;
@@ -861,10 +846,7 @@ void RiftAppSkeleton::_ToggleShaderWorld()
     m_chassisPosCached = m_chassisPos;
     m_chassisYawCached = m_chassisYaw;
 
-    const glm::vec3 hp = pST->GetHeadPos();
-    m_chassisPos.x = hp.x;
-    m_chassisPos.y = hp.y;
-    m_chassisPos.z = hp.z;
+    m_chassisPos = pST->GetHeadPos();
     m_headSize = pST->GetHeadSize();
     m_chassisYaw = static_cast<float>(M_PI);
 
@@ -972,19 +954,9 @@ void RiftAppSkeleton::_drawSceneMono() const
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    const glm::vec3 EyePos(m_chassisPos.x, m_chassisPos.y, m_chassisPos.z);
-    const glm::vec3 LookVec(0.0f, 0.0f, -1.0f);
-    const glm::vec3 up(0.0f, 1.0f, 0.0f);
-
-    const ovrPosef eyePose = {
-        OVR::Quatf(),
-        OVR::Vector3f()
-    };
-    _StoreHmdPose(eyePose);
-    const OVR::Matrix4f view = makeModelviewMatrix(
-        eyePose,
-        m_chassisYaw,
-        m_chassisPos);
+    const glm::mat4 mvLocal = glm::mat4(1.f);
+    const glm::mat4 mvWorld = mvLocal *
+        glm::inverse(makeWorldToChassisMatrix());
 
     const int w = static_cast<int>(m_fboScale * static_cast<float>(m_renderBuffer.w));
     const int h = static_cast<int>(m_fboScale * static_cast<float>(m_renderBuffer.h));
@@ -995,7 +967,7 @@ void RiftAppSkeleton::_drawSceneMono() const
         500.0f);
 
     const ovrRecti rvp = {0,0,w,h};
-    _DrawScenes(&view.Transposed().M[0][0], glm::value_ptr(persp), rvp);
+    _DrawScenes(glm::value_ptr(mvWorld), glm::value_ptr(persp), rvp, glm::value_ptr(mvLocal), glm::value_ptr(mvLocal));
 }
 
 void RiftAppSkeleton::display_raw() const
@@ -1082,7 +1054,7 @@ void RiftAppSkeleton::display_stereo_undistorted() const
         const ovrPosef eyePose = outEyePoses[e];
         renderPose[e] = eyePose;
         eyeTexture[e] = m_EyeTexture[e].Texture;
-        m_eyeOri = eyePose.Orientation; // cache this for movement direction
+        m_eyePoseCached = eyePose; // cache this for movement direction
         _StoreHmdPose(eyePose);
 
         const ovrGLTexture& otex = m_EyeTexture[e];
@@ -1099,20 +1071,19 @@ void RiftAppSkeleton::display_stereo_undistorted() const
             m_EyeRenderDesc[e].Fov,
             0.01f, 10000.0f, true);
 
-        const OVR::Matrix4f view = makeModelviewMatrix(
-            eyePose,
-            m_chassisYaw,
-            m_chassisPos);
-
-        const OVR::Matrix4f scaledView = makeModelviewMatrix(
-            eyePose,
-            m_chassisYaw,
-            m_chassisPos,
-            m_headSize);
+        const glm::mat4 viewLocal = makeMatrixFromPose(eyePose);
+        const glm::mat4 viewLocalScaled = makeMatrixFromPose(eyePose, m_headSize);
+        const glm::mat4 viewWorld = makeWorldToChassisMatrix() * viewLocal;
 
         _resetGLState();
-        
-        _DrawScenes(&view.Transposed().M[0][0], &proj.Transposed().M[0][0], rsc, &scaledView.Transposed().M[0][0]);
+
+        _DrawScenes(
+            glm::value_ptr(glm::inverse(viewWorld)),
+            &proj.Transposed().M[0][0],
+            rsc,
+            glm::value_ptr(glm::inverse(viewLocal)),
+            glm::value_ptr(glm::inverse(viewLocalScaled))
+            );
     }
     unbindFBO();
 
@@ -1155,8 +1126,12 @@ void RiftAppSkeleton::display_sdk() const
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+    
     ovrVector3f e2v[2] = {
+        OVR::Vector3f(m_EyeRenderDesc[0].HmdToEyeViewOffset),
+        OVR::Vector3f(m_EyeRenderDesc[1].HmdToEyeViewOffset),
+    };
+    ovrVector3f e2vScaled[2] = {
         OVR::Vector3f(m_EyeRenderDesc[0].HmdToEyeViewOffset) * m_headSize,
         OVR::Vector3f(m_EyeRenderDesc[1].HmdToEyeViewOffset) * m_headSize,
     };
@@ -1165,9 +1140,17 @@ void RiftAppSkeleton::display_sdk() const
     ovrPosef outEyePoses[2];
     ovrHmd_GetEyePoses(
         hmd,
-        0,
+        0, ///@todo Frame index
         e2v, // could this parameter be const?
         outEyePoses,
+        &outHmdTrackingState);
+
+    ovrPosef outEyePosesScaled[2];
+    ovrHmd_GetEyePoses(
+        hmd,
+        0, ///@todo Frame index
+        e2vScaled, // could this parameter be const?
+        outEyePosesScaled,
         &outHmdTrackingState);
 
     // For passing to EndFrame once rendering is done
@@ -1180,7 +1163,7 @@ void RiftAppSkeleton::display_sdk() const
         const ovrPosef eyePose = outEyePoses[e];
         renderPose[e] = eyePose;
         eyeTexture[e] = m_EyeTexture[e].Texture;
-        m_eyeOri = eyePose.Orientation; // cache this for movement direction
+        m_eyePoseCached = eyePose; // cache this for movement direction
         _StoreHmdPose(eyePose);
 
         const ovrGLTexture& otex = m_EyeTexture[e];
@@ -1197,20 +1180,20 @@ void RiftAppSkeleton::display_sdk() const
             m_EyeRenderDesc[e].Fov,
             0.01f, 10000.0f, true);
 
-        const OVR::Matrix4f view = makeModelviewMatrix(
-            eyePose,
-            m_chassisYaw,
-            m_chassisPos);
-
-        const OVR::Matrix4f scaledView = makeModelviewMatrix(
-            eyePose,
-            m_chassisYaw,
-            m_chassisPos,
-            m_headSize);
+        const ovrPosef eyePoseScaled = outEyePosesScaled[e];
+        const glm::mat4 viewLocal = makeMatrixFromPose(eyePose);
+        const glm::mat4 viewLocalScaled = makeMatrixFromPose(eyePoseScaled, m_headSize);
+        const glm::mat4 viewWorld = makeWorldToChassisMatrix() * viewLocalScaled;
 
         _resetGLState();
 
-        _DrawScenes(&view.Transposed().M[0][0], &proj.Transposed().M[0][0], rsc, &scaledView.Transposed().M[0][0]);
+        _DrawScenes(
+            glm::value_ptr(glm::inverse(viewWorld)),
+            &proj.Transposed().M[0][0],
+            rsc,
+            glm::value_ptr(glm::inverse(viewLocal)),
+            glm::value_ptr(glm::inverse(viewLocalScaled))
+            );
     }
     unbindFBO();
 
@@ -1263,7 +1246,7 @@ void RiftAppSkeleton::display_client() const
         const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
 
         const ovrPosef eyePose = outEyePoses[e];
-        m_eyeOri = eyePose.Orientation; // cache this for movement direction
+        m_eyePoseCached = eyePose; // cache this for movement direction
         _StoreHmdPose(eyePose);
 
         const ovrGLTexture& otex = m_EyeTexture[e];
@@ -1283,20 +1266,19 @@ void RiftAppSkeleton::display_client() const
         ///@todo Should we be using this variable?
         //m_EyeRenderDesc[eye].DistortedViewport;
 
-        const OVR::Matrix4f view = makeModelviewMatrix(
-            eyePose,
-            m_chassisYaw,
-            m_chassisPos);
-
-        const OVR::Matrix4f scaledView = makeModelviewMatrix(
-            eyePose,
-            m_chassisYaw,
-            m_chassisPos,
-            m_headSize);
+        const glm::mat4 viewLocal = makeMatrixFromPose(eyePose);
+        const glm::mat4 viewLocalScaled = makeMatrixFromPose(eyePose, m_headSize);
+        const glm::mat4 viewWorld = makeWorldToChassisMatrix() * viewLocal;
 
         _resetGLState();
 
-        _DrawScenes(&view.Transposed().M[0][0], &proj.Transposed().M[0][0], rsc, &scaledView.Transposed().M[0][0]);
+        _DrawScenes(
+            glm::value_ptr(glm::inverse(viewWorld)),
+            &proj.Transposed().M[0][0],
+            rsc,
+            glm::value_ptr(glm::inverse(viewLocal)),
+            glm::value_ptr(glm::inverse(viewLocalScaled))
+            );
     }
     unbindFBO();
 

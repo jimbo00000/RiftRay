@@ -64,12 +64,8 @@ public:
     bool TriggerIsOverThreshold(Hand h, float thresh) const;
     float GetTriggerValue(Hand h) const;
 
-    void GetControllerOriginAndDirection(Hand h, glm::vec3& origin, glm::vec3& direction, bool chassisLocalSpace=true) const;
+    void GetControllerOriginAndDirection(Hand h, glm::vec3& origin, glm::vec3& direction) const;
     bool ControllerIsOnBase(Hand h) const;
-    void SetChassisPosPointer(glm::vec3* pPos) { m_pChassisPos = pPos; }
-    void SetChassisYawPointer(float* pYaw) { m_pChassisYaw = pYaw; }
-    glm::vec3 GetChassisPos() const { return *m_pChassisPos; }
-    float GetChassisYaw() const { return *m_pChassisYaw; }
 
     bool m_active;
     float mtxL[16];
@@ -80,8 +76,6 @@ public:
 protected:
     sixenseAllControllerData g_curAcd;
     sixenseAllControllerData g_lastAcd;
-    glm::vec3* m_pChassisPos;
-    float* m_pChassisYaw;
 
 private: // Disallow copy ctor and assignment operator
     FlyingMouse(const FlyingMouse&);

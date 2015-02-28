@@ -70,6 +70,7 @@ void VirtualTrackball::updateHydraData(const FlyingMouse& fm, float headSize)
             {
                 glm::vec3 origin3;
                 glm::vec3 dir3;
+                ///@todo Verify correctness under chassis transformations
                 fm.GetControllerOriginAndDirection(FlyingMouse::Right, origin3, dir3);
                 const glm::vec3 newPt = origin3 + tx.m_controllerTParamAtClick * dir3;
                 tx.m_controllerRayHitPtAClick = newPt;
@@ -87,6 +88,7 @@ void VirtualTrackball::updateHydraData(const FlyingMouse& fm, float headSize)
             {
                 glm::vec3 origin3;
                 glm::vec3 dir3;
+                ///@todo Verify correctness under chassis transformations
                 fm.GetControllerOriginAndDirection(FlyingMouse::Right, origin3, dir3);
                 const glm::vec3 newPt = origin3 + tx.m_controllerTParamAtClick * dir3;
                 tx.m_momentaryHydraPosition = glm::translate(glm::mat4(1.0f), newPt - tx.m_controllerRayHitPtAClick);

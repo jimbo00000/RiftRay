@@ -1,5 +1,5 @@
 // HydraScene.cpp
-#ifdef USE_SIXENSE
+
 #include "HydraScene.h"
 
 #define _USE_MATH_DEFINES
@@ -16,6 +16,7 @@ HydraScene::HydraScene()
 , m_numTris(0)
 , m_pFm(NULL)
 {
+    m_bChassisLocalSpace = true;
 }
 
 HydraScene::~HydraScene()
@@ -189,56 +190,51 @@ void HydraScene::DrawScene(
     const glm::mat4& modelview,
     const glm::mat4& projection) const
 {
-    const glm::vec3 sumOffset = m_pFm->m_baseOffset + m_pFm->GetChassisPos();
+    if (m_pFm == NULL)
+        return;
+
+    const glm::vec3 sumOffset = m_pFm->m_baseOffset;
 
     glUseProgram(m_basic.prog());
     {
-        if (m_pFm != NULL)
+        glUniformMatrix4fv(m_basic.GetUniLoc("prmtx"), 1, false, glm::value_ptr(projection));
+        const glm::mat4 mv = glm::translate(modelview, sumOffset);
+
+#if 0
+        // Draw a unit origin at the base
+        if(0)
         {
-            glUniformMatrix4fv(m_basic.GetUniLoc("prmtx"), 1, false, glm::value_ptr(projection));
-            const glm::mat4 mv = glm::translate(modelview, sumOffset);
-
-            // Draw a unit origin at the base
-            if(0)
-            {
-                const glm::mat4 id = mv * glm::mat4(1.0f);
-                glUniformMatrix4fv(m_basic.GetUniLoc("mvmtx"), 1, false, glm::value_ptr(id));
-                _DrawOrigin(6);
-            }
-
-
-            // Flip the left handle's lines in its local frame
-            const glm::mat4 mL = mv * glm::scale(glm::make_mat4(m_pFm->mtxL), glm::vec3(-1.0f, 1.0f, 1.0f));
-            glUniformMatrix4fv(m_basic.GetUniLoc("mvmtx"), 1, false, glm::value_ptr(mL));
+            const glm::mat4 id = mv * glm::mat4(1.0f);
+            glUniformMatrix4fv(m_basic.GetUniLoc("mvmtx"), 1, false, glm::value_ptr(id));
             _DrawOrigin(6);
-
-            if (m_pFm->ControllerIsOnBase(FlyingMouse::Right) == false)
-            {
-                const glm::mat4 mR = mv * glm::make_mat4(m_pFm->mtxR);
-                glUniformMatrix4fv(m_basic.GetUniLoc("mvmtx"), 1, false, glm::value_ptr(mR));
-                _DrawOrigin(8);
-            }
         }
+#endif
+
+        // Flip the left handle's lines in its local frame
+        const glm::mat4 mL = mv * glm::scale(glm::make_mat4(m_pFm->mtxL), glm::vec3(-1.0f, 1.0f, 1.0f));
+        glUniformMatrix4fv(m_basic.GetUniLoc("mvmtx"), 1, false, glm::value_ptr(mL));
+        _DrawOrigin(6);
+
+        const glm::mat4 mR = mv * glm::make_mat4(m_pFm->mtxR);
+        glUniformMatrix4fv(m_basic.GetUniLoc("mvmtx"), 1, false, glm::value_ptr(mR));
+        _DrawOrigin(8);
     }
 
     glUseProgram(m_hydra.prog());
     {
-        if (m_pFm != NULL)
-        {
-            glUniformMatrix4fv(m_hydra.GetUniLoc("prmtx"), 1, false, glm::value_ptr(projection));
-            glm::mat4 mv = glm::translate(modelview, sumOffset);
+        glUniformMatrix4fv(m_hydra.GetUniLoc("prmtx"), 1, false, glm::value_ptr(projection));
+        glm::mat4 mv = glm::translate(modelview, sumOffset);
 
-            // Draw the base at the origin
-            for (int j=0; j<2; ++j)
+        // Draw the base at the origin
+        for (int j=0; j<2; ++j)
+        {
+            for (int i=0; i<4; ++i)
             {
-                for (int i=0; i<4; ++i)
-                {
-                    glUniformMatrix4fv(m_hydra.GetUniLoc("mvmtx"), 1, false, glm::value_ptr(mv));
-                    _DrawHydraModel(); // a single octant
-                    mv = glm::rotate(mv, static_cast<float>(M_PI)*0.5f, glm::vec3(1,0,0));
-                }
-                mv = glm::rotate(mv, static_cast<float>(M_PI), glm::vec3(0,1,0));
+                glUniformMatrix4fv(m_hydra.GetUniLoc("mvmtx"), 1, false, glm::value_ptr(mv));
+                _DrawHydraModel(); // a single octant
+                mv = glm::rotate(mv, static_cast<float>(M_PI)*0.5f, glm::vec3(1,0,0));
             }
+            mv = glm::rotate(mv, static_cast<float>(M_PI), glm::vec3(0,1,0));
         }
     }
 
@@ -255,4 +251,3 @@ void HydraScene::RenderForOneEye(const float* pMview, const float* pPersp) const
 
     DrawScene(modelview, projection);
 }
-#endif
