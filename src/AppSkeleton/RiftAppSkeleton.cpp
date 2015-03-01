@@ -993,6 +993,9 @@ void RiftAppSkeleton::display_raw() const
 
 void RiftAppSkeleton::display_buffered(bool setViewport) const
 {
+    OVR::Posef p = OVR::Posef();
+    _StoreHmdPose(p);
+
     bindFBO(m_renderBuffer, m_fboScale);
     _drawSceneMono();
     unbindFBO();
