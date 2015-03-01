@@ -84,8 +84,8 @@ void AntPane::DrawToFBO() const
 }
 
 void AntPane::DrawPaneWithShader(
-    const glm::mat4& modelview,
-    const glm::mat4& projection,
+    const glm::mat4&, // modelview
+    const glm::mat4&, // projection
     const ShaderWithVariables& sh) const
 {
     glActiveTexture(GL_TEXTURE0);

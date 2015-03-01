@@ -67,9 +67,10 @@ public:
 
     virtual void DrawPane() const;
     virtual void DrawPaneWithShader(
-        const glm::mat4& modelview,
-        const glm::mat4& projection,
-        const ShaderWithVariables& sh) const {}
+        const glm::mat4&, // modelview
+        const glm::mat4&, // projection
+        const ShaderWithVariables&
+        ) const {}
     virtual void DrawCursor() const;
     virtual void DrawTextOverlay(
         const std::string text,

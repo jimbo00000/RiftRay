@@ -369,18 +369,9 @@ void joystick_GravisGamepadPro(
     }
     g_app.m_joystickMove = mag * joystickMove;
 
-    int buttonToggleWorld = 9;
-    int buttonAdjustVfov = 8;
-    int buttonCloseVfov = 4;
-    int buttonOpenVfov = 6;
-    int buttonIncreaseSpeed = 4;
-    int buttonDecreaseSpeed = 6;
-    int buttonGrabPane = 4;
-    int buttonSendMouseClick = 5;
-    int buttonToggleDashboard = 8;
-
-    // Left shoulder buttons - if "select" is pressed, adjust vertical FOV.
-    // Otherwise, boost or limit movement speed.
+    const int buttonAdjustVfov = 8;
+    const int buttonCloseVfov = 4;
+    const int buttonOpenVfov = 6;
     if (pButtonStates[buttonAdjustVfov] == GLFW_PRESS)
     {
         const float incr = 0.05f;

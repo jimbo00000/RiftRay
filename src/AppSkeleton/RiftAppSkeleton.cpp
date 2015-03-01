@@ -567,10 +567,10 @@ void RiftAppSkeleton::timestep(double absTime, double dtd)
     if (fabs(y) > deadZone)
     {
         // Absolute "farthest push"
-        const float resMin = m_fboMinScale;
+        //const float resMin = m_fboMinScale;
         const float resMax = 1.f;
-        const float d = (-y - deadZone)/(1. - deadZone); // [0,1]
-        const float u = ( y - deadZone)/(1. - deadZone);
+        const float d = (-y - deadZone)/(1.f - deadZone); // [0,1]
+        const float u = ( y - deadZone)/(1.f - deadZone);
         // Push up on stick to increase resolution, down to decrease
         const float s = GetFBOScale();
         if (d > 0.f)
@@ -584,10 +584,10 @@ void RiftAppSkeleton::timestep(double absTime, double dtd)
     }
     if (fabs(x) > deadZone)
     {
-        const float cinMin = 0.f;
+        //const float cinMin = 0.f;
         const float cinMax = .95f;
-        const float l = (-x - deadZone)/(1. - deadZone);
-        const float r = ( x - deadZone)/(1. - deadZone);
+        const float l = (-x - deadZone)/(1.f - deadZone);
+        const float r = ( x - deadZone)/(1.f - deadZone);
         // Push left on stick to close cinemascope, right to open
         if (l > 0.f)
         {
@@ -639,7 +639,7 @@ void RiftAppSkeleton::timestep(double absTime, double dtd)
     // Manage transition animations
     {
         const float duration = 0.15f;
-        const float t = m_transitionTimer.seconds() / duration;
+        const float t = static_cast<float>(m_transitionTimer.seconds()) / duration;
         if (t >= 1.0f)
         {
             if (m_transitionState == 1)
