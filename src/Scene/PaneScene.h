@@ -45,6 +45,7 @@ public:
     virtual void SetFlyingMousePointer(FlyingMouse* pFM) { m_pFm = pFM; }
     virtual void SetHmdPositionPointer(glm::vec3* pRo) { m_pHmdRo = pRo; }
     virtual void SetHmdDirectionPointer(glm::vec3* pRd) { m_pHmdRd = pRd; }
+    virtual void SetChassisTransformation(glm::mat4 tx) { m_chassisTransformCopy = tx; }
 
     const ShaderWithVariables& GetFontShader() const { return m_fontShader; }
     const BMFont& GetFont() const { return m_font; }
@@ -62,6 +63,7 @@ protected:
     FlyingMouse* m_pFm;
     glm::vec3* m_pHmdRo;
     glm::vec3* m_pHmdRd;
+    glm::mat4 m_chassisTransformCopy; // updated per-frame
     ShaderWithVariables m_paneShader;
     ShaderWithVariables m_fontShader;
     BMFont m_font;

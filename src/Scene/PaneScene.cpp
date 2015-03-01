@@ -30,6 +30,7 @@ PaneScene::PaneScene(bool chassisLocal)
 : m_pFm(NULL)
 , m_pHmdRo(NULL)
 , m_pHmdRd(NULL)
+, m_chassisTransformCopy(1.f)
 , m_paneShader()
 , m_fontShader()
 , m_font("../textures/arial.fnt")
@@ -181,13 +182,15 @@ bool PaneScene::_GetFlyingMouseRightHandPaneRayIntersectionCoordinates(Pane* pPa
         return false;
     if (m_pFm == NULL)
         return false;
-
     if (m_pFm->ControllerIsOnBase(FlyingMouse::Right))
         return false;
 
     glm::vec3 origin3;
     glm::vec3 dir3;
     m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, origin3, dir3);
+    // Apply chassis-world transformation
+    origin3 = glm::vec3(m_chassisTransformCopy * glm::vec4(origin3, 1.f));
+    dir3 = glm::vec3(m_chassisTransformCopy * glm::vec4(dir3, 0.f));
     return pPane->GetPaneRayIntersectionCoordinates(origin3, dir3, planePt, tParam);
 }
 
@@ -200,12 +203,11 @@ bool PaneScene::_GetHmdViewRayIntersectionCoordinates(Pane* pPane, glm::vec2& pl
     if (m_pHmdRd == NULL)
         return false;
 
-    const glm::vec3 origin3 = *m_pHmdRo;
-    const glm::vec3 dir3 = *m_pHmdRd;
-
+    glm::vec3 origin3 = *m_pHmdRo;
+    glm::vec3 dir3 = *m_pHmdRd;
     if (glm::length(dir3) == 0)
     {
-        return pPane->GetPaneRayIntersectionCoordinates(origin3, glm::vec3(0,0,1), planePt, tParam);
+        dir3 = glm::vec3(0.f, 0.f, 1.f);
     }
     return pPane->GetPaneRayIntersectionCoordinates(origin3, dir3, planePt, tParam);
 }

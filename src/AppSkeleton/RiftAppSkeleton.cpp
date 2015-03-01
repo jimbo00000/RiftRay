@@ -634,6 +634,7 @@ void RiftAppSkeleton::timestep(double absTime, double dtd)
 
     m_fm.updateHydraData();
     m_hyif.updateHydraData(m_fm, 1.0f);
+    m_galleryScene.SetChassisTransformation(makeWorldToChassisMatrix());
 
     // Manage transition animations
     {
@@ -934,9 +935,10 @@ void RiftAppSkeleton::_StoreHmdPose(const ovrPosef& eyePose) const
     m_hmdRo.y = eyePose.Position.y + m_chassisPos.y;
     m_hmdRo.z = eyePose.Position.z + m_chassisPos.z;
 
-    const OVR::Matrix4f rotmtx = OVR::Matrix4f::RotationY(-m_chassisYaw) // Not sure why negative...
-        * OVR::Matrix4f(eyePose.Orientation);
-    const OVR::Vector4f rotvec = rotmtx.Transform(OVR::Vector4f(0.0f, 0.0f, -1.0f, 0.0f));
+    const glm::mat4 w2eye = makeWorldToChassisMatrix() * makeMatrixFromPose(eyePose, m_headSize);
+    const OVR::Matrix4f rotmtx = makeOVRMatrixFromGlmMatrix(w2eye);
+    const OVR::Vector4f lookFwd(0.f, 0.f, -1.f, 0.f);
+    const OVR::Vector4f rotvec = rotmtx.Transform(lookFwd);
     m_hmdRd.x = rotvec.x;
     m_hmdRd.y = rotvec.y;
     m_hmdRd.z = rotvec.z;
