@@ -87,7 +87,7 @@ void Scene::_InitPlaneAttributes()
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2*3*sizeof(GLuint), tris, GL_STATIC_DRAW);
 }
 
-void Scene::_DrawScenePlanes(const glm::mat4& modelview) const
+void Scene::_DrawScenePlanes(const glm::mat4& /*modelview*/) const
 {
     m_plane.bindVAO();
     {
@@ -105,7 +105,8 @@ void Scene::_DrawScenePlanes(const glm::mat4& modelview) const
 void Scene::DrawScene(
     const glm::mat4& modelview,
     const glm::mat4& projection,
-    const glm::mat4& object) const
+    const glm::mat4& // object
+    ) const
 {
     glUseProgram(m_plane.prog());
     {
