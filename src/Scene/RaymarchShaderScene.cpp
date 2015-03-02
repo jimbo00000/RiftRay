@@ -111,7 +111,7 @@ void RaymarchShaderScene::RenderForOneEye(const float* pMview, const float* pPer
     DrawScene(modelview, projection, m_tx.GetMatrix());
 }
 
-void RaymarchShaderScene::timestep(double absTime, double dt)
+void RaymarchShaderScene::timestep(double /*absTime*/, double /*dt*/)
 {
     if (m_pFm == NULL)
         return;
@@ -143,5 +143,4 @@ void RaymarchShaderScene::timestep(double absTime, double dt)
         const float tParam = glm::length(originToHitPt);
         m_tx.m_controllerTParamAtClick = tParam;
     }
-
 }

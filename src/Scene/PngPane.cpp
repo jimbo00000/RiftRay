@@ -56,8 +56,8 @@ void PngPane::initGL()
 }
 
 void PngPane::DrawPaneWithShader(
-    const glm::mat4& modelview,
-    const glm::mat4& projection,
+    const glm::mat4&, // modelview
+    const glm::mat4&, // projection
     const ShaderWithVariables& sh) const
 {
     if (m_visible == false)

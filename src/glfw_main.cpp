@@ -325,8 +325,8 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
 }
 
 void joystick_GravisGamepadPro(
-    int joyidx,
-    const float* pAxisStates,
+    int, // joyidx
+    const float*, // pAxisStates
     int numAxes,
     const unsigned char* pButtonStates,
     int numButtons,
@@ -397,7 +397,7 @@ void joystick_GravisGamepadPro(
 }
 
 void joystick_XboxController(
-    int joyidx,
+    int, // joyidx
     const float* pAxisStates,
     int numAxes,
     const unsigned char* pButtonStates,
@@ -473,7 +473,6 @@ void joystick_XboxController(
 
     // Check for recent button pushes
     const float f = 0.9f;
-    const float ff = 0.99f;
     for (int i=0; i<numButtons; ++i)
     {
         const bool pressed = (pButtonStates[i] == GLFW_PRESS) &&
