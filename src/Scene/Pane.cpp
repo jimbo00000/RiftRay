@@ -295,6 +295,7 @@ void Pane::OnHmdTap()
     if (m_visible == false)
         return;
 
-    OnMouseClick(1, m_pointerCoords.x, m_pointerCoords.y);
-    OnMouseClick(0, m_pointerCoords.x, m_pointerCoords.y);
+    const glm::vec2& pc = m_pointerCoords;
+    OnMouseClick(1, static_cast<int>(pc.x), static_cast<int>(pc.y));
+    OnMouseClick(0, static_cast<int>(pc.x), static_cast<int>(pc.y));
 }

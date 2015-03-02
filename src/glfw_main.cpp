@@ -969,17 +969,17 @@ void LoadConfigFile()
         }
         else if (!t.compare("AnimatedThumbnails"))
         {
-            const int at = static_cast<float>(atof(toks[1].c_str()));
+            const int at = static_cast<int>(atof(toks[1].c_str()));
             g_app.m_galleryScene.m_globalShadertoyState.animatedThumbnails = (at != 0);
         }
         else if (!t.compare("PanesAsPortals"))
         {
-            const int pp = static_cast<float>(atof(toks[1].c_str()));
+            const int pp = static_cast<int>(atof(toks[1].c_str()));
             g_app.m_galleryScene.m_globalShadertoyState.panesAsPortals = (pp != 0);
         }
         else if (!t.compare("ThumbnailFboSize"))
         {
-            const int ts = static_cast<float>(atof(toks[1].c_str()));
+            const int ts = static_cast<int>(atof(toks[1].c_str()));
             g_app.m_galleryScene.m_paneDimensionPixels = ts;
         }
     }

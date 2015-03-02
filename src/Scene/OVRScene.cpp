@@ -187,6 +187,7 @@ void OVRScene::RenderForOneEye(const float* pMview, const float* pPersp) const
 
 void OVRScene::timestep(double absTime, double dt)
 {
+    (void)absTime;
     (void)dt;
 
     const ovrTrackingState ts = ovrHmd_GetTrackingState(m_pHmd, ovr_GetTimeInSeconds());
