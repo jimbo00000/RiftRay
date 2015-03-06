@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+    <head>
+        <link type="text/css" rel="stylesheet" href="style.css">
+        <title></title>
+    </head>
+    <body onload="convert_markdown()">
+    <script type="text/javascript" src="showdown.js"></script>
+    <script type="text/javascript">
+    function convert_markdown() {
+        var text = document.getElementById("mdcontent").innerHTML;
+        var converter = new Showdown.converter();
+        var html = converter.makeHtml(text);
+        document.getElementById("mdcontent").innerHTML = html;
+    }
+    </script>
+        <div id="body">
+            <div id="mdcontent">
+            
+## More shader-specific parameters
+###  **@var** tags in comments
+ - @var **eyePos** _float_ _float_ _fsloat_
+ - @var **headSize** _float_
+ - @var **title** _string_
+ - @var **author** _string_
+ - @var **license** _string_
+ - @var **url** _string_
+ - texture channels
+   - tex{0-3} _filename_
+   - 4 of them, don't seem to be exposed by Shadertoy site
+
+            </div>
+
+
+<pre class="prettyprint" style="background: #ddd;">
+// @var headSize 1.0
+// @var eyePos 9.515 2.489 -23.0.993
+// @var tex0 tex00.jpg
+// @var tex1 tex09.jpg
+// @var tex2 tex16.png
+</pre>
+
+        </div>
+    </body>
+</html>

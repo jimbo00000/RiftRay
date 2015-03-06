@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+    <head>
+        <link type="text/css" rel="stylesheet" href="style.css">
+        <title></title>
+    </head>
+    <body onload="convert_markdown()">
+    <script type="text/javascript" src="showdown.js"></script>
+    <script type="text/javascript">
+    function convert_markdown() {
+        var text = document.getElementById("mdcontent").innerHTML;
+        var converter = new Showdown.converter();
+        var html = converter.makeHtml(text);
+        document.getElementById("mdcontent").innerHTML = html;
+    }
+    </script>
+        <div id="body">
+            <div id="mdcontent">
+            
+## HMD Parameters
+ - HMD construction and user anatomy   
+    - User's IPD (average 64mm)
+    - HMD lens IPD (Rift DK1/DK2 not adjustable)
+    - Eye to screen distance
+    - Lens locations on screen (center offsets)
+    - Lens distortion parameters
+      - Chromatic aberration
+    - Display size (in meters)
+    - Resolution (DK1 1280x800, DK2 1920x1080, CB 2560x1440)
+      - Bandwidth! (61 MPx/s, 155 MPx/s, 335 MPx/s)
+    - Head/neck dimensions if no pos. tracking
+    - Eye location relative to lens(slippage)
+      - No eye tracking in DK2, retrofit for $15,000
+
+ **Tip: use meters for units everywhere**
+
+            </div>
+        </div>
+    </body>
+</html>

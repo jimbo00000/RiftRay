@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+    <head>
+        <link type="text/css" rel="stylesheet" href="style.css">
+        <title></title>
+    </head>
+    <body onload="convert_markdown()">
+    <script type="text/javascript" src="showdown.js"></script>
+    <script type="text/javascript">
+    function convert_markdown() {
+        var text = document.getElementById("mdcontent").innerHTML;
+        var converter = new Showdown.converter();
+        var html = converter.makeHtml(text);
+        document.getElementById("mdcontent").innerHTML = html;
+    }
+    </script>
+        <div id="body">
+            <div id="mdcontent">
+            
+## HMD Rendering in brief
+ - HMD is an I/O device
+    - Gyro/magnet for orientation
+    - Optional external cam for position(outside-in)
+ - **Latency** is paramount (motion to photon)
+    - No deep pipelines, minimal multi-pass rendering
+ - FPS is _mandatory_
+    - DK1@60Hz, DK2@75Hz, CB@90Hz
+    - More is better
+ - Side-by-side stereo framebuffer
+    - Vertex shader cost x2, pixel shader cost unaffected
+    - Geometry shader or instancing [may also be used](https://docs.google.com/presentation/d/19x9XDjUvkW_9gsfsMQzt3hZbRNziVsoCEHOn4AercAc/edit#slide=id.g5790d2a7c_046)
+ - Geometry is important again
+    - Image space tricks (i.e. normal maps) look flat
+    - Tessellation could be a bigger win
+            </div>
+        </div>
+    </body>
+</html>

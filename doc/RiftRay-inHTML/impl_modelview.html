@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+    <head>
+        <link type="text/css" rel="stylesheet" href="style.css">
+        <title></title>
+            <style type="text/css">
+#grid {
+    width: 368px;
+    height: 170px;
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+}
+
+.cell {
+    outline: 1px solid #fcfcfc;
+    float: left;
+    margin: 1px;
+    text-align: center;
+    vertical-align: bottom;
+    height: 40px;
+    width: 90px;
+}
+
+#body {
+}
+            </style>
+    </head>
+    <body onload="convert_markdown()">
+    <script type="text/javascript" src="showdown.js"></script>
+    <script type="text/javascript">
+    function convert_markdown() {
+        var text = document.getElementById("mdcontent").innerHTML;
+        var converter = new Showdown.converter();
+        var html = converter.makeHtml(text);
+        document.getElementById("mdcontent").innerHTML = html;
+    }
+    </script>
+        <div id="body">
+            <h2>Implementation</h2>
+            Modelview matrix reference from <a href="http://blog.hvidtfeldts.net/">blog.hvidtfeldts.net</a>:
+            <br>
+            <br>
+            <center>
+            <div id="grid" class="grid">
+                <div class="cell">R</div>
+                <div class="cell">R</div>
+                <div class="cell">R</div>
+                <div class="cell">Pos</div>
+
+                <div class="cell">R</div>
+                <div class="cell">R</div>
+                <div class="cell">R</div>
+                <div class="cell">Pos</div>
+
+                <div class="cell">R</div>
+                <div class="cell">R</div>
+                <div class="cell">R</div>
+                <div class="cell">Pos</div>
+
+                <div class="cell">0</div>
+                <div class="cell">0</div>
+                <div class="cell">0</div>
+                <div class="cell">1</div>
+            </div>
+            </center>
+            <br>
+            <li>R is normalized, computed from quaternion.
+            <br>
+            <li>Pos is modeled in the absence of positional tracker.
+            <br>
+            <li>Controller input also feeds into {Ry,Pos} - "chassis" movement.
+            <br>
+            <li>Scale Pos by free parameter <strong>headSize</strong>
+
+
+        </div>
+    </body>
+</html>

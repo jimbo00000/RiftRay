@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+    <head>
+        <link type="text/css" rel="stylesheet" href="style.css">
+        <title></title>
+    </head>
+    <body onload="convert_markdown()">
+    <script type="text/javascript" src="showdown.js"></script>
+    <script type="text/javascript">
+    function convert_markdown() {
+        var text = document.getElementById("mdcontent").innerHTML;
+        var converter = new Showdown.converter();
+        var html = converter.makeHtml(text);
+        document.getElementById("mdcontent").innerHTML = html;
+    }
+    </script>
+        <div id="body">
+<h1 style="text-align:center;"> RiftRay</h1>
+
+<br>
+    <div style="text-align:center;">
+Stepping into the worlds of Shadertoy with the Oculus Rift
+    </div>
+
+<br>
+<br>
+    <div style="text-align:center;">
+Jim Susinno
+    </div>
+
+        </div>
+    </body>
+</html>

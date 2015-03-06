@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+    <head>
+        <link type="text/css" rel="stylesheet" href="style.css">
+        <title></title>
+    </head>
+    <body onload="convert_markdown()">
+    <script type="text/javascript" src="showdown.js"></script>
+    <script type="text/javascript">
+    function convert_markdown() {
+        var text = document.getElementById("mdcontent").innerHTML;
+        var converter = new Showdown.converter();
+        var html = converter.makeHtml(text);
+        document.getElementById("mdcontent").innerHTML = html;
+    }
+    </script>
+        <div id="body">
+            <div id="mdcontent">
+            
+## Porting Shadertoys to RiftRay
+  - Try and keep it intact in the Shadertoy website  
+  - Wrap main in **#ifndef RIFTRAY**  
+  - Add attribution and texture channel comments  
+  - Extract the function:  
+    **vec3 getSceneColor( in vec3 ro, in vec3 rd )**
+  - Save as *.glsl in shaders/  
+  - Massage coordinate space to match convention  
+     e.g. rd.xyz = rd.zyx  
+  - Try it out in RiftRay  
+  - Adjust initial position and headSize
+     - Use Aux control window to inspect values  
+     - Paste into source as comments  
+
+            </div>
+        </div>
+    </body>
+</html>

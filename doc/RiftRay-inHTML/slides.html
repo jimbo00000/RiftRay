@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+    <head>
+        <link type="text/css" rel="stylesheet" href="style.css">
+        <title></title>
+    </head>
+    <body onload="convert_markdown()">
+    <script type="text/javascript" src="showdown.js"></script>
+    <script type="text/javascript">
+    function convert_markdown() {
+        var text = document.getElementById("mdcontent").innerHTML;
+        var converter = new Showdown.converter();
+        var html = converter.makeHtml(text);
+        document.getElementById("mdcontent").innerHTML = html;
+    }
+    </script>
+        <div id="body">
+            <div id="mdcontent">
+            
+Presentation Powered By
+========================
+
+Excellent javascript slide code from:  
+
++ Mike Dewar's [d3talk](https://github.com/mikedewar/d3talk)
+
+Which in turn was borrowed from:  
+
++ [Mike Bostock](http://bost.ocks.org/mike/)
+
+Markdown conversion to HTML provided by:  
+
++ [Showdown.js](http://softwaremaniacs.org/playground/showdown-highlight/)
+
+            </div>
+        </div>
+    </body>
+</html>

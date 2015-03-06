@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+    <head>
+        <link type="text/css" rel="stylesheet" href="style.css">
+
+        <link type="text/css" rel="stylesheet" href="prettify.css">
+        <script type="text/javascript" src="prettify.js"></script>
+
+        <title></title>
+    </head>
+    <body onload="convert_markdown(); prettyPrint();">
+        <script type="text/javascript" src="showdown.js"></script>
+        <script type="text/javascript">
+        function convert_markdown() {
+            var text = document.getElementById("mdcontent").innerHTML;
+            var converter = new Showdown.converter();
+            var html = converter.makeHtml(text);
+            document.getElementById("mdcontent").innerHTML = html;
+        }
+        </script>
+        <div id="body">
+            <div id="mdcontent">
+## Implementation
+
+### Uniform variables  
+
+#### Shadertoy's
+            </div>
+            
+            <pre class="prettyprint" style="background: #ddd;">
+    vec3      iResolution;           // viewport resolution (in pixels)  
+    float     iGlobalTime;           // shader playback time (in seconds)  
+    float     iChannelTime[4];       // channel playback time (in seconds)  
+    vec3      iChannelResolution[4]; // channel resolution (in pixels)  
+    samplerXX iChannel0..3;          // input channel. XX = 2D/Cube  
+            </pre>
+
+<h4>RiftRay's</h4>
+
+            <pre class="prettyprint" style="background: #ddd;">
+    float eyeTweak; // Inherent to screen size, lens placement
+    mat4 mvmtx; // Different for each eye
+    mat4 prmtx; // Different for each eye
+    mat4 obmtx; // Controlled by Razer Hydra
+            </pre>
+        </div>
+    </body>
+</html>

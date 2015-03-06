@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+    <head>
+        <link type="text/css" rel="stylesheet" href="style.css">
+        <title></title>
+    </head>
+    <body onload="convert_markdown()">
+    <script type="text/javascript" src="showdown.js"></script>
+    <script type="text/javascript">
+    function convert_markdown() {
+        var text = document.getElementById("mdcontent").innerHTML;
+        var converter = new Showdown.converter();
+        var html = converter.makeHtml(text);
+        document.getElementById("mdcontent").innerHTML = html;
+    }
+    </script>
+        <div id="body">
+            <div id="mdcontent">
+            
+## Enhancements
+ - Gamepad support
+ - Razer Hydra support
+ - Shader Gallery - a wall of thumbnail quads
+    - Each pane has a precompiled shadertoy
+ - Preload shaders or clear when compiling
+    - **DRIVER FEATURE REQUEST:**
+      - Shader compilation on a low-priority thread
+      - Allow user to kick off a recompile without dropping frames
+      - Edit the very world you are seeing(without headaches)
+ - Dynamically scale render target to tune performance
+ - Dynamically scale FOV to tune performance
+    - With one quick call to glScissor()
+    - Just vertical FOV for "cinemascope feel"
+ - Resolution ~ 1/FOV tradeoff control
+    - Keep FPS constant at screen's rate
+
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+    <head>
+        <link type="text/css" rel="stylesheet" href="style.css">
+        <title></title>
+    </head>
+    <body onload="convert_markdown()">
+    <script type="text/javascript" src="showdown.js"></script>
+    <script type="text/javascript">
+    function convert_markdown() {
+        var text = document.getElementById("mdcontent").innerHTML;
+        var converter = new Showdown.converter();
+        var html = converter.makeHtml(text);
+        document.getElementById("mdcontent").innerHTML = html;
+    }
+    </script>
+        <div id="body">
+            <div id="mdcontent">
+            
+
+## What Works in Shadertoy
+ - Raytracing
+ - Raymarched distance fields
+   - iq wrote the definitive paper on this: [rwwtt](http://www.iquilezles.org/www/material/nvscene2008/rwwtt.pdf)
+   - Also has a [comprehensive set of articles on the subject](http://iquilezles.org/www/articles/distfunctions/distfunctions.htm)
+ - Iterated Fractal Systems (IFS)
+   - Excellent crisp detail
+
+            </div>
+        </div>
+    </body>
+</html>

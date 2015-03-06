@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+    <head>
+        <link type="text/css" rel="stylesheet" href="style.css">
+        <title></title>
+    </head>
+    <body onload="convert_markdown()">
+    <script type="text/javascript" src="showdown.js"></script>
+    <script type="text/javascript">
+    function convert_markdown() {
+        var text = document.getElementById("mdcontent").innerHTML;
+        var converter = new Showdown.converter();
+        var html = converter.makeHtml(text);
+        document.getElementById("mdcontent").innerHTML = html;
+    }
+    </script>
+        <div id="body">
+            <div id="mdcontent">
+            
+## Performance
+  - As always, _entirely workload-dependent_
+  - Can be measured in MPx/sec
+    - Shadertoys are pure pixel shader
+  - Static Analysis
+    - Count operations, texture accesses
+    - Can we estimate ray coherence?
+  - View direction affects code path
+    - Could we bucket MPx/sec numbers in spherical harmonics?
+    - View position affects it as well!
+    - Could also be time-dependent
+
+
+            </div>
+        </div>
+    </body>
+</html>

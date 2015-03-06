@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+    <head>
+        <link type="text/css" rel="stylesheet" href="style.css">
+        <title></title>
+    </head>
+    <body onload="convert_markdown()">
+    <script type="text/javascript" src="showdown.js"></script>
+    <script type="text/javascript">
+    function convert_markdown() {
+        var text = document.getElementById("mdcontent").innerHTML;
+        var converter = new Showdown.converter();
+        var html = converter.makeHtml(text);
+        document.getElementById("mdcontent").innerHTML = html;
+    }
+    </script>
+        <div id="body">
+            <div id="mdcontent">
+            
+## Related work
+
+  - [Shadertoy VR](http://www.reddit.com/r/oculus/comments/2q0ard/new_build_of_shadertoy_vr/) - Qt-enabled shader editing in VR  
+    - Part of Brad Davis(jherico)'s [Oculus Rift in Action]()
+  - [boxplorer2](https://code.google.com/p/boxplorer2/) - Marius Schilder  
+  - [Fragmentarium](http://syntopia.github.io/Fragmentarium/) - native cross-platform shader IDE
+  - [GLSL Sandbox](http://glslsandbox.com/) - web app, similar to Shadertoy
+  - [Synthclipse](http://synthclipse.sourceforge.net/user_guide/shadertoy.html) - plugin for Eclipse
+  - [Shdr](http://bkcore.com/blog/3d/shdr-online-glsl-shader-editor-viewer-validator.html) - Online GLSL shader editor, viewer and validator
+  - [ShaderShop](http://tobyschachman.com/Shadershop/) - shader manipulation interface  
+
+            </div>
+        </div>
+    </body>
+</html>

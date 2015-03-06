@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+    <head>
+        <link type="text/css" rel="stylesheet" href="style.css">
+        <title></title>
+    </head>
+    <body onload="convert_markdown()">
+    <script type="text/javascript" src="showdown.js"></script>
+    <script type="text/javascript">
+    function convert_markdown() {
+        var text = document.getElementById("mdcontent").innerHTML;
+        var converter = new Showdown.converter();
+        var html = converter.makeHtml(text);
+        document.getElementById("mdcontent").innerHTML = html;
+    }
+    </script>
+        <div id="body">
+            <div id="mdcontent">
+
+## Project Motivation
+ - Enjoy Shadertoy "worlds" from HMD perspective
+   - While maintaining the integrity of Shadertoy developers' works
+ - Encourage adoption of VR in demoscene
+    - or at least reach the subset who *are* interested
+ - Share source on github: [github.com/jimbo00000/RiftRay](https://github.com/jimbo00000/RiftRay)  
+
+![Ancient Temple by Kali](ancient_temple02.png)
+            </div>
+        </div>
+    </body>
+</html>
