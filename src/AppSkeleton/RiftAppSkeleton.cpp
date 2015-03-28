@@ -406,7 +406,6 @@ int RiftAppSkeleton::ConfigureSDKRendering()
     m_Cfg.OGL.Header.Multisample = 0;
 
     const int distortionCaps =
-        ovrDistortionCap_Chromatic |
         ovrDistortionCap_TimeWarp |
         ovrDistortionCap_Vignette;
     ovrHmd_ConfigureRendering(m_Hmd, &m_Cfg.Config, distortionCaps, m_EyeFov, m_EyeRenderDesc);
@@ -421,7 +420,6 @@ int RiftAppSkeleton::ConfigureClientRendering()
         return 1;
 
     const int distortionCaps =
-        ovrDistortionCap_Chromatic |
         ovrDistortionCap_TimeWarp |
         ovrDistortionCap_Vignette;
     for (int eyeIndex = 0; eyeIndex < ovrEye_Count; eyeIndex++)
