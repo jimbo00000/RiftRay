@@ -213,11 +213,12 @@ ELSEIF( UNIX )
         MESSAGE("Unknown GL_FRAMEWORK: choose GLFW or SDL.")
     ENDIF()
 
-    SET( OCULUSSDK_ROOT "${LIBS_HOME}/ovr_sdk_linux_0.4.3" CACHE STRING "OculusSDK root" )
+    SET( OCULUSSDK_ROOT "${LIBS_HOME}/ovr_sdk_linux_0.5.0.1" CACHE STRING "OculusSDK root" )
     INCLUDE_DIRECTORIES( "${OCULUSSDK_ROOT}/LibOVR/Include" )
     INCLUDE_DIRECTORIES( "${OCULUSSDK_ROOT}/LibOVR/Src" )
+    INCLUDE_DIRECTORIES( "${OCULUSSDK_ROOT}/LibOVRKernel/Src" )
     LINK_DIRECTORIES   ( "${OCULUSSDK_ROOT}/LibOVR/Lib/Linux/Release/x86_64" )
-    SET( OVR_LIBS -lovr -ludev -lXinerama )
+    SET( OVR_LIBS -lOVR -ldl -ludev -lXinerama )
     ADD_DEFINITIONS( -DUSE_OCULUSSDK )
 
     IF( USE_SIXENSE )
@@ -247,20 +248,18 @@ ELSEIF( UNIX )
     include_directories( ${OPENGL_INCLUDE_DIRS} )
 
     SET( PLATFORM_LIBS
-        -lovr
         -lGLEW
         -lGL
         -lGLU
         ${FRAMEWORK_LIBS}
         -pthread
-        -ludev
         -lrt
-        -lXinerama
         -lXrandr
         -lXxf86vm
         -lXi
         -lX11
         -lXcursor # GLFW 3.1
+        ${OVR_LIBS}
         ${HYDRA_LIBS}
         ${ANT_LIBS}
         )
