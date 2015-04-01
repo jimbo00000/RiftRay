@@ -1221,19 +1221,19 @@ void RiftAppSkeleton::display_sdk() const
             const ovrRecti& rvp = rvpScaled;
             const float* pMvLocal = glm::value_ptr(glm::inverse(viewLocal));
 
-            // Clip off top and bottom letterboxes
-            glEnable(GL_SCISSOR_TEST);
-            const float factor = m_cinemaScopeFactor;
-            const int yoff = static_cast<int>(static_cast<float>(rvp.Size.h) * factor);
-            // Assume side-by-side single render texture
-            glScissor(0, yoff/2, rvp.Pos.x+rvp.Size.w, rvp.Size.h-yoff);
-
             // Special case for the ShaderToyScene: if it is on, make it the only one.
             // This is because shadertoys typically don't write to the depth buffer.
             // If one did, it would take more time and complexity, but could be integrated
             // with rasterized world pixels.
             if (m_galleryScene.GetActiveShaderToy() != NULL)
             {
+                // Clip off top and bottom letterboxes
+                glEnable(GL_SCISSOR_TEST);
+                const float factor = m_cinemaScopeFactor;
+                const int yoff = static_cast<int>(static_cast<float>(rvp.Size.h) * factor);
+                // Assume side-by-side single render texture
+                glScissor(0, yoff/2, rvp.Pos.x+rvp.Size.w, rvp.Size.h-yoff);
+
                 m_galleryScene.RenderForOneEye(pMvWorld, pPersp);
 
                 // Show the warning box if we get too close to edge of tracking cam's fov.
@@ -1241,6 +1241,8 @@ void RiftAppSkeleton::display_sdk() const
                 m_ovrScene.RenderForOneEye(pMvLocal, pPersp); // m_bChassisLocalSpace
                 m_dashScene.RenderForOneEye(pMvLocal, pPersp);
                 glEnable(GL_DEPTH_TEST);
+
+                glDisable(GL_SCISSOR_TEST);
             }
             else
             {
@@ -1257,7 +1259,6 @@ void RiftAppSkeleton::display_sdk() const
                 }
             }
 
-            glDisable(GL_SCISSOR_TEST);
         }
     }
     unbindFBO();
