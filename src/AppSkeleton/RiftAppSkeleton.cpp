@@ -1044,8 +1044,8 @@ void RiftAppSkeleton::display_stereo_undistorted() const
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     ovrVector3f e2v[2] = {
-        OVR::Vector3f(m_EyeRenderDesc[0].HmdToEyeViewOffset) * m_headSize,
-        OVR::Vector3f(m_EyeRenderDesc[1].HmdToEyeViewOffset) * m_headSize,
+        OVR::Vector3f(m_EyeRenderDesc[0].HmdToEyeViewOffset),
+        OVR::Vector3f(m_EyeRenderDesc[1].HmdToEyeViewOffset),
     };
     ovrVector3f e2vScaled[2] = {
         OVR::Vector3f(e2v[0]) * m_headSize,
