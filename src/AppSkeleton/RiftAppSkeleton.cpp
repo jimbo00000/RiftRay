@@ -951,6 +951,8 @@ void RiftAppSkeleton::_StoreHmdPose(const ovrPosef& eyePose) const
     m_hmdRdLocal.x = rotvecLocal.x;
     m_hmdRdLocal.y = rotvecLocal.y;
     m_hmdRdLocal.z = rotvecLocal.z;
+
+    m_eyePoseCached = eyePose; // cache this for movement direction
 }
 
 void RiftAppSkeleton::_drawSceneMono() const
@@ -1208,14 +1210,13 @@ void RiftAppSkeleton::display_sdk() const
 
             if (firstEyeRendered)
             {
-                m_eyePoseCached = eyePose; // cache this for movement direction
                 _StoreHmdPose(eyePose);
                 firstEyeRendered = false;
             }
 
             const ovrRecti& rvpFull = otex.OGL.Header.RenderViewport;
             const ovrRecti rvpScaled = getScaledRect(rvpFull, m_fboScale);
-            const ovrRecti& rvp = rvpScaled; ///@todo Different for raymarch and for other scenes
+            const ovrRecti& rvp = rvpScaled;
             const int yoff = static_cast<int>(static_cast<float>(rvp.Size.h) * m_cinemaScopeFactor);
             glViewport(rvp.Pos.x, rvp.Pos.y, rvp.Size.w, rvp.Size.h);
             glScissor(0, yoff/2, rvp.Pos.x+rvp.Size.w, rvp.Size.h-yoff); // Assume side-by-side single render texture
