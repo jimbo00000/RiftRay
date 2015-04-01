@@ -1,4 +1,4 @@
-// Scene.h
+// FloorScene.h
 
 #pragma once
 
@@ -17,11 +17,11 @@
 
 ///@brief The Scene class renders everything in the VR world that will be the same
 /// in the Oculus and Control windows. The RenderForOneEye function is the display entry point.
-class Scene : public IScene
+class FloorScene : public IScene
 {
 public:
-    Scene();
-    virtual ~Scene();
+    FloorScene();
+    virtual ~FloorScene();
 
     virtual void initGL();
     virtual void timestep(double, double) {}
@@ -43,6 +43,6 @@ protected:
     ShaderWithVariables m_plane;
 
 private: // Disallow copy ctor and assignment operator
-    Scene(const Scene&);
-    Scene& operator=(const Scene&);
+    FloorScene(const FloorScene&);
+    FloorScene& operator=(const FloorScene&);
 };

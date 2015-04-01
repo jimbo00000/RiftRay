@@ -34,14 +34,14 @@ RiftAppSkeleton::RiftAppSkeleton()
 , m_hmdRo(0.0f)
 , m_hmdRd(0.0f)
 
-, m_scene()
+, m_raymarchScene()
+, m_ovrScene()
+, m_galleryScene()
+, m_floorScene()
+, m_dashScene()
 #ifdef USE_SIXENSE
 , m_hydraScene()
 #endif
-, m_ovrScene()
-, m_raymarchScene()
-, m_galleryScene()
-, m_dashScene()
 , m_scenes()
 
 , m_fboScale(1.0f)
@@ -74,14 +74,14 @@ RiftAppSkeleton::RiftAppSkeleton()
     // so drawing one after the other should just result in pixel-perfect integration -
     // provided they all do forward rendering. Per-scene deferred render passes will
     // take a little bit more work.
-    m_scenes.push_back(&m_scene);
+    //m_scenes.push_back(&m_raymarchScene);
+    m_scenes.push_back(&m_ovrScene);
+    m_scenes.push_back(&m_galleryScene);
+    m_scenes.push_back(&m_floorScene);
+    m_scenes.push_back(&m_dashScene);
 #ifdef USE_SIXENSE
     m_scenes.push_back(&m_hydraScene);
 #endif
-    m_scenes.push_back(&m_ovrScene);
-    //m_scenes.push_back(&m_raymarchScene);
-    m_scenes.push_back(&m_galleryScene);
-    m_scenes.push_back(&m_dashScene);
 
     m_raymarchScene.SetFlyingMousePointer(&m_fm);
     m_galleryScene.SetFlyingMousePointer(&m_fm);

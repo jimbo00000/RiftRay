@@ -95,7 +95,7 @@ void InitializeBar()
 
 
 
-    TwAddVarRW(g_pTweakbar, "Draw Scene", TW_TYPE_BOOLCPP, &g_app.m_scene.m_bDraw,
+    TwAddVarRW(g_pTweakbar, "Draw Scene", TW_TYPE_BOOLCPP, &g_app.m_floorScene.m_bDraw,
                "  group='Scene' ");
 #ifdef USE_SIXENSE
     TwAddVarRW(g_pTweakbar, "Draw HydraScene", TW_TYPE_BOOLCPP, &g_app.m_hydraScene.m_bDraw,

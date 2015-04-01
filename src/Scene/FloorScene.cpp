@@ -1,6 +1,6 @@
-// Scene.cpp
+// FloorScene.cpp
 
-#include "Scene.h"
+#include "FloorScene.h"
 
 #ifdef __APPLE__
 #include "opengl/gl.h"
@@ -26,16 +26,16 @@
 
 #include "Logger.h"
 
-Scene::Scene()
+FloorScene::FloorScene()
 : m_plane()
 {
 }
 
-Scene::~Scene()
+FloorScene::~FloorScene()
 {
 }
 
-void Scene::initGL()
+void FloorScene::initGL()
 {
     m_plane.initProgram("basicplane");
     m_plane.bindVAO();
@@ -44,7 +44,7 @@ void Scene::initGL()
 }
 
 ///@brief While the basic VAO is bound, gen and bind all buffers and attribs.
-void Scene::_InitPlaneAttributes()
+void FloorScene::_InitPlaneAttributes()
 {
     const glm::vec3 minPt(-10.0f, 0.0f, -10.0f);
     const glm::vec3 maxPt(10.0f, 0.0f, 10.0f);
@@ -87,7 +87,7 @@ void Scene::_InitPlaneAttributes()
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2*3*sizeof(GLuint), tris, GL_STATIC_DRAW);
 }
 
-void Scene::_DrawScenePlanes(const glm::mat4& /*modelview*/) const
+void FloorScene::_DrawScenePlanes(const glm::mat4& /*modelview*/) const
 {
     m_plane.bindVAO();
     {
@@ -102,7 +102,7 @@ void Scene::_DrawScenePlanes(const glm::mat4& /*modelview*/) const
 
 
 /// Draw the scene(matrices have already been set up).
-void Scene::DrawScene(
+void FloorScene::DrawScene(
     const glm::mat4& modelview,
     const glm::mat4& projection,
     const glm::mat4& // object
@@ -119,7 +119,7 @@ void Scene::DrawScene(
 }
 
 
-void Scene::RenderForOneEye(const float* pMview, const float* pPersp) const
+void FloorScene::RenderForOneEye(const float* pMview, const float* pPersp) const
 {
     if (m_bDraw == false)
         return;

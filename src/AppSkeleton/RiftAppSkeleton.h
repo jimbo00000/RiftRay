@@ -21,13 +21,13 @@
 #endif
 
 #include "FBO.h"
-#include "Scene.h"
 #ifdef USE_SIXENSE
 #include "HydraScene.h"
 #endif
 #include "OVRScene.h"
 #include "RaymarchShaderScene.h"
 #include "ShaderGalleryScene.h"
+#include "FloorScene.h"
 #include "DashboardScene.h"
 
 #include "FlyingMouse.h"
@@ -127,14 +127,14 @@ protected:
 
 public:
     // This public section is for exposing state variables to AntTweakBar
-    Scene m_scene;
+    RaymarchShaderScene m_raymarchScene;
+    OVRScene m_ovrScene;
+    ShaderGalleryScene m_galleryScene;
+    FloorScene m_floorScene;
+    DashboardScene m_dashScene;
 #ifdef USE_SIXENSE
     HydraScene m_hydraScene;
 #endif
-    OVRScene m_ovrScene;
-    RaymarchShaderScene m_raymarchScene;
-    ShaderGalleryScene m_galleryScene;
-    DashboardScene m_dashScene;
 
     glm::vec3 m_chassisPos;
     glm::vec3 m_chassisPosCached;
