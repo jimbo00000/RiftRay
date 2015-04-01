@@ -1195,13 +1195,13 @@ void RiftAppSkeleton::display_sdk() const
 
             const ovrGLTexture& otex = m_EyeTexture[e];
             const ovrRecti& rvpFull = otex.OGL.Header.RenderViewport;
-            const ovrRecti rsc = {
+            const ovrRecti rvpScaled = {
                 static_cast<int>(m_fboScale * rvpFull.Pos.x),
                 static_cast<int>(m_fboScale * rvpFull.Pos.y),
                 static_cast<int>(m_fboScale * rvpFull.Size.w),
                 static_cast<int>(m_fboScale * rvpFull.Size.h)
             };
-            glViewport(rsc.Pos.x, rsc.Pos.y, rsc.Size.w, rsc.Size.h);
+            glViewport(rvpScaled.Pos.x, rvpScaled.Pos.y, rvpScaled.Size.w, rvpScaled.Size.h);
 
             const OVR::Matrix4f proj = ovrMatrix4f_Projection(
                 m_EyeRenderDesc[e].Fov,
@@ -1218,7 +1218,7 @@ void RiftAppSkeleton::display_sdk() const
             ///@todo Draw eyes inside scene loop
             const float* pMvWorld = glm::value_ptr(glm::inverse(viewWorld));
             const float* pPersp = &proj.Transposed().M[0][0];
-            const ovrRecti& rvp = rsc;
+            const ovrRecti& rvp = rvpScaled;
             const float* pMvLocal = glm::value_ptr(glm::inverse(viewLocal));
 
             // Clip off top and bottom letterboxes
