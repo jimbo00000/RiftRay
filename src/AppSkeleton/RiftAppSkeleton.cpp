@@ -1194,12 +1194,12 @@ void RiftAppSkeleton::display_sdk() const
             _StoreHmdPose(eyePose);
 
             const ovrGLTexture& otex = m_EyeTexture[e];
-            const ovrRecti& rvp = otex.OGL.Header.RenderViewport;
+            const ovrRecti& rvpFull = otex.OGL.Header.RenderViewport;
             const ovrRecti rsc = {
-                static_cast<int>(m_fboScale * rvp.Pos.x),
-                static_cast<int>(m_fboScale * rvp.Pos.y),
-                static_cast<int>(m_fboScale * rvp.Size.w),
-                static_cast<int>(m_fboScale * rvp.Size.h)
+                static_cast<int>(m_fboScale * rvpFull.Pos.x),
+                static_cast<int>(m_fboScale * rvpFull.Pos.y),
+                static_cast<int>(m_fboScale * rvpFull.Size.w),
+                static_cast<int>(m_fboScale * rvpFull.Size.h)
             };
             glViewport(rsc.Pos.x, rsc.Pos.y, rsc.Size.w, rsc.Size.h);
 
@@ -1214,12 +1214,50 @@ void RiftAppSkeleton::display_sdk() const
 
             _resetGLState();
 
-            _DrawScenes(
-                glm::value_ptr(glm::inverse(viewWorld)),
-                &proj.Transposed().M[0][0],
-                rsc,
-                glm::value_ptr(glm::inverse(viewLocal))
-                );
+            // Draw Scenes inside eye loop
+            ///@todo Draw eyes inside scene loop
+            const float* pMvWorld = glm::value_ptr(glm::inverse(viewWorld));
+            const float* pPersp = &proj.Transposed().M[0][0];
+            const ovrRecti& rvp = rsc;
+            const float* pMvLocal = glm::value_ptr(glm::inverse(viewLocal));
+
+            // Clip off top and bottom letterboxes
+            glEnable(GL_SCISSOR_TEST);
+            const float factor = m_cinemaScopeFactor;
+            const int yoff = static_cast<int>(static_cast<float>(rvp.Size.h) * factor);
+            // Assume side-by-side single render texture
+            glScissor(0, yoff/2, rvp.Pos.x+rvp.Size.w, rvp.Size.h-yoff);
+
+            // Special case for the ShaderToyScene: if it is on, make it the only one.
+            // This is because shadertoys typically don't write to the depth buffer.
+            // If one did, it would take more time and complexity, but could be integrated
+            // with rasterized world pixels.
+            if (m_galleryScene.GetActiveShaderToy() != NULL)
+            {
+                m_galleryScene.RenderForOneEye(pMvWorld, pPersp);
+
+                // Show the warning box if we get too close to edge of tracking cam's fov.
+                glDisable(GL_DEPTH_TEST);
+                m_ovrScene.RenderForOneEye(pMvLocal, pPersp); // m_bChassisLocalSpace
+                m_dashScene.RenderForOneEye(pMvLocal, pPersp);
+                glEnable(GL_DEPTH_TEST);
+            }
+            else
+            {
+                for (std::vector<IScene*>::const_iterator it = m_scenes.begin();
+                    it != m_scenes.end();
+                    ++it)
+                {
+                    const IScene* pScene = *it;
+                    if (pScene != NULL)
+                    {
+                        const float* pMv = pScene->m_bChassisLocalSpace ? pMvLocal : pMvWorld;
+                        pScene->RenderForOneEye(pMv, pPersp);
+                    }
+                }
+            }
+
+            glDisable(GL_SCISSOR_TEST);
         }
     }
     unbindFBO();
