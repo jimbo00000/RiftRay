@@ -24,6 +24,7 @@ ENDIF()
 # Platform-dependent section
 #
 IF( WIN32 )
+    MESSAGE(STATUS "MSVC_VERSION=${MSVC_VERSION}")
     #
     # Custom Windows include and link dirs for my machine:
     #
@@ -35,9 +36,17 @@ IF( WIN32 )
 
     IF( GL_FRAMEWORK STREQUAL "GLFW" )
         MESSAGE("Using GLFW Framework.")
-        SET( GLFW3_ROOT "${LIBS_HOME}/glfw-3.0.1.bin.WIN32" CACHE STRING "glfw root" )
+        IF( MSVC_VERSION STREQUAL "1600" ) # VS 2010
+            SET( GLFW3_ROOT "${LIBS_HOME}/glfw-3.1.bin.WIN32" CACHE STRING "glfw root" )
+            LINK_DIRECTORIES( "${GLFW3_ROOT}/lib-vc2010" )
+        ELSEIF( MSVC_VERSION STREQUAL "1700" )
+            SET( GLFW3_ROOT "${LIBS_HOME}/glfw-3.1.bin.WIN32" CACHE STRING "glfw root" )
+            LINK_DIRECTORIES( "${GLFW3_ROOT}/lib-vc2012" )
+        ELSEIF( MSVC_VERSION STREQUAL "1800" )
+            SET( GLFW3_ROOT "${LIBS_HOME}/glfw-3.1.bin.WIN32" CACHE STRING "glfw root" )
+            LINK_DIRECTORIES( "${GLFW3_ROOT}/lib-vc2013" )
+        ENDIF()
         INCLUDE_DIRECTORIES( "${GLFW3_ROOT}/include" )
-        LINK_DIRECTORIES   ( "${GLFW3_ROOT}/lib-msvc100" )
         SET( FRAMEWORK_LIBS glfw3.lib )
     ELSEIF( GL_FRAMEWORK STREQUAL "SDL" )
         MESSAGE("Using SDL2 Framework.")
@@ -49,9 +58,9 @@ IF( WIN32 )
         MESSAGE("Unknown GL_FRAMEWORK: choose GLFW or SDL.")
     ENDIF()
 
-    SET( GLEW_ROOT "${LIBS_HOME}/glew" CACHE STRING "glew root" )
+    SET( GLEW_ROOT "${LIBS_HOME}/glew-1.12.0" CACHE STRING "glew root" )
     INCLUDE_DIRECTORIES( "${GLEW_ROOT}/include" )
-    LINK_DIRECTORIES   ( "${GLEW_ROOT}/lib" )
+    LINK_DIRECTORIES   ( "${GLEW_ROOT}/lib/Release/Win32" )
     ADD_DEFINITIONS( -DGLEW_STATIC )
 
     SET( OCULUSSDK_ROOT "${LIBS_HOME}/OculusSDK" CACHE STRING "OculusSDK root" )
