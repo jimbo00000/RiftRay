@@ -1177,6 +1177,8 @@ void RiftAppSkeleton::display_sdk() const
     ovrPosef renderPose[2];
     ovrTexture eyeTexture[2];
 
+    _resetGLState();
+
     // Draw to the surface that will be presented to OVR SDK via ovrHmd_EndFrame
     bindFBO(m_renderBuffer);
     {
@@ -1212,8 +1214,6 @@ void RiftAppSkeleton::display_sdk() const
             const glm::mat4 viewLocalScaled = makeMatrixFromPose(eyePoseScaled, m_headSize);
             const glm::mat4 viewWorld = makeWorldToChassisMatrix() * viewLocalScaled;
 
-            _resetGLState();
-
             // Draw Scenes inside eye loop
             ///@todo Draw eyes inside scene loop
             const float* pMvWorld = glm::value_ptr(glm::inverse(viewWorld));
@@ -1235,7 +1235,7 @@ void RiftAppSkeleton::display_sdk() const
 
                 m_galleryScene.RenderForOneEye(pMvWorld, pPersp);
 
-                // Draw simpler scene accoutrements over resolution-scaled scene
+                // Draw simpler scene accoutrements over resolutionscaled scene
                 glDisable(GL_DEPTH_TEST);
                 m_ovrScene.RenderForOneEye(pMvLocal, pPersp);
                 m_dashScene.RenderForOneEye(pMvLocal, pPersp);
