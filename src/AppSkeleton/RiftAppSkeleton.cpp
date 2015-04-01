@@ -1138,6 +1138,17 @@ void RiftAppSkeleton::display_stereo_undistorted() const
     glUseProgram(0);
 }
 
+const ovrRecti getScaledRect(const ovrRecti& r, float s)
+{
+    const ovrRecti scaled = {
+        static_cast<int>(s * r.Pos.x),
+        static_cast<int>(s * r.Pos.y),
+        static_cast<int>(s * r.Size.w),
+        static_cast<int>(s * r.Size.h)
+    };
+    return scaled;
+}
+
 void RiftAppSkeleton::display_sdk() const
 {
     ovrHmd hmd = m_Hmd;
@@ -1203,19 +1214,11 @@ void RiftAppSkeleton::display_sdk() const
             }
 
             const ovrRecti& rvpFull = otex.OGL.Header.RenderViewport;
-            const ovrRecti rvpScaled = {
-                static_cast<int>(m_fboScale * rvpFull.Pos.x),
-                static_cast<int>(m_fboScale * rvpFull.Pos.y),
-                static_cast<int>(m_fboScale * rvpFull.Size.w),
-                static_cast<int>(m_fboScale * rvpFull.Size.h)
-            };
-
+            const ovrRecti rvpScaled = getScaledRect(rvpFull, m_fboScale);
             const ovrRecti& rvp = rvpScaled;
             const int yoff = static_cast<int>(static_cast<float>(rvp.Size.h) * m_cinemaScopeFactor);
             glViewport(rvp.Pos.x, rvp.Pos.y, rvp.Size.w, rvp.Size.h);
             glScissor(0, yoff/2, rvp.Pos.x+rvp.Size.w, rvp.Size.h-yoff); // Assume side-by-side single render texture
-
-
 
             const OVR::Matrix4f proj = ovrMatrix4f_Projection(
                 m_EyeRenderDesc[e].Fov,
