@@ -1228,17 +1228,16 @@ void RiftAppSkeleton::display_sdk() const
             {
                 // Clip off top and bottom letterboxes
                 glEnable(GL_SCISSOR_TEST);
-                const float factor = m_cinemaScopeFactor;
                 const ovrRecti& rvp = rvpScaled;
-                const int yoff = static_cast<int>(static_cast<float>(rvp.Size.h) * factor);
+                const int yoff = static_cast<int>(static_cast<float>(rvp.Size.h) * m_cinemaScopeFactor);
                 // Assume side-by-side single render texture
                 glScissor(0, yoff/2, rvp.Pos.x+rvp.Size.w, rvp.Size.h-yoff);
 
                 m_galleryScene.RenderForOneEye(pMvWorld, pPersp);
 
-                // Show the warning box if we get too close to edge of tracking cam's fov.
+                // Draw simpler scene accoutrements over resolution-scaled scene
                 glDisable(GL_DEPTH_TEST);
-                m_ovrScene.RenderForOneEye(pMvLocal, pPersp); // m_bChassisLocalSpace
+                m_ovrScene.RenderForOneEye(pMvLocal, pPersp);
                 m_dashScene.RenderForOneEye(pMvLocal, pPersp);
                 glEnable(GL_DEPTH_TEST);
 
