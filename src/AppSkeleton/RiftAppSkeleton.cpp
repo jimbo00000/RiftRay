@@ -1209,7 +1209,12 @@ void RiftAppSkeleton::display_sdk() const
                 static_cast<int>(m_fboScale * rvpFull.Size.w),
                 static_cast<int>(m_fboScale * rvpFull.Size.h)
             };
-            glViewport(rvpScaled.Pos.x, rvpScaled.Pos.y, rvpScaled.Size.w, rvpScaled.Size.h);
+
+            const ovrRecti& rvp = rvpScaled;
+            const int yoff = static_cast<int>(static_cast<float>(rvp.Size.h) * m_cinemaScopeFactor);
+            glViewport(rvp.Pos.x, rvp.Pos.y, rvp.Size.w, rvp.Size.h);
+            glScissor(0, yoff/2, rvp.Pos.x+rvp.Size.w, rvp.Size.h-yoff); // Assume side-by-side single render texture
+
 
 
             const OVR::Matrix4f proj = ovrMatrix4f_Projection(
@@ -1235,10 +1240,6 @@ void RiftAppSkeleton::display_sdk() const
             {
                 // Clip off top and bottom letterboxes
                 glEnable(GL_SCISSOR_TEST);
-                const ovrRecti& rvp = rvpScaled;
-                const int yoff = static_cast<int>(static_cast<float>(rvp.Size.h) * m_cinemaScopeFactor);
-                // Assume side-by-side single render texture
-                glScissor(0, yoff/2, rvp.Pos.x+rvp.Size.w, rvp.Size.h-yoff);
 
                 m_galleryScene.RenderForOneEye(pMvWorld, pPersp);
 
