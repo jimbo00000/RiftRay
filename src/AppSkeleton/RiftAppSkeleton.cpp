@@ -1147,11 +1147,6 @@ void RiftAppSkeleton::display_sdk() const
     //const ovrFrameTiming hmdFrameTiming =
     ovrHmd_BeginFrame(m_Hmd, 0);
 
-    bindFBO(m_renderBuffer);
-
-    glClearColor(0.f, 0.f, 0.f, 0.f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     ovrVector3f e2v[2] = {
         OVR::Vector3f(m_EyeRenderDesc[0].HmdToEyeViewOffset),
         OVR::Vector3f(m_EyeRenderDesc[1].HmdToEyeViewOffset),
@@ -1178,46 +1173,54 @@ void RiftAppSkeleton::display_sdk() const
         outEyePosesScaled,
         &outHmdTrackingState);
 
-    // For passing to EndFrame once rendering is done
+    // For passing to ovrHmd_EndFrame once rendering is done
     ovrPosef renderPose[2];
     ovrTexture eyeTexture[2];
-    for (int eyeIndex=0; eyeIndex<ovrEye_Count; eyeIndex++)
+
+    // Draw to the surface that will be presented to OVR SDK via ovrHmd_EndFrame
+    bindFBO(m_renderBuffer);
     {
-        const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
+        glClearColor(0.f, 0.f, 0.f, 0.f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        const ovrPosef eyePose = outEyePoses[e];
-        renderPose[e] = eyePose;
-        eyeTexture[e] = m_EyeTexture[e].Texture;
-        m_eyePoseCached = eyePose; // cache this for movement direction
-        _StoreHmdPose(eyePose);
+        for (int eyeIndex=0; eyeIndex<ovrEye_Count; eyeIndex++)
+        {
+            const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
 
-        const ovrGLTexture& otex = m_EyeTexture[e];
-        const ovrRecti& rvp = otex.OGL.Header.RenderViewport;
-        const ovrRecti rsc = {
-            static_cast<int>(m_fboScale * rvp.Pos.x),
-            static_cast<int>(m_fboScale * rvp.Pos.y),
-            static_cast<int>(m_fboScale * rvp.Size.w),
-            static_cast<int>(m_fboScale * rvp.Size.h)
-        };
-        glViewport(rsc.Pos.x, rsc.Pos.y, rsc.Size.w, rsc.Size.h);
+            const ovrPosef eyePose = outEyePoses[e];
+            renderPose[e] = eyePose;
+            eyeTexture[e] = m_EyeTexture[e].Texture;
+            m_eyePoseCached = eyePose; // cache this for movement direction
+            _StoreHmdPose(eyePose);
 
-        const OVR::Matrix4f proj = ovrMatrix4f_Projection(
-            m_EyeRenderDesc[e].Fov,
-            0.01f, 10000.0f, true);
+            const ovrGLTexture& otex = m_EyeTexture[e];
+            const ovrRecti& rvp = otex.OGL.Header.RenderViewport;
+            const ovrRecti rsc = {
+                static_cast<int>(m_fboScale * rvp.Pos.x),
+                static_cast<int>(m_fboScale * rvp.Pos.y),
+                static_cast<int>(m_fboScale * rvp.Size.w),
+                static_cast<int>(m_fboScale * rvp.Size.h)
+            };
+            glViewport(rsc.Pos.x, rsc.Pos.y, rsc.Size.w, rsc.Size.h);
 
-        const ovrPosef eyePoseScaled = outEyePosesScaled[e];
-        const glm::mat4 viewLocal = makeMatrixFromPose(eyePose);
-        const glm::mat4 viewLocalScaled = makeMatrixFromPose(eyePoseScaled, m_headSize);
-        const glm::mat4 viewWorld = makeWorldToChassisMatrix() * viewLocalScaled;
+            const OVR::Matrix4f proj = ovrMatrix4f_Projection(
+                m_EyeRenderDesc[e].Fov,
+                0.01f, 10000.0f, true);
 
-        _resetGLState();
+            const ovrPosef eyePoseScaled = outEyePosesScaled[e];
+            const glm::mat4 viewLocal = makeMatrixFromPose(eyePose);
+            const glm::mat4 viewLocalScaled = makeMatrixFromPose(eyePoseScaled, m_headSize);
+            const glm::mat4 viewWorld = makeWorldToChassisMatrix() * viewLocalScaled;
 
-        _DrawScenes(
-            glm::value_ptr(glm::inverse(viewWorld)),
-            &proj.Transposed().M[0][0],
-            rsc,
-            glm::value_ptr(glm::inverse(viewLocal))
-            );
+            _resetGLState();
+
+            _DrawScenes(
+                glm::value_ptr(glm::inverse(viewWorld)),
+                &proj.Transposed().M[0][0],
+                rsc,
+                glm::value_ptr(glm::inverse(viewLocal))
+                );
+        }
     }
     unbindFBO();
 
