@@ -1215,7 +1215,7 @@ void RiftAppSkeleton::display_sdk() const
 
             const ovrRecti& rvpFull = otex.OGL.Header.RenderViewport;
             const ovrRecti rvpScaled = getScaledRect(rvpFull, m_fboScale);
-            const ovrRecti& rvp = rvpScaled;
+            const ovrRecti& rvp = rvpScaled; ///@todo Different for raymarch and for other scenes
             const int yoff = static_cast<int>(static_cast<float>(rvp.Size.h) * m_cinemaScopeFactor);
             glViewport(rvp.Pos.x, rvp.Pos.y, rvp.Size.w, rvp.Size.h);
             glScissor(0, yoff/2, rvp.Pos.x+rvp.Size.w, rvp.Size.h-yoff); // Assume side-by-side single render texture
