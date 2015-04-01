@@ -1189,10 +1189,11 @@ void RiftAppSkeleton::display_sdk() const
         for (int eyeIndex=0; eyeIndex<ovrEye_Count; eyeIndex++)
         {
             const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
-
             const ovrPosef eyePose = outEyePoses[e];
+            const ovrGLTexture& otex = m_EyeTexture[e];
+
             renderPose[e] = eyePose;
-            eyeTexture[e] = m_EyeTexture[e].Texture;
+            eyeTexture[e] = otex.Texture;
 
             if (firstEyeRendered)
             {
@@ -1201,7 +1202,6 @@ void RiftAppSkeleton::display_sdk() const
                 firstEyeRendered = false;
             }
 
-            const ovrGLTexture& otex = m_EyeTexture[e];
             const ovrRecti& rvpFull = otex.OGL.Header.RenderViewport;
             const ovrRecti rvpScaled = {
                 static_cast<int>(m_fboScale * rvpFull.Pos.x),
