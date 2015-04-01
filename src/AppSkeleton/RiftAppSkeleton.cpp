@@ -1199,51 +1199,52 @@ void RiftAppSkeleton::display_sdk() const
         glClearColor(0.f, 0.f, 0.f, 0.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        for (int eyeIndex=0; eyeIndex<ovrEye_Count; eyeIndex++)
+
+        // Special case for the ShaderToyScene: if it is on, make it the only one.
+        // This is because shadertoys typically don't write to the depth buffer.
+        // If one did, it would take more time and complexity, but could be integrated
+        // with rasterized world pixels.
+        if (m_galleryScene.GetActiveShaderToy() != NULL)
         {
-            const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
-            const ovrPosef eyePose = outEyePoses[e];
-            const ovrGLTexture& otex = m_EyeTexture[e];
+            // Clip off top and bottom letterboxes
+            glEnable(GL_SCISSOR_TEST);
 
-            renderPose[e] = eyePose;
-            eyeTexture[e] = otex.Texture;
-
-            if (firstEyeRendered)
+            for (int eyeIndex=0; eyeIndex<ovrEye_Count; eyeIndex++)
             {
-                _StoreHmdPose(eyePose);
-                firstEyeRendered = false;
-            }
+                const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
+                const ovrPosef eyePose = outEyePoses[e];
+                const ovrGLTexture& otex = m_EyeTexture[e];
 
-            const ovrRecti& rvpFull = otex.OGL.Header.RenderViewport;
-            const ovrRecti rvpScaled = getScaledRect(rvpFull, m_fboScale);
-            const ovrRecti& rvp = rvpScaled;
-            const int yoff = static_cast<int>(static_cast<float>(rvp.Size.h) * m_cinemaScopeFactor);
-            glViewport(rvp.Pos.x, rvp.Pos.y, rvp.Size.w, rvp.Size.h);
-            glScissor(0, yoff/2, rvp.Pos.x+rvp.Size.w, rvp.Size.h-yoff); // Assume side-by-side single render texture
+                renderPose[e] = eyePose;
+                eyeTexture[e] = otex.Texture;
 
-            const OVR::Matrix4f proj = ovrMatrix4f_Projection(
-                m_EyeRenderDesc[e].Fov,
-                0.01f, 10000.0f, true);
+                if (firstEyeRendered)
+                {
+                    _StoreHmdPose(eyePose);
+                    firstEyeRendered = false;
+                }
 
-            const ovrPosef eyePoseScaled = outEyePosesScaled[e];
-            const glm::mat4 viewLocal = makeMatrixFromPose(eyePose);
-            const glm::mat4 viewLocalScaled = makeMatrixFromPose(eyePoseScaled, m_headSize);
-            const glm::mat4 viewWorld = makeWorldToChassisMatrix() * viewLocalScaled;
+                const ovrRecti& rvpFull = otex.OGL.Header.RenderViewport;
+                const ovrRecti rvpScaled = getScaledRect(rvpFull, m_fboScale);
+                const ovrRecti& rvp = rvpScaled;
+                const int yoff = static_cast<int>(static_cast<float>(rvp.Size.h) * m_cinemaScopeFactor);
+                glViewport(rvp.Pos.x, rvp.Pos.y, rvp.Size.w, rvp.Size.h);
+                glScissor(0, yoff/2, rvp.Pos.x+rvp.Size.w, rvp.Size.h-yoff); // Assume side-by-side single render texture
 
-            // Draw Scenes inside eye loop
-            ///@todo Draw eyes inside scene loop
-            const float* pMvWorld = glm::value_ptr(glm::inverse(viewWorld));
-            const float* pPersp = &proj.Transposed().M[0][0];
-            const float* pMvLocal = glm::value_ptr(glm::inverse(viewLocal));
+                const OVR::Matrix4f proj = ovrMatrix4f_Projection(
+                    m_EyeRenderDesc[e].Fov,
+                    0.01f, 10000.0f, true);
 
-            // Special case for the ShaderToyScene: if it is on, make it the only one.
-            // This is because shadertoys typically don't write to the depth buffer.
-            // If one did, it would take more time and complexity, but could be integrated
-            // with rasterized world pixels.
-            if (m_galleryScene.GetActiveShaderToy() != NULL)
-            {
-                // Clip off top and bottom letterboxes
-                glEnable(GL_SCISSOR_TEST);
+                const ovrPosef eyePoseScaled = outEyePosesScaled[e];
+                const glm::mat4 viewLocal = makeMatrixFromPose(eyePose);
+                const glm::mat4 viewLocalScaled = makeMatrixFromPose(eyePoseScaled, m_headSize);
+                const glm::mat4 viewWorld = makeWorldToChassisMatrix() * viewLocalScaled;
+
+                // Draw Scenes inside eye loop
+                ///@todo Draw eyes inside scene loop
+                const float* pMvWorld = glm::value_ptr(glm::inverse(viewWorld));
+                const float* pPersp = &proj.Transposed().M[0][0];
+                const float* pMvLocal = glm::value_ptr(glm::inverse(viewLocal));
 
                 m_galleryScene.RenderForOneEye(pMvWorld, pPersp);
 
@@ -1252,24 +1253,59 @@ void RiftAppSkeleton::display_sdk() const
                 m_ovrScene.RenderForOneEye(pMvLocal, pPersp);
                 m_dashScene.RenderForOneEye(pMvLocal, pPersp);
                 glEnable(GL_DEPTH_TEST);
-
-                glDisable(GL_SCISSOR_TEST);
             }
-            else
+            glDisable(GL_SCISSOR_TEST);
+        }
+        else
+        {
+            for (std::vector<IScene*>::const_iterator it = m_scenes.begin();
+                it != m_scenes.end();
+                ++it)
             {
-                for (std::vector<IScene*>::const_iterator it = m_scenes.begin();
-                    it != m_scenes.end();
-                    ++it)
+                const IScene* pScene = *it;
+                if (pScene == NULL)
+                    continue;
+
+                // Draw eyes inside scene loop
+                for (int eyeIndex=0; eyeIndex<ovrEye_Count; eyeIndex++)
                 {
-                    const IScene* pScene = *it;
-                    if (pScene != NULL)
+                    const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
+                    const ovrPosef eyePose = outEyePoses[e];
+                    const ovrGLTexture& otex = m_EyeTexture[e];
+
+                    renderPose[e] = eyePose;
+                    eyeTexture[e] = otex.Texture;
+
+                    if (firstEyeRendered)
                     {
-                        const float* pMv = pScene->m_bChassisLocalSpace ? pMvLocal : pMvWorld;
-                        pScene->RenderForOneEye(pMv, pPersp);
+                        _StoreHmdPose(eyePose);
+                        firstEyeRendered = false;
                     }
+
+                    const ovrRecti& rvpFull = otex.OGL.Header.RenderViewport;
+                    const ovrRecti rvpScaled = getScaledRect(rvpFull, m_fboScale);
+                    const ovrRecti& rvp = rvpScaled;
+                    const int yoff = static_cast<int>(static_cast<float>(rvp.Size.h) * m_cinemaScopeFactor);
+                    glViewport(rvp.Pos.x, rvp.Pos.y, rvp.Size.w, rvp.Size.h);
+                    glScissor(0, yoff/2, rvp.Pos.x+rvp.Size.w, rvp.Size.h-yoff); // Assume side-by-side single render texture
+
+                    const OVR::Matrix4f proj = ovrMatrix4f_Projection(
+                        m_EyeRenderDesc[e].Fov,
+                        0.01f, 10000.0f, true);
+
+                    const ovrPosef eyePoseScaled = outEyePosesScaled[e];
+                    const glm::mat4 viewLocal = makeMatrixFromPose(eyePose);
+                    const glm::mat4 viewLocalScaled = makeMatrixFromPose(eyePoseScaled, m_headSize);
+                    const glm::mat4 viewWorld = makeWorldToChassisMatrix() * viewLocalScaled;
+
+                    const float* pPersp = &proj.Transposed().M[0][0];
+                    const float* pMvWorld = glm::value_ptr(glm::inverse(viewWorld));
+                    const float* pMvLocal = glm::value_ptr(glm::inverse(viewLocal));
+
+                    const float* pMv = pScene->m_bChassisLocalSpace ? pMvLocal : pMvWorld;
+                    pScene->RenderForOneEye(pMv, pPersp);
                 }
             }
-
         }
     }
     unbindFBO();
