@@ -1218,7 +1218,6 @@ void RiftAppSkeleton::display_sdk() const
             ///@todo Draw eyes inside scene loop
             const float* pMvWorld = glm::value_ptr(glm::inverse(viewWorld));
             const float* pPersp = &proj.Transposed().M[0][0];
-            const ovrRecti& rvp = rvpScaled;
             const float* pMvLocal = glm::value_ptr(glm::inverse(viewLocal));
 
             // Special case for the ShaderToyScene: if it is on, make it the only one.
@@ -1230,6 +1229,7 @@ void RiftAppSkeleton::display_sdk() const
                 // Clip off top and bottom letterboxes
                 glEnable(GL_SCISSOR_TEST);
                 const float factor = m_cinemaScopeFactor;
+                const ovrRecti& rvp = rvpScaled;
                 const int yoff = static_cast<int>(static_cast<float>(rvp.Size.h) * factor);
                 // Assume side-by-side single render texture
                 glScissor(0, yoff/2, rvp.Pos.x+rvp.Size.w, rvp.Size.h-yoff);
