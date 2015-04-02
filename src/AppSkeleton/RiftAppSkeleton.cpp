@@ -1204,7 +1204,8 @@ void RiftAppSkeleton::display_sdk() const
         // This is because shadertoys typically don't write to the depth buffer.
         // If one did, it would take more time and complexity, but could be integrated
         // with rasterized world pixels.
-        if (m_galleryScene.GetActiveShaderToy() != NULL)
+        const bool doRaymarch = m_galleryScene.GetActiveShaderToy() != NULL;
+        if (doRaymarch)
         {
             // Clip off top and bottom letterboxes
             glEnable(GL_SCISSOR_TEST);
