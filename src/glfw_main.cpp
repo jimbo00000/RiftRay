@@ -443,7 +443,7 @@ void joystick_XboxController(
         if (fabs(x_move) > deadzone)
             joystickMove += x_move * right;
         if (fabs(y_move) > deadzone)
-            joystickMove += y_move * forward;
+            joystickMove -= y_move * forward;
     }
 
     if (pButtonStates[0] == GLFW_PRESS) // A button
