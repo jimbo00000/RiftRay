@@ -34,11 +34,11 @@ RiftAppSkeleton::RiftAppSkeleton()
 , m_hmdRo(0.0f)
 , m_hmdRd(0.0f)
 
+, m_galleryScene()
 , m_raymarchScene()
 , m_ovrScene()
-, m_galleryScene()
-, m_floorScene()
 , m_dashScene()
+, m_floorScene()
 #ifdef USE_SIXENSE
 , m_hydraScene()
 #endif
@@ -75,10 +75,10 @@ RiftAppSkeleton::RiftAppSkeleton()
     // provided they all do forward rendering. Per-scene deferred render passes will
     // take a little bit more work.
     //m_scenes.push_back(&m_raymarchScene);
-    m_scenes.push_back(&m_ovrScene);
     m_scenes.push_back(&m_galleryScene);
-    m_scenes.push_back(&m_floorScene);
+    m_scenes.push_back(&m_ovrScene);
     m_scenes.push_back(&m_dashScene);
+    m_scenes.push_back(&m_floorScene);
 #ifdef USE_SIXENSE
     m_scenes.push_back(&m_hydraScene);
 #endif
@@ -1199,17 +1199,38 @@ void RiftAppSkeleton::display_sdk() const
         glClearColor(0.f, 0.f, 0.f, 0.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-        // Special case for the ShaderToyScene: if it is on, make it the only one.
-        // This is because shadertoys typically don't write to the depth buffer.
-        // If one did, it would take more time and complexity, but could be integrated
-        // with rasterized world pixels.
         const bool doRaymarch = m_galleryScene.GetActiveShaderToy() != NULL;
-        if (doRaymarch)
+        glEnable(GL_SCISSOR_TEST); // cinemaScope letterbox bars
+        for (std::vector<IScene*>::const_iterator it = m_scenes.begin();
+            it != m_scenes.end();
+            ++it)
         {
-            // Clip off top and bottom letterboxes
-            glEnable(GL_SCISSOR_TEST);
+            const IScene* pScene = *it;
+            if (pScene == NULL)
+                continue;
 
+            if (doRaymarch)
+            {
+                // These blocks depend on the order scenes were added to the vector.
+                if (pScene == &m_galleryScene)
+                {
+                    glDisable(GL_DEPTH_TEST);
+                    glDepthMask(GL_FALSE);
+                }
+                else if (pScene == &m_ovrScene)
+                {
+                    glDepthMask(GL_TRUE);
+                }
+                else if (pScene == &m_floorScene)
+                {
+                    glEnable(GL_DEPTH_TEST);
+                    {
+                        break; // out of Scene loop
+                    }
+                }
+            }
+
+            // Draw eyes inside scene loop
             for (int eyeIndex=0; eyeIndex<ovrEye_Count; eyeIndex++)
             {
                 const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
@@ -1241,73 +1262,15 @@ void RiftAppSkeleton::display_sdk() const
                 const glm::mat4 viewLocalScaled = makeMatrixFromPose(eyePoseScaled, m_headSize);
                 const glm::mat4 viewWorld = makeWorldToChassisMatrix() * viewLocalScaled;
 
-                // Draw Scenes inside eye loop
-                ///@todo Draw eyes inside scene loop
-                const float* pMvWorld = glm::value_ptr(glm::inverse(viewWorld));
                 const float* pPersp = &proj.Transposed().M[0][0];
+                const float* pMvWorld = glm::value_ptr(glm::inverse(viewWorld));
                 const float* pMvLocal = glm::value_ptr(glm::inverse(viewLocal));
+                const float* pMv = pScene->m_bChassisLocalSpace ? pMvLocal : pMvWorld;
 
-                m_galleryScene.RenderForOneEye(pMvWorld, pPersp);
-
-                // Draw simpler scene accoutrements over resolutionscaled scene
-                glDisable(GL_DEPTH_TEST);
-                m_ovrScene.RenderForOneEye(pMvLocal, pPersp);
-                m_dashScene.RenderForOneEye(pMvLocal, pPersp);
-                glEnable(GL_DEPTH_TEST);
-            }
-            glDisable(GL_SCISSOR_TEST);
+                pScene->RenderForOneEye(pMv, pPersp);
+            } // eye loop
         }
-        else
-        {
-            for (std::vector<IScene*>::const_iterator it = m_scenes.begin();
-                it != m_scenes.end();
-                ++it)
-            {
-                const IScene* pScene = *it;
-                if (pScene == NULL)
-                    continue;
-
-                // Draw eyes inside scene loop
-                for (int eyeIndex=0; eyeIndex<ovrEye_Count; eyeIndex++)
-                {
-                    const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
-                    const ovrPosef eyePose = outEyePoses[e];
-                    const ovrGLTexture& otex = m_EyeTexture[e];
-
-                    renderPose[e] = eyePose;
-                    eyeTexture[e] = otex.Texture;
-
-                    if (firstEyeRendered)
-                    {
-                        _StoreHmdPose(eyePose);
-                        firstEyeRendered = false;
-                    }
-
-                    const ovrRecti& rvpFull = otex.OGL.Header.RenderViewport;
-                    const ovrRecti rvpScaled = getScaledRect(rvpFull, m_fboScale);
-                    const ovrRecti& rvp = rvpScaled;
-                    const int yoff = static_cast<int>(static_cast<float>(rvp.Size.h) * m_cinemaScopeFactor);
-                    glViewport(rvp.Pos.x, rvp.Pos.y, rvp.Size.w, rvp.Size.h);
-                    glScissor(0, yoff/2, rvp.Pos.x+rvp.Size.w, rvp.Size.h-yoff); // Assume side-by-side single render texture
-
-                    const OVR::Matrix4f proj = ovrMatrix4f_Projection(
-                        m_EyeRenderDesc[e].Fov,
-                        0.01f, 10000.0f, true);
-
-                    const ovrPosef eyePoseScaled = outEyePosesScaled[e];
-                    const glm::mat4 viewLocal = makeMatrixFromPose(eyePose);
-                    const glm::mat4 viewLocalScaled = makeMatrixFromPose(eyePoseScaled, m_headSize);
-                    const glm::mat4 viewWorld = makeWorldToChassisMatrix() * viewLocalScaled;
-
-                    const float* pPersp = &proj.Transposed().M[0][0];
-                    const float* pMvWorld = glm::value_ptr(glm::inverse(viewWorld));
-                    const float* pMvLocal = glm::value_ptr(glm::inverse(viewLocal));
-
-                    const float* pMv = pScene->m_bChassisLocalSpace ? pMvLocal : pMvWorld;
-                    pScene->RenderForOneEye(pMv, pPersp);
-                }
-            }
-        }
+        glDisable(GL_SCISSOR_TEST); // cinemaScope letterbox bars
     }
     unbindFBO();
 

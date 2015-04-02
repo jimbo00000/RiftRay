@@ -128,10 +128,10 @@ protected:
 public:
     // This public section is for exposing state variables to AntTweakBar
     RaymarchShaderScene m_raymarchScene;
-    OVRScene m_ovrScene;
     ShaderGalleryScene m_galleryScene;
-    FloorScene m_floorScene;
+    OVRScene m_ovrScene;
     DashboardScene m_dashScene;
+    FloorScene m_floorScene;
 #ifdef USE_SIXENSE
     HydraScene m_hydraScene;
 #endif
