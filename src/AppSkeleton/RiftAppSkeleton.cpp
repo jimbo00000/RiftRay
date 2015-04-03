@@ -1226,6 +1226,7 @@ void RiftAppSkeleton::display_sdk() const
                 const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
                 const ovrPosef eyePose = outEyePoses[e];
                 const ovrGLTexture& otex = m_EyeTexture[e];
+                const ovrEyeRenderDesc& erd = m_EyeRenderDesc[e];
 
                 renderPose[e] = eyePose;
                 eyeTexture[e] = otex.Texture;
@@ -1236,6 +1237,7 @@ void RiftAppSkeleton::display_sdk() const
                     firstEyeRendered = false;
                 }
 
+                // Viewport setup
                 const ovrRecti& rvpFull = otex.OGL.Header.RenderViewport;
                 const ovrRecti rvpScaled = getScaledRect(rvpFull, fboScale);
                 const ovrRecti& rvp = rvpScaled;
@@ -1243,15 +1245,12 @@ void RiftAppSkeleton::display_sdk() const
                 glViewport(rvp.Pos.x, rvp.Pos.y, rvp.Size.w, rvp.Size.h);
                 glScissor(0, yoff/2, rvp.Pos.x+rvp.Size.w, rvp.Size.h-yoff); // Assume side-by-side single render texture
 
-                const OVR::Matrix4f proj = ovrMatrix4f_Projection(
-                    m_EyeRenderDesc[e].Fov,
-                    0.01f, 10000.0f, true);
-
+                // Matrix setup
+                const OVR::Matrix4f proj = ovrMatrix4f_Projection(erd.Fov, 0.01f, 10000.0f, true);
                 const ovrPosef eyePoseScaled = outEyePosesScaled[e];
                 const glm::mat4 viewLocal = makeMatrixFromPose(eyePose);
                 const glm::mat4 viewLocalScaled = makeMatrixFromPose(eyePoseScaled, m_headSize);
                 const glm::mat4 viewWorld = makeWorldToChassisMatrix() * viewLocalScaled;
-
                 const float* pPersp = &proj.Transposed().M[0][0];
                 const float* pMvWorld = glm::value_ptr(glm::inverse(viewWorld));
                 const float* pMvLocal = glm::value_ptr(glm::inverse(viewLocal));
@@ -1259,7 +1258,7 @@ void RiftAppSkeleton::display_sdk() const
 
                 pScene->RenderForOneEye(pMv, pPersp);
             } // eye loop
-        }
+        } // scene loop
         glDisable(GL_SCISSOR_TEST); // cinemaScope letterbox bars
     }
     unbindFBO();
