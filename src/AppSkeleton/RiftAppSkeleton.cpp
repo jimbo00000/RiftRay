@@ -1341,12 +1341,7 @@ void RiftAppSkeleton::display_client() const
 
         const ovrGLTexture& otex = m_EyeTexture[e];
         const ovrRecti& rvp = otex.OGL.Header.RenderViewport;
-        const ovrRecti rsc = {
-            static_cast<int>(m_fboScale * rvp.Pos.x),
-            static_cast<int>(m_fboScale * rvp.Pos.y),
-            static_cast<int>(m_fboScale * rvp.Size.w),
-            static_cast<int>(m_fboScale * rvp.Size.h)
-        };
+        const ovrRecti rsc = getScaledRect(rvp, m_fboScale);
         glViewport(rsc.Pos.x, rsc.Pos.y, rsc.Size.w, rsc.Size.h);
 
         const OVR::Matrix4f proj = ovrMatrix4f_Projection(
