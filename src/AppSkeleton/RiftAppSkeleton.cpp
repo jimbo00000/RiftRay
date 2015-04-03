@@ -1169,22 +1169,11 @@ void RiftAppSkeleton::display_sdk() const
         OVR::Vector3f(e2v[1]) * m_headSize,
     };
 
-    ovrTrackingState outHmdTrackingState;
+    ovrTrackingState ohts;
     ovrPosef outEyePoses[2];
-    ovrHmd_GetEyePoses(
-        hmd,
-        0, ///@todo Frame index
-        e2v, // could this parameter be const?
-        outEyePoses,
-        &outHmdTrackingState);
-
     ovrPosef outEyePosesScaled[2];
-    ovrHmd_GetEyePoses(
-        hmd,
-        0, ///@todo Frame index
-        e2vScaled, // could this parameter be const?
-        outEyePosesScaled,
-        &outHmdTrackingState);
+    ovrHmd_GetEyePoses(hmd, 0, e2v, outEyePoses, &ohts);
+    ovrHmd_GetEyePoses(hmd, 0, e2vScaled, outEyePosesScaled, &ohts);
 
     // For passing to ovrHmd_EndFrame once rendering is done
     ovrPosef renderPose[2];
