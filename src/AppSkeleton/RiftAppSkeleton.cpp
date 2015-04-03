@@ -1274,10 +1274,6 @@ void RiftAppSkeleton::display_sdk() const
         rr.Pos.x = i * rr.Size.w;
     }
     ovrHmd_EndFrame(m_Hmd, renderPose, eyeTexture);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glUseProgram(0);
 }
 
 void RiftAppSkeleton::display_client() const
