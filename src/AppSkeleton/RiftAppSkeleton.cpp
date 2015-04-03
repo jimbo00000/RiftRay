@@ -1300,6 +1300,7 @@ void RiftAppSkeleton::display_client() const
     //ovrFrameTiming hmdFrameTiming =
     ovrHmd_BeginFrameTiming(hmd, 0);
 
+    const float fboScale = m_fboScale;
     bindFBO(m_renderBuffer, m_fboScale);
 
     glClearColor(0.f, 0.f, 0.f, 0.f);
@@ -1341,7 +1342,7 @@ void RiftAppSkeleton::display_client() const
 
         const ovrGLTexture& otex = m_EyeTexture[e];
         const ovrRecti& rvp = otex.OGL.Header.RenderViewport;
-        const ovrRecti rsc = getScaledRect(rvp, m_fboScale);
+        const ovrRecti rsc = getScaledRect(rvp, fboScale);
         glViewport(rsc.Pos.x, rsc.Pos.y, rsc.Size.w, rsc.Size.h);
 
         const OVR::Matrix4f proj = ovrMatrix4f_Projection(
@@ -1423,7 +1424,7 @@ void RiftAppSkeleton::display_client() const
             glBindTexture(GL_TEXTURE_2D, m_renderBuffer.tex);
             glUniform1i(eyeShader.GetUniLoc("fboTex"), 0);
 
-            glUniform1f(eyeShader.GetUniLoc("fboScale"), m_fboScale);
+            glUniform1f(eyeShader.GetUniLoc("fboScale"), fboScale);
 
             glDrawElements(
                 GL_TRIANGLES,
