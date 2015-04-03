@@ -1300,22 +1300,11 @@ void RiftAppSkeleton::display_client() const
         OVR::Vector3f(e2v[1]) * m_headSize,
     };
 
-    ovrTrackingState outHmdTrackingState;
+    ovrTrackingState ohts;
     ovrPosef outEyePoses[2];
-    ovrHmd_GetEyePoses(
-        hmd,
-        0,
-        e2v,
-        outEyePoses,
-        &outHmdTrackingState);
-
     ovrPosef outEyePosesScaled[2];
-    ovrHmd_GetEyePoses(
-        hmd,
-        0, ///@todo Frame index
-        e2vScaled, // could this parameter be const?
-        outEyePosesScaled,
-        &outHmdTrackingState);
+    ovrHmd_GetEyePoses(hmd, 0, e2v, outEyePoses, &ohts);
+    ovrHmd_GetEyePoses(hmd, 0, e2vScaled, outEyePosesScaled, &ohts);
 
     for (int eyeIndex = 0; eyeIndex < ovrEye_Count; eyeIndex++)
     {
