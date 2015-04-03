@@ -1191,6 +1191,7 @@ void RiftAppSkeleton::display_sdk() const
     ovrTexture eyeTexture[2];
 
     _resetGLState();
+    const float fboScale = m_fboScale;
 
     // Draw to the surface that will be presented to OVR SDK via ovrHmd_EndFrame
     bool firstEyeRendered = true;
@@ -1247,7 +1248,7 @@ void RiftAppSkeleton::display_sdk() const
                 }
 
                 const ovrRecti& rvpFull = otex.OGL.Header.RenderViewport;
-                const ovrRecti rvpScaled = getScaledRect(rvpFull, m_fboScale);
+                const ovrRecti rvpScaled = getScaledRect(rvpFull, fboScale);
                 const ovrRecti& rvp = rvpScaled;
                 const int yoff = static_cast<int>(static_cast<float>(rvp.Size.h) * m_cinemaScopeFactor);
                 glViewport(rvp.Pos.x, rvp.Pos.y, rvp.Size.w, rvp.Size.h);
@@ -1279,8 +1280,8 @@ void RiftAppSkeleton::display_sdk() const
     {
         const ovrSizei& ts = m_EyeTexture[i].Texture.Header.TextureSize;
         ovrRecti& rr = eyeTexture[i].Header.RenderViewport;
-        rr.Size.w = static_cast<int>(static_cast<float>(ts.w/2) * m_fboScale);
-        rr.Size.h = static_cast<int>(static_cast<float>(ts.h) * m_fboScale);
+        rr.Size.w = static_cast<int>(static_cast<float>(ts.w/2) * fboScale);
+        rr.Size.h = static_cast<int>(static_cast<float>(ts.h) * fboScale);
         rr.Pos.x = i * rr.Size.w;
     }
     ovrHmd_EndFrame(m_Hmd, renderPose, eyeTexture);
