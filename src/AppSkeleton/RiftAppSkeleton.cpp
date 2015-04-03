@@ -1158,7 +1158,7 @@ void RiftAppSkeleton::display_sdk() const
         return;
 
     //const ovrFrameTiming hmdFrameTiming =
-    ovrHmd_BeginFrame(m_Hmd, 0);
+    ovrHmd_BeginFrame(hmd, 0);
 
     ovrVector3f e2v[2] = {
         OVR::Vector3f(m_EyeRenderDesc[0].HmdToEyeViewOffset),
@@ -1273,7 +1273,7 @@ void RiftAppSkeleton::display_sdk() const
         rr.Size.h = static_cast<int>(static_cast<float>(ts.h) * fboScale);
         rr.Pos.x = i * rr.Size.w;
     }
-    ovrHmd_EndFrame(m_Hmd, renderPose, eyeTexture);
+    ovrHmd_EndFrame(hmd, renderPose, eyeTexture);
 }
 
 void RiftAppSkeleton::display_client() const
