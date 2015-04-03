@@ -1286,7 +1286,7 @@ void RiftAppSkeleton::display_client() const
     ovrHmd_BeginFrameTiming(hmd, 0);
 
     const float fboScale = m_fboScale;
-    bindFBO(m_renderBuffer, m_fboScale);
+    bindFBO(m_renderBuffer, fboScale);
 
     glClearColor(0.f, 0.f, 0.f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
