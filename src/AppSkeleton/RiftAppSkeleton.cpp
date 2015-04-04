@@ -183,6 +183,7 @@ void RiftAppSkeleton::initGL()
 
     // sensible initial value?
     allocateFBO(m_renderBuffer, 800, 600);
+    allocateFBO(m_rwwttBuffer, 800, 600);
     m_fm.Init();
 }
 
@@ -341,6 +342,7 @@ void RiftAppSkeleton::_initPresentDistMesh(ShaderWithVariables& shader, int eyeI
 void RiftAppSkeleton::exitVR()
 {
     deallocateFBO(m_renderBuffer);
+    deallocateFBO(m_rwwttBuffer);
     ovrHmd_Destroy(m_Hmd);
     ovr_Shutdown();
 }
@@ -367,7 +369,9 @@ int RiftAppSkeleton::ConfigureRendering()
 
     const ovrSizei texSz = calculateCombinedTextureSize(m_Hmd);
     deallocateFBO(m_renderBuffer);
+    deallocateFBO(m_rwwttBuffer);
     allocateFBO(m_renderBuffer, texSz.w, texSz.h);
+    allocateFBO(m_rwwttBuffer, texSz.w, texSz.h);
 
     ovrGLTexture& texL = m_EyeTexture[ovrEye_Left];
     ovrGLTextureData& texDataL = texL.OGL;
@@ -1180,16 +1184,20 @@ void RiftAppSkeleton::display_sdk() const
     ovrTexture eyeTexture[2];
 
     _resetGLState();
-    const float fboScale = m_fboScale;
+    float fboScale = m_fboScale;
 
     // Draw to the surface that will be presented to OVR SDK via ovrHmd_EndFrame
     bool firstEyeRendered = true;
-    bindFBO(m_renderBuffer);
+
+    const bool doRaymarch = m_galleryScene.GetActiveShaderToy() != NULL;
+    if (doRaymarch)
+        bindFBO(m_rwwttBuffer);
+    else
+        bindFBO(m_renderBuffer);
     {
         glClearColor(0.f, 0.f, 0.f, 0.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        const bool doRaymarch = m_galleryScene.GetActiveShaderToy() != NULL;
         glEnable(GL_SCISSOR_TEST); // cinemaScope letterbox bars
         for (std::vector<IScene*>::const_iterator it = m_scenes.begin();
             it != m_scenes.end();
@@ -1199,9 +1207,10 @@ void RiftAppSkeleton::display_sdk() const
             if (pScene == NULL)
                 continue;
 
+            // Pre-render per-scene actions
+            // These blocks depend on the order scenes were added to the vector.
             if (doRaymarch)
             {
-                // These blocks depend on the order scenes were added to the vector.
                 if (pScene == &m_galleryScene)
                 {
                     glDisable(GL_DEPTH_TEST);
@@ -1214,9 +1223,7 @@ void RiftAppSkeleton::display_sdk() const
                 else if (pScene == &m_floorScene)
                 {
                     glEnable(GL_DEPTH_TEST);
-                    {
-                        break; // out of Scene loop
-                    }
+                    break; // out of Scene loop; no need to draw floor
                 }
             }
 
@@ -1258,6 +1265,39 @@ void RiftAppSkeleton::display_sdk() const
 
                 pScene->RenderForOneEye(pMv, pPersp);
             } // eye loop
+
+            // Post-render scene-specific actions
+            if (doRaymarch)
+            {
+                if (pScene == &m_galleryScene)
+                {
+                    // rwwtt scene is now rendered to downscaled buffer.
+                    // Stay bound to this FBO for UI accoutrements rendering.
+                    bindFBO(m_renderBuffer);
+
+                    glDisable(GL_SCISSOR_TEST); // disable cinemascope scissor to fill rendet target
+                    glClearColor(0.f, 0.f, 1.f, 0.f);
+                    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+                    // Blit contents of downscaled
+                    const GLuint prog = m_presentFbo.prog();
+                    glUseProgram(prog);
+                    m_presentFbo.bindVAO();
+                    {
+                        glActiveTexture(GL_TEXTURE0);
+                        glBindTexture(GL_TEXTURE_2D, m_rwwttBuffer.tex);
+                        glUniform1i(m_presentFbo.GetUniLoc("fboTex"), 0);
+                        glUniform1f(m_presentFbo.GetUniLoc("fboScale"), m_fboScale);
+                        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+                    }
+                    glBindVertexArray(0);
+                    glUseProgram(0);
+                    fboScale = 1.f;
+
+                    glEnable(GL_SCISSOR_TEST); // re-enable for cinemascope
+                }
+            }
+
         } // scene loop
         glDisable(GL_SCISSOR_TEST); // cinemaScope letterbox bars
     }
