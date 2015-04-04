@@ -295,10 +295,10 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
     if (m_keyStates[GLFW_KEY_RIGHT] != GLFW_RELEASE) { keyboardMove += right; }
 
     float mag = 1.0f;
-    if (m_keyStates[GLFW_KEY_LEFT_SHIFT] != GLFW_RELEASE)
-        mag *= 0.1f;
-    if (m_keyStates[GLFW_KEY_LEFT_CONTROL] != GLFW_RELEASE)
-        mag *= 10.0f;
+    if (m_keyStates[GLFW_KEY_LEFT_SHIFT] != GLFW_RELEASE) mag *= 0.1f;
+    if (m_keyStates[GLFW_KEY_LEFT_CONTROL] != GLFW_RELEASE) mag *= 10.0f;
+    if (m_keyStates[GLFW_KEY_RIGHT_SHIFT] != GLFW_RELEASE) mag *= 0.1f;
+    if (m_keyStates[GLFW_KEY_RIGHT_CONTROL] != GLFW_RELEASE) mag *= 10.0f;
 
     // Yaw keys
     g_app.m_keyboardYaw = 0.0f;
