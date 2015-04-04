@@ -1189,11 +1189,7 @@ void RiftAppSkeleton::display_sdk() const
     // Draw to the surface that will be presented to OVR SDK via ovrHmd_EndFrame
     bool firstEyeRendered = true;
 
-    const bool doRaymarch = m_galleryScene.GetActiveShaderToy() != NULL;
-    if (doRaymarch)
-        bindFBO(m_rwwttBuffer);
-    else
-        bindFBO(m_renderBuffer);
+    bindFBO(m_rwwttBuffer);
     {
         glClearColor(0.f, 0.f, 0.f, 0.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1209,18 +1205,33 @@ void RiftAppSkeleton::display_sdk() const
 
             // Pre-render per-scene actions
             // These blocks depend on the order scenes were added to the vector.
-            if (doRaymarch)
+            const bool doRaymarch = m_galleryScene.GetActiveShaderToy() != NULL;
+            if (pScene == &m_galleryScene)
             {
-                if (pScene == &m_galleryScene)
+                if (doRaymarch)
                 {
                     glDisable(GL_DEPTH_TEST);
                     glDepthMask(GL_FALSE);
                 }
-                else if (pScene == &m_ovrScene)
+                else
                 {
-                    glDepthMask(GL_TRUE);
+                    // A state object would be nice here, disable scissoring temporarily.
+                    bindFBO(m_renderBuffer);
+                    glDisable(GL_SCISSOR_TEST); // disable cinemascope scissor to fill render target
+                    glClearColor(0.f, 0.f, 0.f, 0.f);
+                    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                    glEnable(GL_SCISSOR_TEST); // re-enable for cinemascope
+                    fboScale = 1.f;
                 }
-                else if (pScene == &m_floorScene)
+            }
+            else if (pScene == &m_ovrScene)
+            {
+                if (doRaymarch)
+                    glDepthMask(GL_TRUE);
+            }
+            else if (pScene == &m_floorScene)
+            {
+                if (doRaymarch)
                 {
                     glEnable(GL_DEPTH_TEST);
                     break; // out of Scene loop; no need to draw floor
@@ -1267,35 +1278,32 @@ void RiftAppSkeleton::display_sdk() const
             } // eye loop
 
             // Post-render scene-specific actions
-            if (doRaymarch)
+            if (doRaymarch && (pScene == &m_galleryScene))
             {
-                if (pScene == &m_galleryScene)
+                // rwwtt scene is now rendered to downscaled buffer.
+                // Stay bound to this FBO for UI accoutrements rendering.
+                bindFBO(m_renderBuffer);
+
+                glDisable(GL_SCISSOR_TEST); // disable cinemascope scissor to fill render target
+                glClearColor(0.f, 0.f, 0.f, 0.f);
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+                // Blit contents of downscaled
+                const GLuint prog = m_presentFbo.prog();
+                glUseProgram(prog);
+                m_presentFbo.bindVAO();
                 {
-                    // rwwtt scene is now rendered to downscaled buffer.
-                    // Stay bound to this FBO for UI accoutrements rendering.
-                    bindFBO(m_renderBuffer);
-
-                    glDisable(GL_SCISSOR_TEST); // disable cinemascope scissor to fill rendet target
-                    glClearColor(0.f, 0.f, 1.f, 0.f);
-                    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-                    // Blit contents of downscaled
-                    const GLuint prog = m_presentFbo.prog();
-                    glUseProgram(prog);
-                    m_presentFbo.bindVAO();
-                    {
-                        glActiveTexture(GL_TEXTURE0);
-                        glBindTexture(GL_TEXTURE_2D, m_rwwttBuffer.tex);
-                        glUniform1i(m_presentFbo.GetUniLoc("fboTex"), 0);
-                        glUniform1f(m_presentFbo.GetUniLoc("fboScale"), m_fboScale);
-                        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-                    }
-                    glBindVertexArray(0);
-                    glUseProgram(0);
-                    fboScale = 1.f;
-
-                    glEnable(GL_SCISSOR_TEST); // re-enable for cinemascope
+                    glActiveTexture(GL_TEXTURE0);
+                    glBindTexture(GL_TEXTURE_2D, m_rwwttBuffer.tex);
+                    glUniform1i(m_presentFbo.GetUniLoc("fboTex"), 0);
+                    glUniform1f(m_presentFbo.GetUniLoc("fboScale"), m_fboScale);
+                    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
                 }
+                glBindVertexArray(0);
+                glUseProgram(0);
+                fboScale = 1.f;
+
+                glEnable(GL_SCISSOR_TEST); // re-enable for cinemascope
             }
 
         } // scene loop
