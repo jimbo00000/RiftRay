@@ -1155,6 +1155,26 @@ const ovrRecti getScaledRect(const ovrRecti& r, float s)
     return scaled;
 }
 
+///@brief Blit the contents of the downscaled render buffer to the full-sized
+void RiftAppSkeleton::_StretchBlitDownscaledBuffer() const
+{
+    glClearColor(0.f, 0.f, 0.f, 0.f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    const GLuint prog = m_presentFbo.prog();
+    glUseProgram(prog);
+    m_presentFbo.bindVAO();
+    {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_rwwttBuffer.tex);
+        glUniform1i(m_presentFbo.GetUniLoc("fboTex"), 0);
+        glUniform1f(m_presentFbo.GetUniLoc("fboScale"), m_fboScale);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    }
+    glBindVertexArray(0);
+    glUseProgram(0);
+}
+
 void RiftAppSkeleton::display_sdk() const
 {
     ovrHmd hmd = m_Hmd;
@@ -1282,28 +1302,12 @@ void RiftAppSkeleton::display_sdk() const
             {
                 // rwwtt scene is now rendered to downscaled buffer.
                 // Stay bound to this FBO for UI accoutrements rendering.
-                bindFBO(m_renderBuffer);
-
                 glDisable(GL_SCISSOR_TEST); // disable cinemascope scissor to fill render target
-                glClearColor(0.f, 0.f, 0.f, 0.f);
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-                // Blit contents of downscaled
-                const GLuint prog = m_presentFbo.prog();
-                glUseProgram(prog);
-                m_presentFbo.bindVAO();
-                {
-                    glActiveTexture(GL_TEXTURE0);
-                    glBindTexture(GL_TEXTURE_2D, m_rwwttBuffer.tex);
-                    glUniform1i(m_presentFbo.GetUniLoc("fboTex"), 0);
-                    glUniform1f(m_presentFbo.GetUniLoc("fboScale"), m_fboScale);
-                    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-                }
-                glBindVertexArray(0);
-                glUseProgram(0);
-                fboScale = 1.f;
-
+                bindFBO(m_renderBuffer);
+                _StretchBlitDownscaledBuffer();
                 glEnable(GL_SCISSOR_TEST); // re-enable for cinemascope
+
+                fboScale = 1.f;
             }
 
         } // scene loop

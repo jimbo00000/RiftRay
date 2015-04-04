@@ -101,6 +101,7 @@ protected:
         const ovrRecti& rvp,
         const float* pMvLocal) const;
     void _StoreHmdPose(const ovrPosef& eyePose) const;
+    void _StretchBlitDownscaledBuffer() const;
     void _ToggleShaderWorld();
 
     virtual glm::mat4 makeWorldToEyeMatrix() const;
