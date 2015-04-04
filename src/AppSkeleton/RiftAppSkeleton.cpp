@@ -1304,25 +1304,25 @@ void RiftAppSkeleton::display_client() const
     glClearColor(0.f, 0.f, 0.f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    bool firstEyeRendered = true;
     for (int eyeIndex = 0; eyeIndex < ovrEye_Count; eyeIndex++)
     {
         const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
-
         const ovrPosef eyePose = outEyePoses[e];
-        m_eyePoseCached = eyePose; // cache this for movement direction
-        _StoreHmdPose(eyePose);
-
         const ovrGLTexture& otex = m_EyeTexture[e];
+        const ovrEyeRenderDesc& erd = m_EyeRenderDesc[e];
+
+        if (firstEyeRendered)
+        {
+            _StoreHmdPose(eyePose);
+        }
+
         const ovrRecti& rvp = otex.OGL.Header.RenderViewport;
         const ovrRecti rsc = getScaledRect(rvp, fboScale);
         glViewport(rsc.Pos.x, rsc.Pos.y, rsc.Size.w, rsc.Size.h);
 
-        const OVR::Matrix4f proj = ovrMatrix4f_Projection(
-            m_EyeRenderDesc[e].Fov,
-            0.01f, 10000.0f, true);
-
-        ///@todo Should we be using this variable?
-        //m_EyeRenderDesc[eye].DistortedViewport;
+        const OVR::Matrix4f proj = ovrMatrix4f_Projection(erd.Fov, 0.01f, 10000.0f, true);
+        //m_EyeRenderDesc[eye].DistortedViewport; ///@todo Should we be using this variable?
         const ovrPosef eyePoseScaled = outEyePosesScaled[e];
         const glm::mat4 viewLocal = makeMatrixFromPose(eyePose);
         const glm::mat4 viewLocalScaled = makeMatrixFromPose(eyePoseScaled, m_headSize);
