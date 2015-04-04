@@ -623,6 +623,11 @@ void mouseDown(GLFWwindow* pWindow, int button, int action, int mods)
         which_button = -1;
     }
 
+    if ((action==GLFW_PRESS)&&(button==GLFW_MOUSE_BUTTON_MIDDLE))
+    {
+        g_app.m_dashScene.m_bDraw = !g_app.m_dashScene.m_bDraw;
+    }
+
     if      ((button==GLFW_MOUSE_BUTTON_LEFT)&&(action==GLFW_PRESS  )) g_app.m_dashScene.SendMouseClick(1);
     else if ((button==GLFW_MOUSE_BUTTON_LEFT)&&(action==GLFW_RELEASE)) g_app.m_dashScene.SendMouseClick(0);
 }

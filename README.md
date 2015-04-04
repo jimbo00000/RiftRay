@@ -40,6 +40,7 @@ Gamepad and Hydra are supported, but optional. You can get by with only the HMD 
 
 #### Mouse:  
 - **Wheel - adjust vertical** - Cinemascope | Letterbox | vFOV  
+- **Middle click** - Toggle Tweakbar pane  
 - **Left click & drag** - Yaw  
 - **Right click & drag** - Movement in horizontal plane  
 - **Middle click & drag** - Movement in vertical plane  
