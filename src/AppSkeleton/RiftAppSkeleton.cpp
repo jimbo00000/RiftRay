@@ -1284,12 +1284,6 @@ void RiftAppSkeleton::display_client() const
     //ovrFrameTiming hmdFrameTiming =
     ovrHmd_BeginFrameTiming(hmd, 0);
 
-    const float fboScale = m_fboScale;
-    bindFBO(m_renderBuffer, fboScale);
-
-    glClearColor(0.f, 0.f, 0.f, 0.f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     ovrVector3f e2v[2] = {
         OVR::Vector3f(m_EyeRenderDesc[0].HmdToEyeViewOffset),
         OVR::Vector3f(m_EyeRenderDesc[1].HmdToEyeViewOffset),
@@ -1304,6 +1298,11 @@ void RiftAppSkeleton::display_client() const
     ovrPosef outEyePosesScaled[2];
     ovrHmd_GetEyePoses(hmd, 0, e2v, outEyePoses, &ohts);
     ovrHmd_GetEyePoses(hmd, 0, e2vScaled, outEyePosesScaled, &ohts);
+
+    const float fboScale = m_fboScale;
+    bindFBO(m_renderBuffer, fboScale);
+    glClearColor(0.f, 0.f, 0.f, 0.f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for (int eyeIndex = 0; eyeIndex < ovrEye_Count; eyeIndex++)
     {
