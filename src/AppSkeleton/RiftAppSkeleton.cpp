@@ -1363,12 +1363,12 @@ void RiftAppSkeleton::display_sdk() const
 
 void RiftAppSkeleton::display_client() const
 {
-    const ovrHmd hmd = m_Hmd;
+    ovrHmd hmd = m_Hmd;
     if (hmd == NULL)
         return;
 
-    //ovrFrameTiming hmdFrameTiming =
-    ovrHmd_BeginFrameTiming(hmd, 0);
+    //const ovrFrameTiming hmdFrameTiming =
+    ovrHmd_BeginFrame(hmd, 0);
 
     ovrVector3f e2v[2] = {
         OVR::Vector3f(m_EyeRenderDesc[0].HmdToEyeViewOffset),
@@ -1385,46 +1385,16 @@ void RiftAppSkeleton::display_client() const
     ovrHmd_GetEyePoses(hmd, 0, e2v, outEyePoses, &ohts);
     ovrHmd_GetEyePoses(hmd, 0, e2vScaled, outEyePosesScaled, &ohts);
 
-    const float fboScale = m_fboScale;
-    bindFBO(m_renderBuffer, fboScale);
-    glClearColor(0.f, 0.f, 0.f, 0.f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    ovrPosef renderPose[ovrEye_Count]; // Pass to ovrHmd_EndFrame post-rendering
+    ovrTexture eyeTexture[ovrEye_Count]; // Pass to ovrHmd_EndFrame post-rendering
+    glm::mat4 eyeProjMatrix[ovrEye_Count];
+    glm::mat4 eyeMvMtxLocal[ovrEye_Count];
+    glm::mat4 eyeMvMtxWorld[ovrEye_Count];
+    ovrRecti renderVp[ovrEye_Count];
+    _CalculatePerEyeRenderParams(outEyePoses, outEyePosesScaled, renderPose, eyeTexture, eyeProjMatrix, eyeMvMtxLocal, eyeMvMtxWorld, renderVp);
 
-    bool firstEyeRendered = true;
-    for (int eyeIndex = 0; eyeIndex < ovrEye_Count; eyeIndex++)
-    {
-        const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
-        const ovrPosef eyePose = outEyePoses[e];
-        const ovrGLTexture& otex = m_EyeTexture[e];
-        const ovrEyeRenderDesc& erd = m_EyeRenderDesc[e];
-
-        if (firstEyeRendered)
-        {
-            _StoreHmdPose(eyePose);
-        }
-
-        const ovrRecti& rvp = otex.OGL.Header.RenderViewport;
-        const ovrRecti rsc = getScaledRect(rvp, fboScale);
-        glViewport(rsc.Pos.x, rsc.Pos.y, rsc.Size.w, rsc.Size.h);
-
-        const OVR::Matrix4f proj = ovrMatrix4f_Projection(erd.Fov, 0.01f, 10000.0f, true);
-        //m_EyeRenderDesc[eye].DistortedViewport; ///@todo Should we be using this variable?
-        const ovrPosef eyePoseScaled = outEyePosesScaled[e];
-        const glm::mat4 viewLocal = makeMatrixFromPose(eyePose);
-        const glm::mat4 viewLocalScaled = makeMatrixFromPose(eyePoseScaled, m_headSize);
-        const glm::mat4 viewWorld = makeWorldToChassisMatrix() * viewLocalScaled;
-
-        _resetGLState();
-
-        _DrawScenes(
-            glm::value_ptr(glm::inverse(viewWorld)),
-            &proj.Transposed().M[0][0],
-            rsc,
-            glm::value_ptr(glm::inverse(viewLocal))
-            );
-    }
-    unbindFBO();
-
+    _resetGLState();
+    _RenderScenesToStereoBuffer(hmd, eyeProjMatrix, eyeMvMtxLocal, eyeMvMtxWorld, renderVp);
 
     // Set full viewport for presentation to Rift display
     const int w = m_Cfg.OGL.Header.BackBufferSize.w;
@@ -1482,6 +1452,7 @@ void RiftAppSkeleton::display_client() const
             glBindTexture(GL_TEXTURE_2D, m_renderBuffer.tex);
             glUniform1i(eyeShader.GetUniLoc("fboTex"), 0);
 
+            const float fboScale = 1.f;
             glUniform1f(eyeShader.GetUniLoc("fboScale"), fboScale);
 
             glDrawElements(
