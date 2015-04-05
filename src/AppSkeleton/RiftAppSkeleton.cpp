@@ -1203,12 +1203,26 @@ void RiftAppSkeleton::display_sdk() const
     ovrPosef renderPose[2];
     ovrTexture eyeTexture[2];
 
+    // Calculate eye poses to pass to OVR SDK after rendering to buffer
+    for (int eyeIndex=0; eyeIndex<ovrEye_Count; eyeIndex++)
+    {
+        const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
+        const ovrPosef eyePose = outEyePoses[e];
+        const ovrGLTexture& otex = m_EyeTexture[e];
+
+        renderPose[e] = eyePose;
+        eyeTexture[e] = otex.Texture;
+
+        if (eyeIndex == 0)
+        {
+            _StoreHmdPose(eyePose);
+        }
+    }
+
     _resetGLState();
     float fboScale = m_fboScale;
 
     // Draw to the surface that will be presented to OVR SDK via ovrHmd_EndFrame
-    bool firstEyeRendered = true;
-
     bindFBO(m_rwwttBuffer);
     {
         glClearColor(0.f, 0.f, 0.f, 0.f);
@@ -1265,15 +1279,6 @@ void RiftAppSkeleton::display_sdk() const
                 const ovrPosef eyePose = outEyePoses[e];
                 const ovrGLTexture& otex = m_EyeTexture[e];
                 const ovrEyeRenderDesc& erd = m_EyeRenderDesc[e];
-
-                renderPose[e] = eyePose;
-                eyeTexture[e] = otex.Texture;
-
-                if (firstEyeRendered)
-                {
-                    _StoreHmdPose(eyePose);
-                    firstEyeRendered = false;
-                }
 
                 // Viewport setup
                 const ovrRecti& rvpFull = otex.OGL.Header.RenderViewport;
