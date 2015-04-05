@@ -1307,7 +1307,7 @@ void RiftAppSkeleton::display_sdk() const
     glm::mat4 eyeProjMatrix[ovrEye_Count];
     glm::mat4 eyeMvMtxLocal[ovrEye_Count];
     glm::mat4 eyeMvMtxWorld[ovrEye_Count];
-    ovrRecti rvpFull[ovrEye_Count];
+    ovrRecti renderVp[ovrEye_Count];
 
     // Calculate eye poses for rendering and to pass to OVR SDK after rendering
     for (int eyeIndex=0; eyeIndex<ovrEye_Count; eyeIndex++)
@@ -1319,7 +1319,7 @@ void RiftAppSkeleton::display_sdk() const
 
         renderPose[e] = eyePose;
         eyeTexture[e] = otex.Texture;
-        rvpFull[e] = otex.OGL.Header.RenderViewport;
+        renderVp[e] = otex.OGL.Header.RenderViewport;
 
         const OVR::Matrix4f proj = ovrMatrix4f_Projection(erd.Fov, 0.01f, 10000.0f, true);
         eyeProjMatrix[e] = glm::make_mat4(&proj.Transposed().M[0][0]);
@@ -1339,7 +1339,7 @@ void RiftAppSkeleton::display_sdk() const
     }
 
     _resetGLState();
-    _RenderScenesToStereoBuffer(hmd, eyeProjMatrix, eyeMvMtxLocal, eyeMvMtxWorld, rvpFull);
+    _RenderScenesToStereoBuffer(hmd, eyeProjMatrix, eyeMvMtxLocal, eyeMvMtxWorld, renderVp);
 
     ovrHmd_EndFrame(hmd, renderPose, eyeTexture);
 }
