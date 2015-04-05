@@ -1342,16 +1342,6 @@ void RiftAppSkeleton::display_sdk() const
     _resetGLState();
     _RenderScenesToStereoBuffer(hmd, eyeProjMatrix, eyeMvMtxLocal, eyeMvMtxWorld, rvpFull);
 
-    // Inform SDK of downscaled texture target size(performance scaling)
-    for (int i=0; i<ovrEye_Count; ++i)
-    {
-        const ovrSizei& ts = m_EyeTexture[i].Texture.Header.TextureSize;
-        ovrRecti& rr = eyeTexture[i].Header.RenderViewport;
-        const float fboScale = 1.f; // buffer is full-sized
-        rr.Size.w = static_cast<int>(static_cast<float>(ts.w/2) * fboScale);
-        rr.Size.h = static_cast<int>(static_cast<float>(ts.h) * fboScale);
-        rr.Pos.x = i * rr.Size.w;
-    }
     ovrHmd_EndFrame(hmd, renderPose, eyeTexture);
 }
 
