@@ -1405,12 +1405,12 @@ void RiftAppSkeleton::display_client() const
     unbindFBO();
 
 
-    // Set full viewport...?
+    // Set full viewport for presentation to Rift display
     const int w = m_Cfg.OGL.Header.BackBufferSize.w;
     const int h = m_Cfg.OGL.Header.BackBufferSize.h;
     glViewport(0, 0, w, h);
 
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor(0.f, 0.f, 0.f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
