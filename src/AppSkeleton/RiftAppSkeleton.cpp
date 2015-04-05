@@ -1203,8 +1203,11 @@ void RiftAppSkeleton::display_sdk() const
     ovrPosef renderPose[ovrEye_Count];
     ovrTexture eyeTexture[ovrEye_Count];
     OVR::Matrix4f eyeProjMatrix[ovrEye_Count];
+    glm::mat4 eyeMvMtxLocal[ovrEye_Count];
+    glm::mat4 eyeMvMtxLocalScaled[ovrEye_Count];
+    glm::mat4 eyeMvMtxWorld[ovrEye_Count];
 
-    // Calculate eye poses to pass to OVR SDK after rendering to buffer
+    // Calculate eye poses for rendering and to pass to OVR SDK after rendering
     for (int eyeIndex=0; eyeIndex<ovrEye_Count; eyeIndex++)
     {
         const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
@@ -1216,6 +1219,11 @@ void RiftAppSkeleton::display_sdk() const
         eyeTexture[e] = otex.Texture;
 
         eyeProjMatrix[e] = ovrMatrix4f_Projection(erd.Fov, 0.01f, 10000.0f, true);
+
+        const ovrPosef eyePoseScaled = outEyePosesScaled[e];
+        eyeMvMtxLocal[e] = makeMatrixFromPose(eyePose);
+        eyeMvMtxLocalScaled[e] = makeMatrixFromPose(eyePoseScaled, m_headSize);
+        eyeMvMtxWorld[e] = makeWorldToChassisMatrix() * eyeMvMtxLocalScaled[e];
 
         if (eyeIndex == 0)
         {
@@ -1292,13 +1300,9 @@ void RiftAppSkeleton::display_sdk() const
                 glScissor(0, yoff/2, rvp.Pos.x+rvp.Size.w, rvp.Size.h-yoff); // Assume side-by-side single render texture
 
                 // Matrix setup
-                const ovrPosef eyePoseScaled = outEyePosesScaled[e];
-                const glm::mat4 viewLocal = makeMatrixFromPose(eyePose);
-                const glm::mat4 viewLocalScaled = makeMatrixFromPose(eyePoseScaled, m_headSize);
-                const glm::mat4 viewWorld = makeWorldToChassisMatrix() * viewLocalScaled;
                 const float* pPersp = &eyeProjMatrix[e].Transposed().M[0][0];
-                const float* pMvWorld = glm::value_ptr(glm::inverse(viewWorld));
-                const float* pMvLocal = glm::value_ptr(glm::inverse(viewLocal));
+                const float* pMvWorld = glm::value_ptr(glm::inverse(eyeMvMtxWorld[e]));
+                const float* pMvLocal = glm::value_ptr(glm::inverse(eyeMvMtxLocal[e]));
                 const float* pMv = pScene->m_bChassisLocalSpace ? pMvLocal : pMvWorld;
 
                 pScene->RenderForOneEye(pMv, pPersp);
