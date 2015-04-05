@@ -1278,6 +1278,51 @@ void RiftAppSkeleton::_StretchBlitDownscaledBuffer() const
     glUseProgram(0);
 }
 
+///@brief Populate the given arrrays of size eyeCount with per-eye rendering parameters.
+void RiftAppSkeleton::_CalculatePerEyeRenderParams(
+    const ovrPosef eyePoses[2], // [in] Eye poses in local space from ovrHmd_GetEyePoses
+    const ovrPosef eyePosesScaled[2], // [in] Eye poses from ovrHmd_GetEyePoses with head size applied
+    ovrPosef* renderPose, // [out]
+    ovrTexture* eyeTexture, // [out]
+    glm::mat4* eyeProjMatrix, // [out]
+    glm::mat4* eyeMvMtxLocal, // [out]
+    glm::mat4* eyeMvMtxWorld, // [out]
+    ovrRecti* renderVp // [out]
+    ) const
+{
+    ovrHmd hmd = m_Hmd;
+    if (hmd == NULL)
+        return;
+
+    // Calculate eye poses for rendering and to pass to OVR SDK after rendering
+    for (int eyeIndex=0; eyeIndex<ovrEye_Count; eyeIndex++)
+    {
+        const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
+        const ovrPosef eyePose = eyePoses[e];
+        const ovrPosef eyePoseScaled = eyePosesScaled[e];
+        const ovrGLTexture& otex = m_EyeTexture[e];
+        const ovrEyeRenderDesc& erd = m_EyeRenderDesc[e];
+
+        renderPose[e] = eyePose;
+        eyeTexture[e] = otex.Texture;
+        renderVp[e] = otex.OGL.Header.RenderViewport;
+
+        const OVR::Matrix4f proj = ovrMatrix4f_Projection(erd.Fov, 0.01f, 10000.0f, true);
+        eyeProjMatrix[e] = glm::make_mat4(&proj.Transposed().M[0][0]);
+        eyeMvMtxLocal[e] = makeMatrixFromPose(eyePose);
+        const glm::mat4 eyeMvMtxLocalScaled = makeMatrixFromPose(eyePoseScaled, m_headSize);
+        eyeMvMtxWorld[e] = makeWorldToChassisMatrix() * eyeMvMtxLocalScaled;
+        // These two matrices will be used directly for rendering
+        eyeMvMtxLocal[e] = glm::inverse(eyeMvMtxLocal[e]);
+        eyeMvMtxWorld[e] = glm::inverse(eyeMvMtxWorld[e]);
+
+        if (eyeIndex == 0)
+        {
+            _StoreHmdPose(eyePose);
+        }
+    }
+}
+
 void RiftAppSkeleton::display_sdk() const
 {
     ovrHmd hmd = m_Hmd;
@@ -1308,35 +1353,7 @@ void RiftAppSkeleton::display_sdk() const
     glm::mat4 eyeMvMtxLocal[ovrEye_Count];
     glm::mat4 eyeMvMtxWorld[ovrEye_Count];
     ovrRecti renderVp[ovrEye_Count];
-
-    // Calculate eye poses for rendering and to pass to OVR SDK after rendering
-    for (int eyeIndex=0; eyeIndex<ovrEye_Count; eyeIndex++)
-    {
-        const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
-        const ovrPosef eyePose = outEyePoses[e];
-        const ovrGLTexture& otex = m_EyeTexture[e];
-        const ovrEyeRenderDesc& erd = m_EyeRenderDesc[e];
-
-        renderPose[e] = eyePose;
-        eyeTexture[e] = otex.Texture;
-        renderVp[e] = otex.OGL.Header.RenderViewport;
-
-        const OVR::Matrix4f proj = ovrMatrix4f_Projection(erd.Fov, 0.01f, 10000.0f, true);
-        eyeProjMatrix[e] = glm::make_mat4(&proj.Transposed().M[0][0]);
-
-        const ovrPosef eyePoseScaled = outEyePosesScaled[e];
-        eyeMvMtxLocal[e] = makeMatrixFromPose(eyePose);
-        const glm::mat4 eyeMvMtxLocalScaled = makeMatrixFromPose(eyePoseScaled, m_headSize);
-        eyeMvMtxWorld[e] = makeWorldToChassisMatrix() * eyeMvMtxLocalScaled;
-        // These two matrices will be used directly for rendering
-        eyeMvMtxLocal[e] = glm::inverse(eyeMvMtxLocal[e]);
-        eyeMvMtxWorld[e] = glm::inverse(eyeMvMtxWorld[e]);
-
-        if (eyeIndex == 0)
-        {
-            _StoreHmdPose(eyePose);
-        }
-    }
+    _CalculatePerEyeRenderParams(outEyePoses, outEyePosesScaled, renderPose, eyeTexture, eyeProjMatrix, eyeMvMtxLocal, eyeMvMtxWorld, renderVp);
 
     _resetGLState();
     _RenderScenesToStereoBuffer(hmd, eyeProjMatrix, eyeMvMtxLocal, eyeMvMtxWorld, renderVp);

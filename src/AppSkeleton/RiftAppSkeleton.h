@@ -100,6 +100,15 @@ protected:
         const float* pPersp,
         const ovrRecti& rvp,
         const float* pMvLocal) const;
+    void _CalculatePerEyeRenderParams(
+        const ovrPosef eyePoses[2],
+        const ovrPosef eyePosesScaled[2],
+        ovrPosef* renderPose,
+        ovrTexture* eyeTexture,
+        glm::mat4* eyeProjMatrix,
+        glm::mat4* eyeMvMtxLocal,
+        glm::mat4* eyeMvMtxWorld,
+        ovrRecti* renderVp) const;
     void _RenderScenesToStereoBuffer(
         const ovrHmd hmd,
         const glm::mat4* eyeProjMatrix,
