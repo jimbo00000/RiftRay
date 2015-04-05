@@ -1155,86 +1155,18 @@ const ovrRecti getScaledRect(const ovrRecti& r, float s)
     return scaled;
 }
 
-///@brief Blit the contents of the downscaled render buffer to the full-sized
-void RiftAppSkeleton::_StretchBlitDownscaledBuffer() const
+///@brief Draw all scenes to a 
+void RiftAppSkeleton::_RenderScenesToStereoBuffer(
+    const ovrHmd hmd,
+    const OVR::Matrix4f* eyeProjMatrix,
+    const glm::mat4* eyeMvMtxLocal,
+    const glm::mat4* eyeMvMtxWorld,
+    const ovrRecti* rvpFull
+    ) const
 {
-    glClearColor(0.f, 0.f, 0.f, 0.f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    const GLuint prog = m_presentFbo.prog();
-    glUseProgram(prog);
-    m_presentFbo.bindVAO();
-    {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_rwwttBuffer.tex);
-        glUniform1i(m_presentFbo.GetUniLoc("fboTex"), 0);
-        glUniform1f(m_presentFbo.GetUniLoc("fboScale"), m_fboScale);
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-    }
-    glBindVertexArray(0);
-    glUseProgram(0);
-}
-
-void RiftAppSkeleton::display_sdk() const
-{
-    ovrHmd hmd = m_Hmd;
     if (hmd == NULL)
         return;
 
-    //const ovrFrameTiming hmdFrameTiming =
-    ovrHmd_BeginFrame(hmd, 0);
-
-    ovrVector3f e2v[2] = {
-        OVR::Vector3f(m_EyeRenderDesc[0].HmdToEyeViewOffset),
-        OVR::Vector3f(m_EyeRenderDesc[1].HmdToEyeViewOffset),
-    };
-    ovrVector3f e2vScaled[2] = {
-        OVR::Vector3f(e2v[0]) * m_headSize,
-        OVR::Vector3f(e2v[1]) * m_headSize,
-    };
-
-    ovrTrackingState ohts;
-    ovrPosef outEyePoses[2];
-    ovrPosef outEyePosesScaled[2];
-    ovrHmd_GetEyePoses(hmd, 0, e2v, outEyePoses, &ohts);
-    ovrHmd_GetEyePoses(hmd, 0, e2vScaled, outEyePosesScaled, &ohts);
-
-    ovrPosef renderPose[ovrEye_Count]; // Pass to ovrHmd_EndFrame post-rendering
-    ovrTexture eyeTexture[ovrEye_Count]; // Pass to ovrHmd_EndFrame post-rendering
-    OVR::Matrix4f eyeProjMatrix[ovrEye_Count];
-    glm::mat4 eyeMvMtxLocal[ovrEye_Count];
-    glm::mat4 eyeMvMtxLocalScaled[ovrEye_Count];
-    glm::mat4 eyeMvMtxWorld[ovrEye_Count];
-    ovrRecti rvpFull[ovrEye_Count];
-
-    // Calculate eye poses for rendering and to pass to OVR SDK after rendering
-    for (int eyeIndex=0; eyeIndex<ovrEye_Count; eyeIndex++)
-    {
-        const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
-        const ovrPosef eyePose = outEyePoses[e];
-        const ovrGLTexture& otex = m_EyeTexture[e];
-        const ovrEyeRenderDesc& erd = m_EyeRenderDesc[e];
-
-        renderPose[e] = eyePose;
-        eyeTexture[e] = otex.Texture;
-        rvpFull[e] = otex.OGL.Header.RenderViewport;
-        eyeProjMatrix[e] = ovrMatrix4f_Projection(erd.Fov, 0.01f, 10000.0f, true);
-
-        const ovrPosef eyePoseScaled = outEyePosesScaled[e];
-        eyeMvMtxLocal[e] = makeMatrixFromPose(eyePose);
-        eyeMvMtxLocalScaled[e] = makeMatrixFromPose(eyePoseScaled, m_headSize);
-        eyeMvMtxWorld[e] = makeWorldToChassisMatrix() * eyeMvMtxLocalScaled[e];
-        // These two matrices will be used directly for rendering
-        eyeMvMtxLocal[e] = glm::inverse(eyeMvMtxLocal[e]);
-        eyeMvMtxWorld[e] = glm::inverse(eyeMvMtxWorld[e]);
-
-        if (eyeIndex == 0)
-        {
-            _StoreHmdPose(eyePose);
-        }
-    }
-
-    _resetGLState();
     float fboScale = m_fboScale;
 
     // Draw to the surface that will be presented to OVR SDK via ovrHmd_EndFrame
@@ -1324,12 +1256,96 @@ void RiftAppSkeleton::display_sdk() const
         glDisable(GL_SCISSOR_TEST); // cinemaScope letterbox bars
     }
     unbindFBO();
+}
+
+///@brief Blit the contents of the downscaled render buffer to the full-sized
+void RiftAppSkeleton::_StretchBlitDownscaledBuffer() const
+{
+    glClearColor(0.f, 0.f, 0.f, 0.f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    const GLuint prog = m_presentFbo.prog();
+    glUseProgram(prog);
+    m_presentFbo.bindVAO();
+    {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_rwwttBuffer.tex);
+        glUniform1i(m_presentFbo.GetUniLoc("fboTex"), 0);
+        glUniform1f(m_presentFbo.GetUniLoc("fboScale"), m_fboScale);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    }
+    glBindVertexArray(0);
+    glUseProgram(0);
+}
+
+void RiftAppSkeleton::display_sdk() const
+{
+    ovrHmd hmd = m_Hmd;
+    if (hmd == NULL)
+        return;
+
+    //const ovrFrameTiming hmdFrameTiming =
+    ovrHmd_BeginFrame(hmd, 0);
+
+    ovrVector3f e2v[2] = {
+        OVR::Vector3f(m_EyeRenderDesc[0].HmdToEyeViewOffset),
+        OVR::Vector3f(m_EyeRenderDesc[1].HmdToEyeViewOffset),
+    };
+    ovrVector3f e2vScaled[2] = {
+        OVR::Vector3f(e2v[0]) * m_headSize,
+        OVR::Vector3f(e2v[1]) * m_headSize,
+    };
+
+    ovrTrackingState ohts;
+    ovrPosef outEyePoses[2];
+    ovrPosef outEyePosesScaled[2];
+    ovrHmd_GetEyePoses(hmd, 0, e2v, outEyePoses, &ohts);
+    ovrHmd_GetEyePoses(hmd, 0, e2vScaled, outEyePosesScaled, &ohts);
+
+    ovrPosef renderPose[ovrEye_Count]; // Pass to ovrHmd_EndFrame post-rendering
+    ovrTexture eyeTexture[ovrEye_Count]; // Pass to ovrHmd_EndFrame post-rendering
+    OVR::Matrix4f eyeProjMatrix[ovrEye_Count];
+    glm::mat4 eyeMvMtxLocal[ovrEye_Count];
+    glm::mat4 eyeMvMtxLocalScaled[ovrEye_Count];
+    glm::mat4 eyeMvMtxWorld[ovrEye_Count];
+    ovrRecti rvpFull[ovrEye_Count];
+
+    // Calculate eye poses for rendering and to pass to OVR SDK after rendering
+    for (int eyeIndex=0; eyeIndex<ovrEye_Count; eyeIndex++)
+    {
+        const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
+        const ovrPosef eyePose = outEyePoses[e];
+        const ovrGLTexture& otex = m_EyeTexture[e];
+        const ovrEyeRenderDesc& erd = m_EyeRenderDesc[e];
+
+        renderPose[e] = eyePose;
+        eyeTexture[e] = otex.Texture;
+        rvpFull[e] = otex.OGL.Header.RenderViewport;
+        eyeProjMatrix[e] = ovrMatrix4f_Projection(erd.Fov, 0.01f, 10000.0f, true);
+
+        const ovrPosef eyePoseScaled = outEyePosesScaled[e];
+        eyeMvMtxLocal[e] = makeMatrixFromPose(eyePose);
+        eyeMvMtxLocalScaled[e] = makeMatrixFromPose(eyePoseScaled, m_headSize);
+        eyeMvMtxWorld[e] = makeWorldToChassisMatrix() * eyeMvMtxLocalScaled[e];
+        // These two matrices will be used directly for rendering
+        eyeMvMtxLocal[e] = glm::inverse(eyeMvMtxLocal[e]);
+        eyeMvMtxWorld[e] = glm::inverse(eyeMvMtxWorld[e]);
+
+        if (eyeIndex == 0)
+        {
+            _StoreHmdPose(eyePose);
+        }
+    }
+
+    _resetGLState();
+    _RenderScenesToStereoBuffer(hmd, eyeProjMatrix, eyeMvMtxLocal, eyeMvMtxWorld, rvpFull);
 
     // Inform SDK of downscaled texture target size(performance scaling)
     for (int i=0; i<ovrEye_Count; ++i)
     {
         const ovrSizei& ts = m_EyeTexture[i].Texture.Header.TextureSize;
         ovrRecti& rr = eyeTexture[i].Header.RenderViewport;
+        const float fboScale = 1.f; // buffer is full-sized
         rr.Size.w = static_cast<int>(static_cast<float>(ts.w/2) * fboScale);
         rr.Size.h = static_cast<int>(static_cast<float>(ts.h) * fboScale);
         rr.Pos.x = i * rr.Size.w;

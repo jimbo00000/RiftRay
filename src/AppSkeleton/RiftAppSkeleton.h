@@ -13,6 +13,7 @@
 #endif
 
 #include <Kernel/OVR_Types.h> // Pull in OVR_OS_* defines 
+#include <OVR.h> // OVR::Matrix4f
 #include <OVR_CAPI.h>
 #include <OVR_CAPI_GL.h>
 
@@ -100,6 +101,13 @@ protected:
         const float* pPersp,
         const ovrRecti& rvp,
         const float* pMvLocal) const;
+    void _RenderScenesToStereoBuffer(
+        const ovrHmd hmd,
+        const OVR::Matrix4f* eyeProjMatrix,
+        const glm::mat4* eyeMvMtxLocal,
+        const glm::mat4* eyeMvMtxWorld,
+        const ovrRecti* rvpFull) const;
+
     void _StoreHmdPose(const ovrPosef& eyePose) const;
     void _StretchBlitDownscaledBuffer() const;
     void _ToggleShaderWorld();
