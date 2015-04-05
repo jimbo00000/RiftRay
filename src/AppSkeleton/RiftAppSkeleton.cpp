@@ -1306,7 +1306,6 @@ void RiftAppSkeleton::display_sdk() const
     ovrTexture eyeTexture[ovrEye_Count]; // Pass to ovrHmd_EndFrame post-rendering
     glm::mat4 eyeProjMatrix[ovrEye_Count];
     glm::mat4 eyeMvMtxLocal[ovrEye_Count];
-    glm::mat4 eyeMvMtxLocalScaled[ovrEye_Count];
     glm::mat4 eyeMvMtxWorld[ovrEye_Count];
     ovrRecti rvpFull[ovrEye_Count];
 
@@ -1327,8 +1326,8 @@ void RiftAppSkeleton::display_sdk() const
 
         const ovrPosef eyePoseScaled = outEyePosesScaled[e];
         eyeMvMtxLocal[e] = makeMatrixFromPose(eyePose);
-        eyeMvMtxLocalScaled[e] = makeMatrixFromPose(eyePoseScaled, m_headSize);
-        eyeMvMtxWorld[e] = makeWorldToChassisMatrix() * eyeMvMtxLocalScaled[e];
+        const glm::mat4 eyeMvMtxLocalScaled = makeMatrixFromPose(eyePoseScaled, m_headSize);
+        eyeMvMtxWorld[e] = makeWorldToChassisMatrix() * eyeMvMtxLocalScaled;
         // These two matrices will be used directly for rendering
         eyeMvMtxLocal[e] = glm::inverse(eyeMvMtxLocal[e]);
         eyeMvMtxWorld[e] = glm::inverse(eyeMvMtxWorld[e]);
