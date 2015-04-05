@@ -1158,7 +1158,7 @@ const ovrRecti getScaledRect(const ovrRecti& r, float s)
 ///@brief Draw all scenes to a 
 void RiftAppSkeleton::_RenderScenesToStereoBuffer(
     const ovrHmd hmd,
-    const OVR::Matrix4f* eyeProjMatrix,
+    const glm::mat4* eyeProjMatrix,
     const glm::mat4* eyeMvMtxLocal,
     const glm::mat4* eyeMvMtxWorld,
     const ovrRecti* rvpFull
@@ -1232,7 +1232,7 @@ void RiftAppSkeleton::_RenderScenesToStereoBuffer(
                 glScissor(0, yoff/2, rvp.Pos.x+rvp.Size.w, rvp.Size.h-yoff); // Assume side-by-side single render texture
 
                 // Matrix setup
-                const float* pPersp = &eyeProjMatrix[e].Transposed().M[0][0];
+                const float* pPersp = glm::value_ptr(eyeProjMatrix[e]);
                 const float* pMvWorld = glm::value_ptr(eyeMvMtxWorld[e]);
                 const float* pMvLocal = glm::value_ptr(eyeMvMtxLocal[e]);
                 const float* pMv = pScene->m_bChassisLocalSpace ? pMvLocal : pMvWorld;
@@ -1304,7 +1304,7 @@ void RiftAppSkeleton::display_sdk() const
 
     ovrPosef renderPose[ovrEye_Count]; // Pass to ovrHmd_EndFrame post-rendering
     ovrTexture eyeTexture[ovrEye_Count]; // Pass to ovrHmd_EndFrame post-rendering
-    OVR::Matrix4f eyeProjMatrix[ovrEye_Count];
+    glm::mat4 eyeProjMatrix[ovrEye_Count];
     glm::mat4 eyeMvMtxLocal[ovrEye_Count];
     glm::mat4 eyeMvMtxLocalScaled[ovrEye_Count];
     glm::mat4 eyeMvMtxWorld[ovrEye_Count];
@@ -1321,7 +1321,9 @@ void RiftAppSkeleton::display_sdk() const
         renderPose[e] = eyePose;
         eyeTexture[e] = otex.Texture;
         rvpFull[e] = otex.OGL.Header.RenderViewport;
-        eyeProjMatrix[e] = ovrMatrix4f_Projection(erd.Fov, 0.01f, 10000.0f, true);
+
+        const OVR::Matrix4f proj = ovrMatrix4f_Projection(erd.Fov, 0.01f, 10000.0f, true);
+        eyeProjMatrix[e] = glm::make_mat4(&proj.Transposed().M[0][0]);
 
         const ovrPosef eyePoseScaled = outEyePosesScaled[e];
         eyeMvMtxLocal[e] = makeMatrixFromPose(eyePose);
