@@ -1199,9 +1199,8 @@ void RiftAppSkeleton::display_sdk() const
     ovrHmd_GetEyePoses(hmd, 0, e2v, outEyePoses, &ohts);
     ovrHmd_GetEyePoses(hmd, 0, e2vScaled, outEyePosesScaled, &ohts);
 
-    // For passing to ovrHmd_EndFrame once rendering is done
-    ovrPosef renderPose[ovrEye_Count];
-    ovrTexture eyeTexture[ovrEye_Count];
+    ovrPosef renderPose[ovrEye_Count]; // Pass to ovrHmd_EndFrame post-rendering
+    ovrTexture eyeTexture[ovrEye_Count]; // Pass to ovrHmd_EndFrame post-rendering
     OVR::Matrix4f eyeProjMatrix[ovrEye_Count];
     glm::mat4 eyeMvMtxLocal[ovrEye_Count];
     glm::mat4 eyeMvMtxLocalScaled[ovrEye_Count];
