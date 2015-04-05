@@ -1200,8 +1200,9 @@ void RiftAppSkeleton::display_sdk() const
     ovrHmd_GetEyePoses(hmd, 0, e2vScaled, outEyePosesScaled, &ohts);
 
     // For passing to ovrHmd_EndFrame once rendering is done
-    ovrPosef renderPose[2];
-    ovrTexture eyeTexture[2];
+    ovrPosef renderPose[ovrEye_Count];
+    ovrTexture eyeTexture[ovrEye_Count];
+    OVR::Matrix4f eyeProjMatrix[ovrEye_Count];
 
     // Calculate eye poses to pass to OVR SDK after rendering to buffer
     for (int eyeIndex=0; eyeIndex<ovrEye_Count; eyeIndex++)
@@ -1209,9 +1210,12 @@ void RiftAppSkeleton::display_sdk() const
         const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
         const ovrPosef eyePose = outEyePoses[e];
         const ovrGLTexture& otex = m_EyeTexture[e];
+        const ovrEyeRenderDesc& erd = m_EyeRenderDesc[e];
 
         renderPose[e] = eyePose;
         eyeTexture[e] = otex.Texture;
+
+        eyeProjMatrix[e] = ovrMatrix4f_Projection(erd.Fov, 0.01f, 10000.0f, true);
 
         if (eyeIndex == 0)
         {
@@ -1278,7 +1282,6 @@ void RiftAppSkeleton::display_sdk() const
                 const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
                 const ovrPosef eyePose = outEyePoses[e];
                 const ovrGLTexture& otex = m_EyeTexture[e];
-                const ovrEyeRenderDesc& erd = m_EyeRenderDesc[e];
 
                 // Viewport setup
                 const ovrRecti& rvpFull = otex.OGL.Header.RenderViewport;
@@ -1289,12 +1292,11 @@ void RiftAppSkeleton::display_sdk() const
                 glScissor(0, yoff/2, rvp.Pos.x+rvp.Size.w, rvp.Size.h-yoff); // Assume side-by-side single render texture
 
                 // Matrix setup
-                const OVR::Matrix4f proj = ovrMatrix4f_Projection(erd.Fov, 0.01f, 10000.0f, true);
                 const ovrPosef eyePoseScaled = outEyePosesScaled[e];
                 const glm::mat4 viewLocal = makeMatrixFromPose(eyePose);
                 const glm::mat4 viewLocalScaled = makeMatrixFromPose(eyePoseScaled, m_headSize);
                 const glm::mat4 viewWorld = makeWorldToChassisMatrix() * viewLocalScaled;
-                const float* pPersp = &proj.Transposed().M[0][0];
+                const float* pPersp = &eyeProjMatrix[e].Transposed().M[0][0];
                 const float* pMvWorld = glm::value_ptr(glm::inverse(viewWorld));
                 const float* pMvLocal = glm::value_ptr(glm::inverse(viewLocal));
                 const float* pMv = pScene->m_bChassisLocalSpace ? pMvLocal : pMvWorld;
