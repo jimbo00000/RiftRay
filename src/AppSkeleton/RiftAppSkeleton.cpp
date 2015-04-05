@@ -1205,6 +1205,7 @@ void RiftAppSkeleton::display_sdk() const
     glm::mat4 eyeMvMtxLocal[ovrEye_Count];
     glm::mat4 eyeMvMtxLocalScaled[ovrEye_Count];
     glm::mat4 eyeMvMtxWorld[ovrEye_Count];
+    ovrRecti rvpFull[ovrEye_Count];
 
     // Calculate eye poses for rendering and to pass to OVR SDK after rendering
     for (int eyeIndex=0; eyeIndex<ovrEye_Count; eyeIndex++)
@@ -1216,7 +1217,7 @@ void RiftAppSkeleton::display_sdk() const
 
         renderPose[e] = eyePose;
         eyeTexture[e] = otex.Texture;
-
+        rvpFull[e] = otex.OGL.Header.RenderViewport;
         eyeProjMatrix[e] = ovrMatrix4f_Projection(erd.Fov, 0.01f, 10000.0f, true);
 
         const ovrPosef eyePoseScaled = outEyePosesScaled[e];
@@ -1290,11 +1291,9 @@ void RiftAppSkeleton::display_sdk() const
             for (int eyeIndex=0; eyeIndex<ovrEye_Count; eyeIndex++)
             {
                 const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
-                const ovrGLTexture& otex = m_EyeTexture[e];
 
                 // Viewport setup
-                const ovrRecti& rvpFull = otex.OGL.Header.RenderViewport;
-                const ovrRecti rvpScaled = getScaledRect(rvpFull, fboScale);
+                const ovrRecti rvpScaled = getScaledRect(rvpFull[e], fboScale);
                 const ovrRecti& rvp = rvpScaled;
                 const int yoff = static_cast<int>(static_cast<float>(rvp.Size.h) * m_cinemaScopeFactor);
                 glViewport(rvp.Pos.x, rvp.Pos.y, rvp.Size.w, rvp.Size.h);
@@ -1318,7 +1317,6 @@ void RiftAppSkeleton::display_sdk() const
                 bindFBO(m_renderBuffer);
                 _StretchBlitDownscaledBuffer();
                 glEnable(GL_SCISSOR_TEST); // re-enable for cinemascope
-
                 fboScale = 1.f;
             }
 
