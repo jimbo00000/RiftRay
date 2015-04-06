@@ -481,6 +481,8 @@ void joystick_XboxController(
                               (pLastButtonStates[i] == GLFW_PRESS);
         if (pressed)
         {
+            g_app.DismissHealthAndSafetyWarning();
+
             if (i == 13) // Dpad left
             {
                 g_dynamicallyScaleFBO = false;
