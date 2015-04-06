@@ -47,6 +47,7 @@ DashboardScene::DashboardScene()
         const glm::mat4 ori = glm::rotate(glm::mat4(1.0f), -0.6f, glm::vec3(0,1,0));
         m_pngPane.m_tx.SetDefaultOrientation(ori);
         m_pngPane.m_tx.SetOrientation(ori);
+        m_pngPane.m_visible = false;
     }
 
     m_panes.push_back(&m_antPane);
