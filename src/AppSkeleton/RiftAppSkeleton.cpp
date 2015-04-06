@@ -539,6 +539,13 @@ void RiftAppSkeleton::timestep(double absTime, double dtd)
             hydraMove.z -= cd.joystick_y * moveScale;
     }
 
+    // Check all Hydra buttons for HSW dismissal
+    if ((m_fm.WasJustPressed(FlyingMouse::Left, 0xFF)) ||
+        (m_fm.WasJustPressed(FlyingMouse::Right, 0xFF)))
+    {
+        DismissHealthAndSafetyWarning();
+    }
+
     if (m_fm.WasJustPressed(FlyingMouse::Right, SIXENSE_BUTTON_START))
     {
         ToggleShaderWorld();
