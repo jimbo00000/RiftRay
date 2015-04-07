@@ -5,7 +5,7 @@
 // @var license CC BY-NC-SA 3.0
 // @var url https://www.shadertoy.com/view/Ms2SD1
 // @var headSize 1.0
-// @var eyePos 0.0 7.0 0.0
+// @var eyePos 0.0 3.0 0.0
 
 // initial min max increment
 // @var float SEA_HEIGHT 0.6 0.0 2.0 0.01
