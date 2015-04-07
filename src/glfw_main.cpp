@@ -617,6 +617,14 @@ void mouseDown(GLFWwindow* pWindow, int button, int action, int mods)
     const int x = static_cast<int>(xd);
     const int y = static_cast<int>(yd);
 
+    // Hold right button and press left
+    if ((action == GLFW_PRESS) &&
+        (button == GLFW_MOUSE_BUTTON_LEFT) &&
+        (which_button == GLFW_MOUSE_BUTTON_RIGHT))
+    {
+        g_app.ToggleShaderWorld();
+    }
+
     which_button = button;
     oldx = newx = x;
     oldy = newy = y;
