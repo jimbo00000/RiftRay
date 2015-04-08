@@ -5,12 +5,14 @@
 #include "ShaderToy.h"
 #include "ShaderFunctions.h"
 #include "StringFunctions.h"
+#include "Logger.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <vector>
 
 std::string ShaderToy::s_shaderDir = "../shaders/";
+std::string ShaderToy::s_settingsDir = "../settings/";
 
 ShaderToy::ShaderToy(const std::string& sourceFile)
 : m_sourceFile(sourceFile)
@@ -255,4 +257,64 @@ float ShaderToy::GetHeadSize() const
     const std::string s = it->second;
     const float v = static_cast<float>(strtod(s.c_str(), NULL));
     return v;
+}
+
+void ShaderToy::SaveSettings() const
+{
+    std::string toy = s_settingsDir + m_sourceFile;
+    toy.replace(toy.length()-4,4, "sett");
+
+    LOG_INFO("ShaderToy::SaveSettings: %s", toy.c_str());
+
+    std::ofstream file;
+    file.open(toy.c_str(), std::ios::out);
+    if (!file.is_open())
+        return;
+
+    for (std::map<std::string, shaderVariable>::const_iterator it = m_tweakVars.begin();
+        it != m_tweakVars.end();
+        ++it)
+    {
+        const shaderVariable& sv = it->second;
+        file
+            << "@var "
+            << it->first
+            << " ";
+
+        if (sv.varType == shaderVariable::Direction)
+        {
+            file
+                << "vec3 "
+                << it->first
+                << " "
+                << sv.value.x << " "
+                << sv.value.y << " "
+                << sv.value.z << " "
+                << " dir";
+        }
+        else if (sv.varType == shaderVariable::Color)
+        {
+            file
+                << "vec3 "
+                << it->first
+                << " "
+                << sv.value.x << " "
+                << sv.value.y << " "
+                << sv.value.z << " "
+                << " color";
+        }
+        else // if (sv.varType == shaderVariable::Scalar)
+        {
+            file
+                << "float "
+                << it->first
+                << " "
+                << sv.value.x;
+        }
+
+        file << std::endl;
+    }
+
+
+    file.close();
 }

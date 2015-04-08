@@ -76,6 +76,7 @@ public:
     void SetTextureLibraryPointer();
     void LoadTextureLibrary();
     void ToggleShaderWorld();
+    void SaveShaderSettings();
 
     float GetFBOScale() const { return m_fboScale; }
     void SetFBOScale(float s);
@@ -119,6 +120,7 @@ protected:
     void _StoreHmdPose(const ovrPosef& eyePose) const;
     void _StretchBlitDownscaledBuffer() const;
     void _ToggleShaderWorld();
+    void _SaveShaderSettings(const std::string toFilename);
 
     virtual glm::mat4 makeWorldToEyeMatrix() const;
     glm::mat4 makeWorldToChassisMatrix() const;

@@ -67,12 +67,14 @@ public:
     const std::string GetStringByName(const char* key) const;
     glm::vec3 GetHeadPos() const;
     float GetHeadSize() const;
+    void SaveSettings() const;
 
     GLuint prog(bool fulldome=false) const { return fulldome ? m_progFulldome : m_prog; }
     const std::string GetSourceFile() const { return m_sourceFile; }
     float GlobalTime() const { return static_cast<float>(m_globalTime.seconds()); }
 
     static std::string s_shaderDir;
+    static std::string s_settingsDir;
 
 protected:
     virtual GLuint _GetVsSourceId();

@@ -935,6 +935,15 @@ void RiftAppSkeleton::_ToggleShaderWorld()
 #endif
 }
 
+
+void RiftAppSkeleton::SaveShaderSettings()
+{
+    const ShaderToy* pST = m_galleryScene.GetActiveShaderToy();
+    if (pST == NULL)
+        return;
+    pST->SaveSettings();
+}
+
 // Store HMD position and direction for gaze tracking in timestep.
 // OVR SDK requires head pose be queried between ovrHmd_BeginFrameTiming and ovrHmd_EndFrameTiming.
 // Don't worry - we're just writing to _mutable_ members, it's still const!

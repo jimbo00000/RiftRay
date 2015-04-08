@@ -250,6 +250,10 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
             g_app.ToggleShaderWorld();
             break;
 
+        case GLFW_KEY_PRINT_SCREEN:
+            g_app.SaveShaderSettings();
+            break;
+
         case GLFW_KEY_ESCAPE:
             if (g_AuxWindow == NULL)
             {
