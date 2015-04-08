@@ -63,12 +63,13 @@ public:
     void ResetTimer() { m_globalTime.reset(); }
     virtual void ResetVariables();
 
-    GLuint prog(bool fulldome=false) const { return fulldome ? m_progFulldome : m_prog; }
-    const std::string GetSourceFile() const { return m_sourceFile; }
     const std::string GetTextureFilenameAtChannel(int idx) const;
     const std::string GetStringByName(const char* key) const;
     glm::vec3 GetHeadPos() const;
     float GetHeadSize() const;
+
+    GLuint prog(bool fulldome=false) const { return fulldome ? m_progFulldome : m_prog; }
+    const std::string GetSourceFile() const { return m_sourceFile; }
     float GlobalTime() const { return static_cast<float>(m_globalTime.seconds()); }
 
     static std::string s_shaderDir;
