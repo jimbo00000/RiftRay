@@ -35,7 +35,7 @@ void InitializeBar()
     g_app.m_pShaderTweakbar = g_pShaderTweakbar;
 
     TwDefine(" GLOBAL fontsize=3 ");
-    TwDefine(" TweakBar size='300 420' ");
+    TwDefine(" TweakBar size='300 580' ");
     TwDefine(" TweakBar position='10 10' ");
     TwDefine(" ShaderTweakBar size='300 420' ");
     TwDefine(" ShaderTweakBar position='290 170' ");
