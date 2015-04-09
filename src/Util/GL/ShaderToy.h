@@ -81,7 +81,7 @@ protected:
     virtual GLuint _GetFsSourceId(bool fulldome=false);
     virtual GLuint _MakeProgram(bool fulldome=false);
     virtual void _ParseVariableLine(const std::string&);
-    virtual void _ParseVariableMap();
+    virtual void _GetVariablesFromSourceFile(const std::string&);
 
     std::string m_sourceFile;
     GLuint m_prog;

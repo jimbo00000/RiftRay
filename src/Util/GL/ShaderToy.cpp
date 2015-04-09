@@ -96,7 +96,8 @@ void ShaderToy::CompileShader()
     m_prog = _MakeProgram(false);
     m_progFulldome = _MakeProgram(true);
 
-    _ParseVariableMap();
+    const std::string toy = s_shaderDir + m_sourceFile;
+    _GetVariablesFromSourceFile(toy);
 }
 
 void ShaderToy::ResetVariables()
@@ -182,11 +183,8 @@ void ShaderToy::_ParseVariableLine(const std::string& vardecl)
     }
 }
 
-void ShaderToy::_ParseVariableMap()
+void ShaderToy::_GetVariablesFromSourceFile(const std::string& toy)
 {
-    //const std::string src = GetShaderSourceFromFile(m_sourceFile.c_str(), s_shaderDir);
-    const std::string toy = s_shaderDir + m_sourceFile;
-
     std::ifstream file;
     file.open(toy.c_str(), std::ios::in);
     if (!file.is_open())
