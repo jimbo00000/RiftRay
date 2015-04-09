@@ -98,6 +98,10 @@ void ShaderToy::CompileShader()
 
     const std::string toy = s_shaderDir + m_sourceFile;
     _GetVariablesFromSourceFile(toy);
+
+    std::string sett = s_settingsDir + m_sourceFile;
+    sett.replace(sett.length()-4,4, "sett");
+    _GetVariablesFromSourceFile(sett);
 }
 
 void ShaderToy::ResetVariables()
@@ -111,6 +115,8 @@ void ShaderToy::ResetVariables()
     }
 }
 
+///@brief This function is used both for initial declaration of variables directly in
+/// shadertoy source and for loading saved values from .sett settings files.
 void ShaderToy::_ParseVariableLine(const std::string& vardecl)
 {
     if (vardecl.empty())
@@ -149,6 +155,16 @@ void ShaderToy::_ParseVariableLine(const std::string& vardecl)
             {
                 var.varType = shaderVariable::Color;
             }
+            else
+            {
+                // Default to direction type for un-tagged vec3's
+                var.varType = shaderVariable::Direction;
+            }
+        }
+        else
+        {
+            // Default to direction type for un-tagged vec3's
+            var.varType = shaderVariable::Direction;
         }
         m_tweakVars[name] = var;
     }
@@ -158,6 +174,7 @@ void ShaderToy::_ParseVariableLine(const std::string& vardecl)
             return;
 
         shaderVariable var;
+        var.varType = shaderVariable::Scalar;
         var.initialValue = glm::vec4(static_cast<float>(atof(tokens[2].c_str())));
         var.value = var.initialValue;
 
@@ -274,45 +291,43 @@ void ShaderToy::SaveSettings() const
         ++it)
     {
         const shaderVariable& sv = it->second;
-        file
-            << "@var "
-            << it->first
-            << " ";
 
         if (sv.varType == shaderVariable::Direction)
         {
             file
+                << "@var "
                 << "vec3 "
-                << it->first
-                << " "
+                << it->first << " "
                 << sv.value.x << " "
                 << sv.value.y << " "
                 << sv.value.z << " "
-                << " dir";
+                << "dir";
         }
         else if (sv.varType == shaderVariable::Color)
         {
             file
+                << "@var "
                 << "vec3 "
-                << it->first
-                << " "
+                << it->first << " "
                 << sv.value.x << " "
                 << sv.value.y << " "
                 << sv.value.z << " "
-                << " color";
+                << "color";
         }
-        else // if (sv.varType == shaderVariable::Scalar)
+        else if (sv.varType == shaderVariable::Scalar)
         {
             file
+                << "@var "
                 << "float "
-                << it->first
-                << " "
-                << sv.value.x;
+                << it->first << " "
+                << sv.value.x << " "
+                << sv.minVal.x << " "
+                << sv.maxVal.x << " "
+                << sv.incr;
         }
 
         file << std::endl;
     }
-
 
     file.close();
 }
