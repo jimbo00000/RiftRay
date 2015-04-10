@@ -1274,6 +1274,47 @@ void RiftAppSkeleton::_RenderScenesToStereoBuffer(
     unbindFBO();
 }
 
+///@brief The extra blit imposes some overhead, so for better performance we can render
+/// only the raymarch scene to a downscaled buffer and pass that directly to OVR.
+void RiftAppSkeleton::_RenderOnlyRaymarchSceneToStereoBuffer(
+    const ovrHmd hmd,
+    const glm::mat4* eyeProjMatrix,
+    const glm::mat4* eyeMvMtxWorld,
+    const ovrRecti* rvpFull) const
+{
+    const float fboScale = m_fboScale;
+    bindFBO(m_renderBuffer);
+    {
+        glClearColor(0.f, 0.f, 0.f, 0.f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glEnable(GL_SCISSOR_TEST);
+        glDisable(GL_DEPTH_TEST);
+
+        // Draw eyes inside scene loop
+        for (int eyeIndex=0; eyeIndex<ovrEye_Count; eyeIndex++)
+        {
+            const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
+
+            // Viewport setup
+            const ovrRecti rvpScaled = getScaledRect(rvpFull[e], fboScale);
+            const ovrRecti& rvp = rvpScaled;
+            const int yoff = static_cast<int>(static_cast<float>(rvp.Size.h) * m_cinemaScopeFactor);
+            glViewport(rvp.Pos.x, rvp.Pos.y, rvp.Size.w, rvp.Size.h);
+            glScissor(0, yoff/2, rvp.Pos.x+rvp.Size.w, rvp.Size.h-yoff); // Assume side-by-side single render texture
+
+            // Matrix setup
+            const float* pPersp = glm::value_ptr(eyeProjMatrix[e]);
+            const float* pMvWorld = glm::value_ptr(eyeMvMtxWorld[e]);
+
+            m_galleryScene.RenderForOneEye(pMvWorld, pPersp);
+        } // eye loop
+
+        glDisable(GL_SCISSOR_TEST);
+    }
+    unbindFBO();
+}
+
 ///@brief Blit the contents of the downscaled render buffer to the full-sized
 void RiftAppSkeleton::_StretchBlitDownscaledBuffer() const
 {
@@ -1372,7 +1413,27 @@ void RiftAppSkeleton::display_sdk() const
     _CalculatePerEyeRenderParams(outEyePoses, outEyePosesScaled, renderPose, eyeTexture, eyeProjMatrix, eyeMvMtxLocal, eyeMvMtxWorld, renderVp);
 
     _resetGLState();
-    _RenderScenesToStereoBuffer(hmd, eyeProjMatrix, eyeMvMtxLocal, eyeMvMtxWorld, renderVp);
+
+    const bool doRaymarch = m_galleryScene.GetActiveShaderToy() != NULL;
+    const bool drawBar = m_dashScene.m_bDraw;
+    if (doRaymarch && !drawBar)
+    {
+        _RenderOnlyRaymarchSceneToStereoBuffer(hmd, eyeProjMatrix, eyeMvMtxWorld, renderVp);
+
+        // Inform SDK of downscaled texture target size(performance scaling)
+        for (int i=0; i<ovrEye_Count; ++i)
+        {
+            const ovrSizei& ts = m_EyeTexture[i].Texture.Header.TextureSize;
+            ovrRecti& rr = eyeTexture[i].Header.RenderViewport;
+            rr.Size.w = static_cast<int>(static_cast<float>(ts.w/2) * m_fboScale);
+            rr.Size.h = static_cast<int>(static_cast<float>(ts.h) * m_fboScale);
+            rr.Pos.x = i * rr.Size.w;
+        }
+    }
+    else
+    {
+        _RenderScenesToStereoBuffer(hmd, eyeProjMatrix, eyeMvMtxLocal, eyeMvMtxWorld, renderVp);
+    }
 
     ovrHmd_EndFrame(hmd, renderPose, eyeTexture);
 }
@@ -1410,7 +1471,27 @@ void RiftAppSkeleton::display_client() const
     _CalculatePerEyeRenderParams(outEyePoses, outEyePosesScaled, renderPose, eyeTexture, eyeProjMatrix, eyeMvMtxLocal, eyeMvMtxWorld, renderVp);
 
     _resetGLState();
-    _RenderScenesToStereoBuffer(hmd, eyeProjMatrix, eyeMvMtxLocal, eyeMvMtxWorld, renderVp);
+
+    const bool doRaymarch = m_galleryScene.GetActiveShaderToy() != NULL;
+    const bool drawBar = m_dashScene.m_bDraw;
+    if (doRaymarch && !drawBar)
+    {
+        _RenderOnlyRaymarchSceneToStereoBuffer(hmd, eyeProjMatrix, eyeMvMtxWorld, renderVp);
+
+        // Inform SDK of downscaled texture target size(performance scaling)
+        for (int i=0; i<ovrEye_Count; ++i)
+        {
+            const ovrSizei& ts = m_EyeTexture[i].Texture.Header.TextureSize;
+            ovrRecti& rr = eyeTexture[i].Header.RenderViewport;
+            rr.Size.w = static_cast<int>(static_cast<float>(ts.w/2) * m_fboScale);
+            rr.Size.h = static_cast<int>(static_cast<float>(ts.h) * m_fboScale);
+            rr.Pos.x = i * rr.Size.w;
+        }
+    }
+    else
+    {
+        _RenderScenesToStereoBuffer(hmd, eyeProjMatrix, eyeMvMtxLocal, eyeMvMtxWorld, renderVp);
+    }
 
     // Set full viewport for presentation to Rift display
     const int w = m_Cfg.OGL.Header.BackBufferSize.w;
@@ -1468,7 +1549,9 @@ void RiftAppSkeleton::display_client() const
             glBindTexture(GL_TEXTURE_2D, m_renderBuffer.tex);
             glUniform1i(eyeShader.GetUniLoc("fboTex"), 0);
 
-            const float fboScale = 1.f;
+            float fboScale = 1.f;
+            if (doRaymarch && !drawBar)
+                fboScale = m_fboScale;
             glUniform1f(eyeShader.GetUniLoc("fboScale"), fboScale);
 
             glDrawElements(

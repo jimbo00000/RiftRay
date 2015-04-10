@@ -116,6 +116,11 @@ protected:
         const glm::mat4* eyeMvMtxLocal,
         const glm::mat4* eyeMvMtxWorld,
         const ovrRecti* rvpFull) const;
+    void _RenderOnlyRaymarchSceneToStereoBuffer(
+        const ovrHmd hmd,
+        const glm::mat4* eyeProjMatrix,
+        const glm::mat4* eyeMvMtxWorld,
+        const ovrRecti* rvpFull) const;
 
     void _StoreHmdPose(const ovrPosef& eyePose) const;
     void _StretchBlitDownscaledBuffer() const;
