@@ -25,7 +25,7 @@ Gamepad and Hydra are supported, but optional. You can get by with only the HMD 
 
 #### Keyboard:  
 - **Space** - Recenter view  
-- **Enter** - Select shader/return to gallery  
+- **Enter** - Enter shader/return to gallery  
 - **Escape** - Quit
 - **WASD** - Movement  
 - **QE13** - Movement(elevation/yaw)  
@@ -44,9 +44,11 @@ Gamepad and Hydra are supported, but optional. You can get by with only the HMD 
 - **Left click & drag** - Yaw  
 - **Right click & drag** - Movement in horizontal plane  
 - **Middle click & drag** - Movement in vertical plane  
+- **Hold Right click & Left Click** - Enter shader/return to gallery  
+- **Hold Right click & Wheel** - Adjust render target size manually  
 
 #### Xbox Controller:  
-- **Start** - Enter shader  
+- **Start** - Enter shader/return to gallery  
 - **Left analog stick** - Movement  
 - **Right analog stick** - Yaw  
 - **A** - Move up
@@ -71,7 +73,7 @@ Gamepad and Hydra are supported, but optional. You can get by with only the HMD 
 - **Right Controller translation/rotation** - Select shader, pointer in pane  
 - **Right Stick** - Movement(press in for vertical plane)  
 - **Right Trigger** - Move quickly  
-- **Right Start Button** - Enter shader  
+- **Right Start Button** - Enter shader/return to gallery  
 - **Right Bumper** - Toggle Tweakbar pane  
 - **Right Button 1** - Click in pane  
 - **Right Button 2** - Reposition pane  
