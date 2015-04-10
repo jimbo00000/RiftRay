@@ -15,7 +15,7 @@
 // following a liquid metal ball. 
 
 // @var title Generators
-// @var url https://www.shadertoy.com/view/lsXGWl
+// @var url https://www.shadertoy.com/view/Xtf3Rn
 // @var author Kali
 // @var license CC BY-NC-SA 3.0
 
