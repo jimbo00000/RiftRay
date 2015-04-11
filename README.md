@@ -26,7 +26,7 @@ Gamepad and Hydra are supported, but optional. You can get by with only the HMD 
 #### Keyboard:  
 - **Space** - Recenter view  
 - **Enter** - Enter shader/return to gallery  
-- **Escape** - Quit
+- **Escape** - Quit  
 - **WASD** - Movement  
 - **QE13** - Movement(elevation/yaw)  
 - **Shift/Control** - Slow/fast movement  
@@ -37,6 +37,7 @@ Gamepad and Hydra are supported, but optional. You can get by with only the HMD 
 - **\\(Backslash)** - Click in pane  
 - **/(Slash)** - Reposition pane  
 - **R** - Reset world position  
+- **Print Screen** - Save shader variables to settings directory  
 
 #### Mouse:  
 - **Wheel - adjust vertical** - Cinemascope | Letterbox | vFOV  
@@ -51,11 +52,11 @@ Gamepad and Hydra are supported, but optional. You can get by with only the HMD 
 - **Start** - Enter shader/return to gallery  
 - **Left analog stick** - Movement  
 - **Right analog stick** - Yaw  
-- **A** - Move up
-- **B** - Move down
+- **A** - Move up  
+- **B** - Move down  
 - **Y** - Toggle Tweakbar pane  
-- **X** - Click in pane
-- **Left Bumper** - Recenter view 
+- **X** - Click in pane  
+- **Left Bumper** - Recenter view  
 - **Right Bumper** - Reset position  
 - **Left Trigger** - Move quickly  
 - **Right Trigger** - Move slowly  
