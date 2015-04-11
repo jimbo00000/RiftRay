@@ -28,7 +28,7 @@ if not os.path.exists(dstDir):
     os.mkdir(dstDir)
 
 # data directories
-dirs = ["shaders", "textures"]
+dirs = ["shaders", "textures", "settings"]
 for d in dirs:
     dd = os.path.join(dstDir, d)
     if not os.path.exists(dd):
