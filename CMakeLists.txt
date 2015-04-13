@@ -132,19 +132,25 @@ ELSEIF( APPLE )
 
     SET(CMAKE_CXX_FLAGS "-fno-rtti")
 
+    SET( LIBS_HOME "~/Development/" )
+    SET( OCULUSSDK_ROOT "${LIBS_HOME}/OculusSDK" )
+    
+
     INCLUDE_DIRECTORIES ( /System/Library/Frameworks )
     FIND_LIBRARY(COCOA_LIBRARY Cocoa)
     FIND_LIBRARY(IOKIT_LIBRARY IOKit)
     FIND_LIBRARY(GLUT_LIBRARY GLUT )
+    FIND_LIBRARY(OVR_LIBRARY NAMES LibOVR PATHS ${OCULUSSDK_ROOT}/LibOVR/Lib/Mac/Release NO_DEFAULT_PATH)
     FIND_LIBRARY(OpenGL_LIBRARY OpenGL )
     MARK_AS_ADVANCED (COCOA_LIBRARY
                       GLUT_LIBRARY
                       IOKIT_LIBRARY
-                      OpenGL_LIBRARY)
+                      OpenGL_LIBRARY
+                      OVR_LIBRARY)
     INCLUDE_DIRECTORIES( "/opt/local/include/" )
     LINK_DIRECTORIES   ( "/opt/local/lib" )
 
-    SET( LIBS_HOME "~/Development/" )
+    
 
     SET( GLM_ROOT "${LIBS_HOME}/glm-0.9.5.4/glm" CACHE STRING "glm root" )
     INCLUDE_DIRECTORIES( "${GLM_ROOT}" )
@@ -154,19 +160,13 @@ ELSEIF( APPLE )
     INCLUDE_DIRECTORIES( "${GLFW3_ROOT}/include" )
     LINK_DIRECTORIES   ( "${GLFW3_ROOT}/lib" )
 
-    MESSAGE("Building against OVR SDK 0.3.2 - Mac version not available as of release." )
-    SET( OCULUSSDK_ROOT "${LIBS_HOME}/OculusSDK" )
+   #MESSAGE("Building against OVR SDK 0.3.2 - Mac version not available as of release." )
+    
     INCLUDE_DIRECTORIES( "${OCULUSSDK_ROOT}/LibOVR/Include" )
     INCLUDE_DIRECTORIES( "${OCULUSSDK_ROOT}/LibOVR/Src" )
-    LINK_DIRECTORIES   ( "${OCULUSSDK_ROOT}/LibOVR/Lib/Mac/Debug/" )
+    INCLUDE_DIRECTORIES( "${OCULUSSDK_ROOT}/LibOVRKernel/Src" )
     ADD_DEFINITIONS( -DUSE_OCULUSSDK )
 
-    FIND_LIBRARY(COCOA_LIBRARY Cocoa)
-    FIND_LIBRARY(IOKIT_LIBRARY IOKit)
-
-    MARK_AS_ADVANCED (COCOA_LIBRARY
-                      IOKIT_LIBRARY
-                      )
     # Todo - build OVR with RTTI suppo
     SET(CMAKE_CXX_FLAGS "-fno-rtti")
 
@@ -192,9 +192,9 @@ ELSEIF( APPLE )
         ${IOKIT_LIBRARY}
         ${GLUT_LIBRARY}
         ${OpenGL_LIBRARY}
+        ${OVR_LIBRARY}
         -lGLEW
         -lglfw
-        -lovr
         ${HYDRA_LIBS}
         ${ANT_LIBS}
         )
