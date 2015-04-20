@@ -1175,33 +1175,28 @@ int main(int argc, char** argv)
         l_Window = glfwCreateWindow(sz.w, sz.h, windowTitle.c_str(), NULL, NULL);
         g_app.m_dashScene.m_bDraw = false;
     }
-    else
+    else if (g_app.UsingDirectMode())
     {
-        // HMD active - position undecorated window to fill HMD viewport
-        if (g_app.UsingDirectMode())
-        {
-            LOG_INFO("Using Direct to Rift mode.");
-            windowTitle += "-GLFW-Direct";
+        LOG_INFO("Using Direct to Rift mode.");
+        windowTitle += "-GLFW-Direct";
 
-            l_Window = glfwCreateWindow(sz.w, sz.h, windowTitle.c_str(), NULL, NULL);
-            glfwSetWindowPos(l_Window, pos.x, pos.y);
+        l_Window = glfwCreateWindow(sz.w, sz.h, windowTitle.c_str(), NULL, NULL);
 
 #if defined(_WIN32)
-            g_app.AttachToWindow((void*)glfwGetWin32Window(l_Window));
+        g_app.AttachToWindow((void*)glfwGetWin32Window(l_Window));
 #endif
-        }
-        else
-        {
-            LOG_INFO("Using Extended desktop mode.");
-            windowTitle += "-GLFW-Extended";
+    }
+    else
+    {
+        LOG_INFO("Using Extended desktop mode.");
+        windowTitle += "-GLFW-Extended";
 
-            glfwWindowHint(GLFW_DECORATED, 0);
-            l_Window = glfwCreateWindow(sz.w, sz.h, windowTitle.c_str(), NULL, NULL);
-            glfwWindowHint(GLFW_DECORATED, 1);
-        }
-
+        glfwWindowHint(GLFW_DECORATED, 0);
+        l_Window = glfwCreateWindow(sz.w, sz.h, windowTitle.c_str(), NULL, NULL);
+        glfwWindowHint(GLFW_DECORATED, 1);
         glfwSetWindowPos(l_Window, pos.x, pos.y);
     }
+
     resize(l_Window, sz.w, sz.h); // inform AppSkeleton of window size
 
     if (!l_Window)
