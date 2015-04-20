@@ -1083,6 +1083,16 @@ int main(int argc, char** argv)
     useOpenGLCoreContext = false;
 #endif
 
+    LOG_INFO("Using GLFW3 backend.");
+    LOG_INFO("Compiled against GLFW %i.%i.%i",
+        GLFW_VERSION_MAJOR,
+        GLFW_VERSION_MINOR,
+        GLFW_VERSION_REVISION);
+    int major, minor, revision;
+    glfwGetVersion(&major, &minor, &revision);
+    LOG_INFO("Running against GLFW %i.%i.%i", major, minor, revision);
+    LOG_INFO("glfwGetVersionString: %s", glfwGetVersionString());
+
     // Command line options
     for (int i=0; i<argc; ++i)
     {
