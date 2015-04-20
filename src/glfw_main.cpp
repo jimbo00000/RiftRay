@@ -1174,6 +1174,7 @@ int main(int argc, char** argv)
 
         l_Window = glfwCreateWindow(sz.w, sz.h, windowTitle.c_str(), NULL, NULL);
         g_app.m_dashScene.m_bDraw = false;
+        g_renderMode.outputType = RenderingMode::Mono_Buffered;
     }
     else if (g_app.UsingDirectMode())
     {
