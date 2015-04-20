@@ -1061,6 +1061,14 @@ void StartShaderLoad()
 int main(int argc, char** argv)
 {
     LOG_INFO("RiftRay version %s", pRiftRayVersion);
+#if defined(_WIN32)
+    LOG_INFO("Windows build.");
+#elif defined(_LINUX)
+    LOG_INFO("Linux build.");
+#elif defined(_MACOS)
+    LOG_INFO("MacOS build.");
+#endif
+
     bool useOpenGLCoreContext = false;
 
     RenderingMode renderMode;
