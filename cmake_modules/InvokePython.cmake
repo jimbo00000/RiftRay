@@ -1,20 +1,23 @@
 # Invokes python on a given string with script name followed by args.
 
-function( INVOKEPYTHON ARGS )
-    # @TODO This was a pain to get to work and likely not the best solution...
+function( INVOKEPYTHON )
+    # Consume the first argument from the list: script name
+    SET( PYSCRIPT "${ARGV0}" )
+    list(REMOVE_AT ARGV 0 )
+
     set (python_cmd "python")
-    message(STATUS "Invoking ${python_cmd} ${ARGS}:" )
-    execute_process(COMMAND ${python_cmd} ${ARGS}
+    message(STATUS "Invoking ${python_cmd} ${PYSCRIPT} ${ARGV}:" )
+    execute_process(COMMAND ${python_cmd} ${PYSCRIPT} ${ARGV}
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
         RESULT_VARIABLE python_result
         OUTPUT_VARIABLE python_output)
-    
+
     # @TODO check the output of the execute_process and check for success.
     # This was difficult to find the docs for the Windows version of this, which prints
     # "The system cannot find the file specified".
     message(STATUS "${python_output}" )
     message(STATUS "${python_result}" )
-    
+
     if(python_result STREQUAL "0")
         message(STATUS "${python_arg} success." )
     else(python_result STREQUAL "0")
