@@ -54,13 +54,13 @@ class Timer {
     }
     /// reset() makes the timer start over counting from 0.0 seconds.
     void reset() {
-      clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1_);
+      clock_gettime(CLOCK_MONOTONIC, &time1_);
     }
     /// seconds() returns the number of seconds (to very high resolution)
     /// elapsed since the timer was last created or reset().
     double seconds() const {
       timespec time2;
-      clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+      clock_gettime(CLOCK_MONOTONIC, &time2);
       timespec ts = diff(time1_, time2);
       double dt = ts.tv_sec + 1.e-9 * ts.tv_nsec;
       return dt;
