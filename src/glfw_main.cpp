@@ -1058,6 +1058,27 @@ void StartShaderLoad()
 #endif
 }
 
+// OpenGL debug callback
+void GLAPIENTRY myCallback(
+    GLenum source, GLenum type, GLuint id, GLenum severity,
+    GLsizei length, const GLchar *msg,
+#ifndef _LINUX
+    const
+#endif
+    void *data)
+{
+    switch (severity)
+    {
+    case GL_DEBUG_SEVERITY_HIGH:
+    case GL_DEBUG_SEVERITY_MEDIUM:
+    case GL_DEBUG_SEVERITY_LOW:
+        LOG_INFO("[[GL Debug]] %x %x %x %x %s", source, type, id, severity, msg);
+        break;
+    case GL_DEBUG_SEVERITY_NOTIFICATION:
+        break;
+    }
+}
+
 int main(int argc, char** argv)
 {
     LOG_INFO("RiftRay version %s", pRiftRayVersion);
@@ -1161,6 +1182,9 @@ int main(int argc, char** argv)
     }
 
     glfwWindowHint(GLFW_SAMPLES, 0);
+#ifdef _DEBUG
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+#endif
 
     const ovrSizei sz = g_app.getHmdResolution();
     const ovrVector2i pos = g_app.getHmdWindowPos();
@@ -1259,6 +1283,15 @@ int main(int argc, char** argv)
         exit(EXIT_FAILURE);
     }
 
+#ifdef _DEBUG
+    // Debug callback initialization
+    // Must be done *after* glew initialization.
+    glDebugMessageCallback(myCallback, NULL);
+    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
+    glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_MARKER, 0,
+        GL_DEBUG_SEVERITY_NOTIFICATION, -1, "Start debugging");
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+#endif
 
 #ifdef USE_ANTTWEAKBAR
     LOG_INFO("Using AntTweakbar.");
