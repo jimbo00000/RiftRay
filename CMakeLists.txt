@@ -12,8 +12,8 @@ SET( GL_FRAMEWORK "GLFW" CACHE STRING "Which OpenGL windowing framework to use" 
 # Control linking to AntTweakBar and Sixense libraries by toggling a config flag.
 # @todo Write or find a "FindXXX.cmake" script to search typical install locations
 # on the build machine and link the libraries in.
-SET( USE_ANTTWEAKBAR FALSE CACHE BOOL "Use AntTweakBar" )
-SET( USE_SIXENSE FALSE CACHE BOOL "Use Sixense" )
+SET( USE_ANTTWEAKBAR TRUE CACHE BOOL "Use AntTweakBar" )
+SET( USE_SIXENSE TRUE CACHE BOOL "Use Sixense" )
 
 SET( USE_CORE_CONTEXT TRUE CACHE BOOL "Use Core Context" )
 IF( USE_CORE_CONTEXT )
