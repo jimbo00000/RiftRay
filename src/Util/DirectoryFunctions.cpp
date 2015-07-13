@@ -11,7 +11,7 @@
 //#  include <features.h>
 #endif
 
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined (_LINUX)
 #include <sys/stat.h>
 #endif
 
@@ -30,12 +30,17 @@ std::vector<std::string> GetListOfFilesFromDirectory(const std::string& d)
     {
         while ((ent = readdir (dir)) != NULL)
         {
-#ifndef _LINUX
-            ///@todo Find out where the S_ISDIR macro lives on Linux and how to use it correctly.
+            std::string s(ent->d_name);
+#if defined(__APPLE__) || defined (_LINUX)
+            std::string fullPath = d + s;
+            struct stat st;
+            stat( fullPath.c_str(), &st );
+            if (S_ISDIR(st.st_mode))
+                continue;
+#else
             if (S_ISDIR(ent->d_type))
                 continue;
 #endif
-            std::string s(ent->d_name);
             if (!s.compare("."))
                 continue;
             if (!s.compare(".."))
@@ -70,7 +75,16 @@ std::vector<std::string> GetListOfFilesFromDirectoryAndSubdirs(const std::string
                 continue;
             if (!s.compare(".."))
                 continue;
-#ifndef _LINUX
+#if defined(__APPLE__) || defined (_LINUX)
+            std::string fullPath = d + s;
+            struct stat st;
+            stat( fullPath.c_str(), &st );
+            if (S_ISDIR(st.st_mode))
+            {
+                directories.push_back(s);
+                continue;
+            }
+#else
             if (S_ISDIR(ent->d_type))
             {
                 directories.push_back(s);
