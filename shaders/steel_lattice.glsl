@@ -29,6 +29,9 @@
 // @var tex0 tex02.jpg
 // @var tex1 tex06.jpg
 
+// @var float temperature 4000.0 0.0 10000.0 100.0
+uniform float temperature;
+
 #define FIRE_REFLECTION // Comment this out, to get rid of the reflective afterglow.
 
 #define sEPS 0.005 // Minimum surface distance threshold.
@@ -77,7 +80,7 @@ vec3 tex3D( sampler2D tex, in vec3 p, in vec3 n ){
 // User - Bejit: https://www.shadertoy.com/view/MslSDl
 vec3 blackbodyPalette(float t){
 
-    t *= 4000.; // Temperature. Hardcoded to 4000, in this case.
+    t *= temperature; // Temperature.
     
     // Planckian locus or black body locus approximated in CIE color space... Color theory is not my thing,
     // but I think below is a conversion of the physical temperture (t) above (which has no meaning to a 

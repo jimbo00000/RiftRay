@@ -28,16 +28,24 @@
 
 // @var tex0 tex01.jpg
 
+// RiftRay: these 2 globals were lifted out here because they were set in mainImage()
+// in the original and RiftRay uses a different main().
 vec3 light_pos;
 vec3 light_pos2;
 
 #define PI 3.1415926535898
 
-// Frequencies and amplitudes of tunnel "A" and "B". See then "path" function.
-const float freqA = 0.15;
-const float freqB = 0.25;
-const float ampA = 2.4;
-const float ampB = 1.7;
+// Frequencies and amplitudes of tunnel "A" and "B". See the "path" function.
+// @var float freqA 0.15 0.01 0.4 0.003
+uniform float freqA;
+// @var float freqB 0.25 0.01 0.4 0.003
+uniform float freqB;
+// @var float ampA 2.4 0.1 4.0 0.003
+uniform float ampA;
+// @var float ampB 1.7 0.1 4.0 0.003
+uniform float ampB;
+// @var float speed 4.0 0.0 10.0 0.01
+uniform float speed;
 
 // Grey scale.
 float getGrey(vec3 p){ return p.x*0.299 + p.y*0.587 + p.z*0.114; }
@@ -227,7 +235,7 @@ float curve(in vec3 p, in float w){
 vec3 getSceneColor( in vec3 camPos, in vec3 rd )
 {
     // RiftRay hack: move into this function as RiftRay hijacks mainImage.
-    camPos += vec3(0.0, 0.0, iGlobalTime*4.);
+    camPos += vec3(0.0, 0.0, iGlobalTime*speed);
 	camPos.xy += path(camPos.z);
     // Light positioning. One is a little behind the camera, and the other is further down the tunnel.
  	light_pos = camPos + vec3(0.0, 0.125, -0.125);// Put it a bit in front of the camera.

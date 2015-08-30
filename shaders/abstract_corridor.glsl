@@ -17,6 +17,15 @@
 // @var tex0 tex08.jpg
 // @var tex1 tex05.jpg
 
+// @var float freqA 24.0 1.0 36.0 0.05
+uniform float freqA;
+// @var float freqB 12.0 1.0 36.0 0.05
+uniform float freqB;
+// @var float ampA 12.0 1.0 36.0 0.05
+uniform float ampA;
+// @var float speed 5.0 0.0 15.0 0.01
+uniform float speed;
+
 // These variables made global for RiftRay version because RiftRay hijacks the shadertoy's
 // mainImage function, which means the lights will not be placed.
 vec3 light_pos;
@@ -65,9 +74,8 @@ float surfFunc(in vec3 p){
 	return dot(tri(p*0.5 + tri(p*0.25).yzx), vec3(0.666));
 }
 
-
 // The path is a 2D sinusoid that varies over time, depending upon the frequencies, and amplitudes.
-vec2 path(in float z){ float s = sin(z/24.)*cos(z/12.); return vec2(s*12., 0.); }
+vec2 path(in float z){ float s = sin(z/freqA)*cos(z/freqB); return vec2(s*ampA, 0.); }
 
 // Standard tunnel distance function with some perturbation thrown into the mix. A floor has been 
 // worked in also. A tunnel is just a tube with a smoothly shifting center as you traverse lengthwise. 
@@ -164,7 +172,7 @@ float curve(in vec3 p, in float w){
 vec3 getSceneColor( in vec3 camPos, in vec3 rd )
 {
     // RiftRay hack: move into this function as RiftRay hijacks mainImage.
-    camPos += vec3(0.0, 0.0, iGlobalTime*5.);
+    camPos += vec3(0.0, 0.0, iGlobalTime*speed);
 	camPos.xy += path(camPos.z);
     // Move light positioning here because RiftRay hijacks mainImage.
     // Light positioning. One is a little behind the camera, and the other is further down the tunnel.
