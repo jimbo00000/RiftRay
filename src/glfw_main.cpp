@@ -106,6 +106,8 @@ static void SetVsync(int state)
 
 static void ErrorCallback(int p_Error, const char* p_Description)
 {
+    (void)p_Error;
+    (void)p_Description;
     LOG_INFO("ERROR: %d, %s", p_Error, p_Description);
 }
 
