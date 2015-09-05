@@ -1,3 +1,4 @@
 /build
 /autogen
 html
+/tools/*.zip
