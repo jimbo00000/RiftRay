@@ -12,7 +12,9 @@
 #  include <windows.h>
 #endif
 
-#include <Kernel/OVR_Types.h> // Pull in OVR_OS_* defines
+#include "AppSkeleton.h"
+
+#include <Kernel/OVR_Types.h> // Pull in OVR_OS_* defines 
 #include <OVR_CAPI.h>
 #include <OVR_CAPI_GL.h>
 
@@ -35,7 +37,7 @@
 
 ///@brief Encapsulates as much of the VR viewer state as possible,
 /// pushing all viewer-independent stuff to Scene.
-class RiftAppSkeleton
+class RiftAppSkeleton : public AppSkeleton
 {
 public:
     RiftAppSkeleton();
@@ -187,16 +189,6 @@ protected:
 
 public:
     float m_headSize;
-    FlyingMouse m_fm;
-    glm::vec3 m_keyboardMove;
-    glm::vec3 m_joystickMove;
-    glm::vec3 m_mouseMove;
-    float m_keyboardYaw;
-    float m_joystickYaw;
-    float m_mouseDeltaYaw;
-    float m_keyboardDeltaPitch;
-    float m_keyboardDeltaRoll;
-
     float m_cinemaScopeFactor;
     float m_fboMinScale;
 #ifdef USE_ANTTWEAKBAR
