@@ -21,8 +21,19 @@
 AppSkeleton::AppSkeleton()
 : m_hmdRo(0.f)
 , m_hmdRd(0.f)
+
+, m_galleryScene()
+, m_raymarchScene()
+, m_dashScene()
+, m_ovrScene()
+, m_floorScene()
+#ifdef USE_SIXENSE
+, m_hydraScene()
+#endif
+
 , m_scenes()
 , m_chassisYaw(0.f)
+, m_hyif()
 , m_fm()
 , m_keyboardMove(0.f)
 , m_joystickMove(0.f)
@@ -33,6 +44,33 @@ AppSkeleton::AppSkeleton()
 , m_keyboardDeltaPitch(0.f)
 , m_keyboardDeltaRoll(0.f)
 {
+    // Add as many scenes here as you like. They will share color and depth buffers,
+    // so drawing one after the other should just result in pixel-perfect integration -
+    // provided they all do forward rendering. Per-scene deferred render passes will
+    // take a little bit more work.
+    //m_scenes.push_back(&m_raymarchScene);
+    m_scenes.push_back(&m_galleryScene);
+    m_scenes.push_back(&m_ovrScene);
+    m_scenes.push_back(&m_dashScene);
+    m_scenes.push_back(&m_floorScene);
+#ifdef USE_SIXENSE
+    m_scenes.push_back(&m_hydraScene);
+#endif
+
+    m_raymarchScene.SetFlyingMousePointer(&m_fm);
+    m_galleryScene.SetFlyingMousePointer(&m_fm);
+    m_galleryScene.SetHmdPositionPointer(&m_hmdRo);
+    m_galleryScene.SetHmdDirectionPointer(&m_hmdRd);
+    m_dashScene.SetFlyingMousePointer(&m_fm);
+    m_dashScene.SetHmdPositionPointer(&m_hmdRoLocal);
+    m_dashScene.SetHmdDirectionPointer(&m_hmdRdLocal);
+
+    // Give this scene a pointer to get live Hydra data for display
+#ifdef USE_SIXENSE
+    m_hydraScene.SetFlyingMousePointer(&m_fm);
+    m_hyif.AddTransformation(m_raymarchScene.GetTransformationPointer());
+#endif
+
     ResetChassisTransformations();
 }
 

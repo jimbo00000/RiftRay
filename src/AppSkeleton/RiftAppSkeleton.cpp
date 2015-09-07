@@ -32,21 +32,10 @@ RiftAppSkeleton::RiftAppSkeleton()
 , m_Hmd(NULL)
 , m_usingDebugHmd(false)
 , m_directHmdMode(true)
-
-, m_galleryScene()
-, m_raymarchScene()
-, m_ovrScene()
-, m_dashScene()
-, m_floorScene()
-#ifdef USE_SIXENSE
-, m_hydraScene()
-#endif
-
 , m_fboScale(1.0f)
 , m_presentFbo()
 , m_presentDistMeshL()
 , m_presentDistMeshR()
-, m_hyif()
 , m_texLibrary()
 , m_transitionTimer()
 , m_transitionState(0)
@@ -59,34 +48,6 @@ RiftAppSkeleton::RiftAppSkeleton()
 #endif
 {
     m_eyePoseCached = OVR::Posef();
-
-    // Add as many scenes here as you like. They will share color and depth buffers,
-    // so drawing one after the other should just result in pixel-perfect integration -
-    // provided they all do forward rendering. Per-scene deferred render passes will
-    // take a little bit more work.
-    //m_scenes.push_back(&m_raymarchScene);
-    m_scenes.push_back(&m_galleryScene);
-    m_scenes.push_back(&m_ovrScene);
-    m_scenes.push_back(&m_dashScene);
-    m_scenes.push_back(&m_floorScene);
-#ifdef USE_SIXENSE
-    m_scenes.push_back(&m_hydraScene);
-#endif
-
-    m_raymarchScene.SetFlyingMousePointer(&m_fm);
-    m_galleryScene.SetFlyingMousePointer(&m_fm);
-    m_galleryScene.SetHmdPositionPointer(&m_hmdRo);
-    m_galleryScene.SetHmdDirectionPointer(&m_hmdRd);
-    m_dashScene.SetFlyingMousePointer(&m_fm);
-    m_dashScene.SetHmdPositionPointer(&m_hmdRoLocal);
-    m_dashScene.SetHmdDirectionPointer(&m_hmdRdLocal);
-
-    // Give this scene a pointer to get live Hydra data for display
-#ifdef USE_SIXENSE
-    m_hydraScene.SetFlyingMousePointer(&m_fm);
-    m_hyif.AddTransformation(m_raymarchScene.GetTransformationPointer());
-#endif
-
     ResetChassisTransformations();
 }
 

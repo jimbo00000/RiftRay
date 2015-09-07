@@ -13,7 +13,18 @@
 #endif
 
 #include "FBO.h"
+
+#ifdef USE_SIXENSE
 #include "HydraScene.h"
+#endif
+#include "OVRScene.h"
+#include "RaymarchShaderScene.h"
+#include "ShaderGalleryScene.h"
+#include "FloorScene.h"
+#include "DashboardScene.h"
+
+#include "FlyingMouse.h"
+#include "VirtualTrackball.h"
 
 class AppSkeleton
 {
@@ -30,6 +41,17 @@ public:
     mutable glm::vec3 m_hmdRoLocal;
     mutable glm::vec3 m_hmdRdLocal;
 
+public:
+    // This public section is for exposing state variables to AntTweakBar
+    RaymarchShaderScene m_raymarchScene;
+    ShaderGalleryScene m_galleryScene;
+    DashboardScene m_dashScene;
+    OVRScene m_ovrScene;
+    FloorScene m_floorScene;
+#ifdef USE_SIXENSE
+    HydraScene m_hydraScene;
+#endif
+
 protected:
     std::vector<IScene*> m_scenes;
 
@@ -37,6 +59,8 @@ protected:
     float m_chassisYaw;
     float m_chassisPitch;
     float m_chassisRoll;
+
+    VirtualTrackball m_hyif;
 
 public:
     FlyingMouse m_fm;

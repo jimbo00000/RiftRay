@@ -23,17 +23,6 @@
 #endif
 
 #include "FBO.h"
-#ifdef USE_SIXENSE
-#include "HydraScene.h"
-#endif
-#include "OVRScene.h"
-#include "RaymarchShaderScene.h"
-#include "ShaderGalleryScene.h"
-#include "FloorScene.h"
-#include "DashboardScene.h"
-
-#include "FlyingMouse.h"
-#include "VirtualTrackball.h"
 
 ///@brief Encapsulates as much of the VR viewer state as possible,
 /// pushing all viewer-independent stuff to Scene.
@@ -146,18 +135,6 @@ protected:
     ovrDistortionMesh m_DistMeshes[2];
     mutable ovrPosef m_eyePoseCached;
 
-public:
-    // This public section is for exposing state variables to AntTweakBar
-    RaymarchShaderScene m_raymarchScene;
-    ShaderGalleryScene m_galleryScene;
-    OVRScene m_ovrScene;
-    DashboardScene m_dashScene;
-    FloorScene m_floorScene;
-#ifdef USE_SIXENSE
-    HydraScene m_hydraScene;
-#endif
-
-
     glm::vec3 m_chassisPosCached;
 
 protected:
@@ -170,7 +147,6 @@ protected:
 
     float m_chassisYawCached;
 
-    VirtualTrackball m_hyif;
     std::map<std::string, textureChannel> m_texLibrary;
     glm::ivec2 m_windowSize;
 
