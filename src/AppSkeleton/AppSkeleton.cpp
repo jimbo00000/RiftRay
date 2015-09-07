@@ -28,10 +28,20 @@ AppSkeleton::AppSkeleton()
 , m_mouseDeltaYaw(0.f)
 , m_keyboardDeltaPitch(0.f)
 , m_keyboardDeltaRoll(0.f)
+, m_chassisYaw(0.0f)
 {
+    ResetChassisTransformations();
 }
 
 AppSkeleton::~AppSkeleton()
 {
     m_fm.Destroy();
+}
+
+void AppSkeleton::ResetChassisTransformations()
+{
+    m_chassisPos = glm::vec3(0.f, 1.27f, 1.f); // my sitting height
+    m_chassisYaw = 0.f;
+    m_chassisPitch = 0.f;
+    m_chassisRoll = 0.f;
 }

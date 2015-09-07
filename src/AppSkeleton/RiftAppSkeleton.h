@@ -163,10 +163,8 @@ public:
     HydraScene m_hydraScene;
 #endif
 
-    glm::vec3 m_chassisPos;
+
     glm::vec3 m_chassisPosCached;
-    float m_chassisPitch;
-    float m_chassisRoll;
 
 protected:
     std::vector<IScene*> m_scenes;
@@ -177,7 +175,6 @@ protected:
     ShaderWithVariables m_presentDistMeshL;
     ShaderWithVariables m_presentDistMeshR;
 
-    float m_chassisYaw;
     float m_chassisYawCached;
 
     VirtualTrackball m_hyif;

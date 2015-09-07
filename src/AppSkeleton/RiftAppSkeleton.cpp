@@ -48,7 +48,6 @@ RiftAppSkeleton::RiftAppSkeleton()
 , m_presentFbo()
 , m_presentDistMeshL()
 , m_presentDistMeshR()
-, m_chassisYaw(0.0f)
 , m_hyif()
 , m_texLibrary()
 , m_transitionTimer()
@@ -115,10 +114,7 @@ void RiftAppSkeleton::RecenterPose()
 
 void RiftAppSkeleton::ResetChassisTransformations()
 {
-    m_chassisPos = glm::vec3(0.f, 1.27f, 1.f); // my sitting height
-    m_chassisYaw = 0.f;
-    m_chassisPitch = 0.f;
-    m_chassisRoll = 0.f;
+    AppSkeleton::ResetChassisTransformations();
 
     m_raymarchScene.ResetTransformation();
 
