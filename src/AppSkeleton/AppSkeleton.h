@@ -23,6 +23,12 @@ public:
 
     virtual void ResetChassisTransformations();
 
+protected:
+    glm::vec3 m_chassisPos;
+    float m_chassisYaw;
+    float m_chassisPitch;
+    float m_chassisRoll;
+
 public:
     FlyingMouse m_fm;
     glm::vec3 m_keyboardMove;
@@ -33,12 +39,6 @@ public:
     float m_mouseDeltaYaw;
     float m_keyboardDeltaPitch;
     float m_keyboardDeltaRoll;
-
-protected:
-    glm::vec3 m_chassisPos;
-    float m_chassisYaw;
-    float m_chassisPitch;
-    float m_chassisRoll;
 
 private: // Disallow copy ctor and assignment operator
     AppSkeleton(const AppSkeleton&);
