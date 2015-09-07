@@ -153,6 +153,8 @@ ovrVector2i RiftAppSkeleton::getHmdWindowPos() const
 
 void RiftAppSkeleton::initGL()
 {
+    AppSkeleton::initGL();
+
     for (std::vector<IScene*>::iterator it = m_scenes.begin();
         it != m_scenes.end();
         ++it)

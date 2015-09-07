@@ -22,6 +22,7 @@ public:
     virtual ~AppSkeleton();
 
     virtual void ResetChassisTransformations();
+    virtual void initGL();
 
 protected:
     glm::vec3 m_chassisPos;

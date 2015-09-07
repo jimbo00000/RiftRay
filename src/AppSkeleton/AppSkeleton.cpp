@@ -45,3 +45,7 @@ void AppSkeleton::ResetChassisTransformations()
     m_chassisPitch = 0.f;
     m_chassisRoll = 0.f;
 }
+
+void AppSkeleton::initGL()
+{
+}

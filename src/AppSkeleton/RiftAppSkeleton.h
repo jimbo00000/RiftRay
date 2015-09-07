@@ -43,12 +43,12 @@ public:
     RiftAppSkeleton();
     virtual ~RiftAppSkeleton();
 
-    void initGL();
+    virtual void initGL();
     void initHMD();
     void initVR();
     void exitVR();
     void RecenterPose();
-    void ResetChassisTransformations();
+    virtual void ResetChassisTransformations();
     void SetChassisPosition(glm::vec3 p) { m_chassisPos = p; }
     int ConfigureRendering();
     int ConfigureSDKRendering();
