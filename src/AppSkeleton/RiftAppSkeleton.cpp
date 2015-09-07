@@ -42,7 +42,6 @@ RiftAppSkeleton::RiftAppSkeleton()
 #ifdef USE_SIXENSE
 , m_hydraScene()
 #endif
-, m_scenes()
 
 , m_fboScale(1.0f)
 , m_presentFbo()
@@ -154,17 +153,6 @@ ovrVector2i RiftAppSkeleton::getHmdWindowPos() const
 void RiftAppSkeleton::initGL()
 {
     AppSkeleton::initGL();
-
-    for (std::vector<IScene*>::iterator it = m_scenes.begin();
-        it != m_scenes.end();
-        ++it)
-    {
-        IScene* pScene = *it;
-        if (pScene != NULL)
-        {
-            pScene->initGL();
-        }
-    }
 
     m_presentFbo.initProgram("presentfbo");
     _initPresentFbo();

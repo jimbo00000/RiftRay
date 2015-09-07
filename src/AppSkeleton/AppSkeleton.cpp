@@ -19,7 +19,9 @@
 #include "MatrixFunctions.h"
 
 AppSkeleton::AppSkeleton()
-: m_fm()
+: m_scenes()
+, m_chassisYaw(0.f)
+, m_fm()
 , m_keyboardMove(0.f)
 , m_joystickMove(0.f)
 , m_mouseMove(0.f)
@@ -28,7 +30,6 @@ AppSkeleton::AppSkeleton()
 , m_mouseDeltaYaw(0.f)
 , m_keyboardDeltaPitch(0.f)
 , m_keyboardDeltaRoll(0.f)
-, m_chassisYaw(0.0f)
 {
     ResetChassisTransformations();
 }
@@ -48,4 +49,14 @@ void AppSkeleton::ResetChassisTransformations()
 
 void AppSkeleton::initGL()
 {
+    for (std::vector<IScene*>::iterator it = m_scenes.begin();
+        it != m_scenes.end();
+        ++it)
+    {
+        IScene* pScene = *it;
+        if (pScene != NULL)
+        {
+            pScene->initGL();
+        }
+    }
 }

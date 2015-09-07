@@ -167,7 +167,6 @@ public:
     glm::vec3 m_chassisPosCached;
 
 protected:
-    std::vector<IScene*> m_scenes;
     FBO m_rwwttBuffer;
     FBO m_renderBuffer;
     float m_fboScale;

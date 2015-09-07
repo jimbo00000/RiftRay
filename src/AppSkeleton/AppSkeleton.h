@@ -25,6 +25,8 @@ public:
     virtual void initGL();
 
 protected:
+    std::vector<IScene*> m_scenes;
+
     glm::vec3 m_chassisPos;
     float m_chassisYaw;
     float m_chassisPitch;
