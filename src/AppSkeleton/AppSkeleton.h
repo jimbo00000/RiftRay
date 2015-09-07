@@ -24,6 +24,12 @@ public:
     virtual void ResetChassisTransformations();
     virtual void initGL();
 
+    // For eye ray tracking - set during draw function
+    mutable glm::vec3 m_hmdRo;
+    mutable glm::vec3 m_hmdRd;
+    mutable glm::vec3 m_hmdRoLocal;
+    mutable glm::vec3 m_hmdRdLocal;
+
 protected:
     std::vector<IScene*> m_scenes;
 

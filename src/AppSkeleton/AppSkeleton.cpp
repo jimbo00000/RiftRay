@@ -19,7 +19,9 @@
 #include "MatrixFunctions.h"
 
 AppSkeleton::AppSkeleton()
-: m_scenes()
+: m_hmdRo(0.f)
+, m_hmdRd(0.f)
+, m_scenes()
 , m_chassisYaw(0.f)
 , m_fm()
 , m_keyboardMove(0.f)

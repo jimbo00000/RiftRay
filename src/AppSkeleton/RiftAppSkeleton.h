@@ -146,12 +146,6 @@ protected:
     ovrDistortionMesh m_DistMeshes[2];
     mutable ovrPosef m_eyePoseCached;
 
-    // For eye ray tracking - set during draw function
-    mutable glm::vec3 m_hmdRo;
-    mutable glm::vec3 m_hmdRd;
-    mutable glm::vec3 m_hmdRoLocal;
-    mutable glm::vec3 m_hmdRdLocal;
-
 public:
     // This public section is for exposing state variables to AntTweakBar
     RaymarchShaderScene m_raymarchScene;

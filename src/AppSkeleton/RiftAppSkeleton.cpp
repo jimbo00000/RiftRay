@@ -31,8 +31,6 @@ RiftAppSkeleton::RiftAppSkeleton()
 : m_Hmd(NULL)
 , m_usingDebugHmd(false)
 , m_directHmdMode(true)
-, m_hmdRo(0.0f)
-, m_hmdRd(0.0f)
 
 , m_galleryScene()
 , m_raymarchScene()
