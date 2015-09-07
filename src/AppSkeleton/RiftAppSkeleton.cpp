@@ -28,7 +28,8 @@
 #include "Logger.h"
 
 RiftAppSkeleton::RiftAppSkeleton()
-: m_Hmd(NULL)
+: AppSkeleton()
+, m_Hmd(NULL)
 , m_usingDebugHmd(false)
 , m_directHmdMode(true)
 
