@@ -35,6 +35,7 @@ public:
     virtual void ResetChassisTransformations();
     void SetChassisPosition(glm::vec3 p) { m_chassisPos = p; }
     virtual void initGL();
+    virtual void exitGL();
     void _DrawScenes(
         const float* pMview,
         const float* pPersp,

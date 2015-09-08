@@ -103,6 +103,8 @@ glm::mat4 AppSkeleton::makeWorldToChassisMatrix() const
     return makeChassisMatrix_glm(m_chassisYaw, m_chassisPitch, m_chassisRoll, m_chassisPos);
 }
 
+///@brief Allocate all OpenGL resources
+///@note Requires active GL context.
 void AppSkeleton::initGL()
 {
     m_fm.Init();
@@ -116,6 +118,11 @@ void AppSkeleton::initGL()
             pScene->initGL();
         }
     }
+}
+
+///@brief Destroy all OpenGL resources
+void AppSkeleton::exitGL()
+{
 }
 
 void AppSkeleton::_DrawScenes(
