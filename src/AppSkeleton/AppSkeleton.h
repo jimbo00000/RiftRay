@@ -35,6 +35,11 @@ public:
     virtual void ResetChassisTransformations();
     void SetChassisPosition(glm::vec3 p) { m_chassisPos = p; }
     virtual void initGL();
+    void _DrawScenes(
+        const float* pMview,
+        const float* pPersp,
+        const ovrRecti& rvp,
+        const float* pMvLocal) const;
 
     // For eye ray tracking - set during draw function
     mutable glm::vec3 m_hmdRo;

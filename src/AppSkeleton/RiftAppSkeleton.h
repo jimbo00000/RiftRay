@@ -86,11 +86,6 @@ protected:
     void _initPresentDistMesh(ShaderWithVariables& shader, int eyeIdx);
     void _resetGLState() const;
     void _drawSceneMono() const;
-    void _DrawScenes(
-        const float* pMview,
-        const float* pPersp,
-        const ovrRecti& rvp,
-        const float* pMvLocal) const;
     void _CalculatePerEyeRenderParams(
         const ovrPosef eyePoses[2],
         const ovrPosef eyePosesScaled[2],
