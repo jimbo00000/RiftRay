@@ -52,8 +52,6 @@ RiftAppSkeleton::RiftAppSkeleton()
 
 RiftAppSkeleton::~RiftAppSkeleton()
 {
-    m_fm.Destroy();
-
     for (std::map<std::string, textureChannel>::iterator it = m_texLibrary.begin();
         it != m_texLibrary.end();
         ++it)
@@ -108,7 +106,6 @@ void RiftAppSkeleton::initGL()
     // sensible initial value?
     allocateFBO(m_renderBuffer, 800, 600);
     allocateFBO(m_rwwttBuffer, 800, 600);
-    m_fm.Init();
 }
 
 
