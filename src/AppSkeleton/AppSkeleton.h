@@ -66,6 +66,7 @@ protected:
     glm::mat4 makeWorldToChassisMatrix() const;
 
     std::vector<IScene*> m_scenes;
+    float m_fboScale;
 
     glm::vec3 m_chassisPos;
     float m_chassisYaw;

@@ -130,7 +130,6 @@ protected:
 protected:
     FBO m_rwwttBuffer;
     FBO m_renderBuffer;
-    float m_fboScale;
     ShaderWithVariables m_presentFbo;
     ShaderWithVariables m_presentDistMeshL;
     ShaderWithVariables m_presentDistMeshR;

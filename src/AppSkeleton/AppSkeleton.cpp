@@ -32,6 +32,7 @@ AppSkeleton::AppSkeleton()
 #endif
 
 , m_scenes()
+, m_fboScale(1.f)
 , m_chassisYaw(0.f)
 , m_hyif()
 , m_fm()
