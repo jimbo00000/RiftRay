@@ -36,7 +36,7 @@ public:
     int ConfigureRendering();
     int ConfigureSDKRendering();
     int ConfigureClientRendering();
-    void DismissHealthAndSafetyWarning() const;
+    virtual void DismissHealthAndSafetyWarning() const;
     bool CheckForTapOnHmd();
 
     void display_raw() const;

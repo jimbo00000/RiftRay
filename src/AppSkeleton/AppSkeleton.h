@@ -40,6 +40,9 @@ public:
     void SetChassisPosition(glm::vec3 p) { m_chassisPos = p; }
     virtual void initGL();
     virtual void exitGL();
+
+    virtual void DismissHealthAndSafetyWarning() const {}
+
     void _DrawScenes(
         const float* pMview,
         const float* pPersp,
