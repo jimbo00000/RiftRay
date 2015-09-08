@@ -126,6 +126,17 @@ void AppSkeleton::exitGL()
 {
 }
 
+///@brief Sometimes the OVR SDK modifies OpenGL state.
+void AppSkeleton::_resetGLState() const
+{
+    glClearDepth(1.f);
+    glEnable(GL_DEPTH_TEST);
+    glDepthRangef(0.f, 1.f);
+    glDepthFunc(GL_LESS);
+    glDisable(GL_CULL_FACE);
+    glFrontFace(GL_CCW);
+}
+
 void AppSkeleton::_DrawScenes(
     const float* pMvWorld,
     const float* pPersp,

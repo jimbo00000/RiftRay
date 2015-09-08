@@ -396,17 +396,6 @@ bool RiftAppSkeleton::CheckForTapOnHmd()
     return false;
 }
 
-void RiftAppSkeleton::_resetGLState() const
-{
-    glClearDepth(1.0f);
-    glEnable(GL_DEPTH_TEST);
-    glDepthRangef(0.0f, 1.0f);
-    glDepthFunc(GL_LESS);
-
-    glDisable(GL_CULL_FACE);
-    glFrontFace(GL_CCW);
-}
-
 void RiftAppSkeleton::resize(int w, int h)
 {
     (void)w;

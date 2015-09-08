@@ -82,7 +82,6 @@ public:
 protected:
     void _initPresentFbo();
     void _initPresentDistMesh(ShaderWithVariables& shader, int eyeIdx);
-    void _resetGLState() const;
     void _drawSceneMono() const;
     void _CalculatePerEyeRenderParams(
         const ovrPosef eyePoses[2],

@@ -62,6 +62,7 @@ public:
 #endif
 
 protected:
+    void _resetGLState() const;
     void _RenderRaymarchSceneToCamBuffer() const;
     glm::mat4 makeWorldToChassisMatrix() const;
 
