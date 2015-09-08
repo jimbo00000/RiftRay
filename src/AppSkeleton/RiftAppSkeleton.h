@@ -18,10 +18,6 @@
 #include <OVR_CAPI.h>
 #include <OVR_CAPI_GL.h>
 
-#ifdef USE_ANTTWEAKBAR
-#  include <AntTweakBar.h>
-#endif
-
 #include "FBO.h"
 
 ///@brief Encapsulates as much of the VR viewer state as possible,
@@ -58,12 +54,6 @@ public:
 #endif
 
     void timestep(double absTime, double dt);
-
-    void DiscoverShaders(bool recurse=true);
-    void SetTextureLibraryPointer();
-    void LoadTextureLibrary();
-    void ToggleShaderWorld();
-    void SaveShaderSettings();
 
     float GetFBOScale() const { return m_fboScale; }
     void SetFBOScale(float s);
@@ -103,8 +93,6 @@ protected:
 
     void _StoreHmdPose(const ovrPosef& eyePose) const;
     void _StretchBlitDownscaledBuffer() const;
-    void _ToggleShaderWorld();
-    void _SaveShaderSettings(const std::string toFilename);
 
     virtual glm::mat4 makeWorldToEyeMatrix() const;
 
@@ -129,10 +117,6 @@ protected:
 
 public:
     float m_fboMinScale;
-#ifdef USE_ANTTWEAKBAR
-    TwBar* m_pTweakbar;
-    TwBar* m_pShaderTweakbar;
-#endif
 
 private: // Disallow copy ctor and assignment operator
     RiftAppSkeleton(const RiftAppSkeleton&);

@@ -12,6 +12,10 @@
 #  include <windows.h>
 #endif
 
+#ifdef USE_ANTTWEAKBAR
+#  include <AntTweakBar.h>
+#endif
+
 #include "FBO.h"
 
 #ifdef USE_SIXENSE
@@ -46,6 +50,13 @@ public:
 
     void resize(int w, int h);
 
+
+    void DiscoverShaders(bool recurse=true);
+    void SetTextureLibraryPointer();
+    void LoadTextureLibrary();
+    void ToggleShaderWorld();
+    void SaveShaderSettings();
+
     // For eye ray tracking - set during draw function
     mutable glm::vec3 m_hmdRo;
     mutable glm::vec3 m_hmdRd;
@@ -70,6 +81,8 @@ protected:
     void _drawSceneMono() const;
     void _RenderRaymarchSceneToCamBuffer() const;
     glm::mat4 makeWorldToChassisMatrix() const;
+    void _ToggleShaderWorld();
+    void _SaveShaderSettings(const std::string toFilename);
 
     std::vector<IScene*> m_scenes;
     float m_fboScale;
@@ -103,6 +116,10 @@ public:
 
     float m_headSize;
     float m_cinemaScopeFactor;
+#ifdef USE_ANTTWEAKBAR
+    TwBar* m_pTweakbar;
+    TwBar* m_pShaderTweakbar;
+#endif
 
 private: // Disallow copy ctor and assignment operator
     AppSkeleton(const AppSkeleton&);
