@@ -37,7 +37,6 @@ public:
     void initVR();
     void exitVR();
     void RecenterPose();
-    virtual void ResetChassisTransformations();
     int ConfigureRendering();
     int ConfigureSDKRendering();
     int ConfigureClientRendering();

@@ -86,6 +86,15 @@ void AppSkeleton::ResetChassisTransformations()
     m_chassisYaw = 0.f;
     m_chassisPitch = 0.f;
     m_chassisRoll = 0.f;
+
+    m_raymarchScene.ResetTransformation();
+
+    const ShaderToy* pST = m_galleryScene.GetActiveShaderToy();
+    if (pST != NULL)
+    {
+        m_chassisPos = pST->GetHeadPos();
+        m_chassisYaw = static_cast<float>(M_PI);
+    }
 }
 
 void AppSkeleton::initGL()

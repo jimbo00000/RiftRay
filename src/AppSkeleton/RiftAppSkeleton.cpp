@@ -70,20 +70,6 @@ void RiftAppSkeleton::RecenterPose()
     ovrHmd_RecenterPose(m_Hmd);
 }
 
-void RiftAppSkeleton::ResetChassisTransformations()
-{
-    AppSkeleton::ResetChassisTransformations();
-
-    m_raymarchScene.ResetTransformation();
-
-    const ShaderToy* pST = m_galleryScene.GetActiveShaderToy();
-    if (pST != NULL)
-    {
-        m_chassisPos = pST->GetHeadPos();
-        m_chassisYaw = static_cast<float>(M_PI);
-    }
-}
-
 glm::mat4 RiftAppSkeleton::makeWorldToChassisMatrix() const
 {
     return makeChassisMatrix_glm(m_chassisYaw, m_chassisPitch, m_chassisRoll, m_chassisPos);
