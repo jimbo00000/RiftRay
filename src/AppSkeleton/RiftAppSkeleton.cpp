@@ -97,7 +97,6 @@ void RiftAppSkeleton::initGL()
     // Init the present mesh VAO *after* initVR, which creates the mesh
 
     // sensible initial value?
-    allocateFBO(m_renderBuffer, 800, 600);
     allocateFBO(m_rwwttBuffer, 800, 600);
 }
 
@@ -255,7 +254,7 @@ void RiftAppSkeleton::_initPresentDistMesh(ShaderWithVariables& shader, int eyeI
 
 void RiftAppSkeleton::exitVR()
 {
-    deallocateFBO(m_renderBuffer);
+    AppSkeleton::exitGL();
     deallocateFBO(m_rwwttBuffer);
     ovrHmd_Destroy(m_Hmd);
     ovr_Shutdown();

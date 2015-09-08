@@ -61,6 +61,8 @@ public:
     HydraScene m_hydraScene;
 #endif
 
+    GLuint getRenderBufferTex() const { return m_renderBuffer.tex; }
+
 protected:
     void _resetGLState() const;
     void _RenderRaymarchSceneToCamBuffer() const;
@@ -68,6 +70,7 @@ protected:
 
     std::vector<IScene*> m_scenes;
     float m_fboScale;
+    FBO m_renderBuffer;
 
     glm::vec3 m_chassisPos;
     float m_chassisYaw;

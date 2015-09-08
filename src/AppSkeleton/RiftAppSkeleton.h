@@ -72,7 +72,6 @@ public:
     float* GetFBOScalePointer() { return &m_fboScale; }
 #endif
 
-    GLuint getRenderBufferTex() const { return m_renderBuffer.tex; }
     float GetFboScale() const { return m_fboScale; }
     ovrSizei getHmdResolution() const;
     ovrVector2i getHmdWindowPos() const;
@@ -128,7 +127,6 @@ protected:
 
 protected:
     FBO m_rwwttBuffer;
-    FBO m_renderBuffer;
     ShaderWithVariables m_presentFbo;
     ShaderWithVariables m_presentDistMeshL;
     ShaderWithVariables m_presentDistMeshR;

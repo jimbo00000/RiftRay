@@ -119,11 +119,15 @@ void AppSkeleton::initGL()
             pScene->initGL();
         }
     }
+
+    // sensible initial value?
+    allocateFBO(m_renderBuffer, 800, 600);
 }
 
 ///@brief Destroy all OpenGL resources
 void AppSkeleton::exitGL()
 {
+    deallocateFBO(m_renderBuffer);
 }
 
 ///@brief Sometimes the OVR SDK modifies OpenGL state.
