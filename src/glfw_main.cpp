@@ -881,7 +881,7 @@ void presentSharedFboTexture()
         // This is the only uniform that changes per-frame
         const float fboScale = g_renderMode.outputType == RenderingMode::OVR_SDK ?
             1.0f :
-            g_app.GetFboScale();
+            g_app.GetFBOScale();
         glUniform1f(g_auxPresent.GetUniLoc("fboScale"), fboScale);
 
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);

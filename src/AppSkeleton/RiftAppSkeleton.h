@@ -53,15 +53,6 @@ public:
     void setWindow(_XDisplay* Disp) { m_Cfg.OGL.Disp = Disp; }
 #endif
 
-    void timestep(double absTime, double dt);
-
-    float GetFBOScale() const { return m_fboScale; }
-    void SetFBOScale(float s);
-#ifdef USE_ANTTWEAKBAR
-    float* GetFBOScalePointer() { return &m_fboScale; }
-#endif
-
-    float GetFboScale() const { return m_fboScale; }
     ovrSizei getHmdResolution() const;
     ovrVector2i getHmdWindowPos() const;
     bool UsingDebugHmd() const { return m_usingDebugHmd; }
@@ -114,9 +105,6 @@ protected:
     ShaderWithVariables m_presentFbo;
     ShaderWithVariables m_presentDistMeshL;
     ShaderWithVariables m_presentDistMeshR;
-
-public:
-    float m_fboMinScale;
 
 private: // Disallow copy ctor and assignment operator
     RiftAppSkeleton(const RiftAppSkeleton&);

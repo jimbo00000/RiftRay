@@ -52,7 +52,13 @@ public:
     void DoSceneRenderPrePasses() const;
 
     void resize(int w, int h);
+    void timestep(double absTime, double dt);
 
+    float GetFBOScale() const { return m_fboScale; }
+    void SetFBOScale(float s);
+#ifdef USE_ANTTWEAKBAR
+    float* GetFBOScalePointer() { return &m_fboScale; }
+#endif
 
     void DiscoverShaders(bool recurse=true);
     void SetTextureLibraryPointer();
@@ -87,6 +93,8 @@ protected:
     void _ToggleShaderWorld();
     void _SaveShaderSettings(const std::string toFilename);
 
+    virtual glm::mat4 makeWorldToEyeMatrix() const { return makeWorldToChassisMatrix(); }
+
     std::vector<IScene*> m_scenes;
     float m_fboScale;
     FBO m_renderBuffer;
@@ -119,6 +127,7 @@ public:
 
     float m_headSize;
     float m_cinemaScopeFactor;
+    float m_fboMinScale;
 #ifdef USE_ANTTWEAKBAR
     TwBar* m_pTweakbar;
     TwBar* m_pShaderTweakbar;
