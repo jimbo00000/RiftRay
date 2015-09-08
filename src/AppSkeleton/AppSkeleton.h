@@ -79,6 +79,8 @@ protected:
     float m_chassisYaw;
     float m_chassisPitch;
     float m_chassisRoll;
+    glm::vec3 m_chassisPosCached;
+    float m_chassisYawCached;
 
     VirtualTrackball m_hyif;
     glm::ivec2 m_windowSize;

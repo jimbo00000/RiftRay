@@ -121,15 +121,11 @@ protected:
     ovrDistortionMesh m_DistMeshes[2];
     mutable ovrPosef m_eyePoseCached;
 
-    glm::vec3 m_chassisPosCached;
-
 protected:
     FBO m_rwwttBuffer;
     ShaderWithVariables m_presentFbo;
     ShaderWithVariables m_presentDistMeshL;
     ShaderWithVariables m_presentDistMeshR;
-
-    float m_chassisYawCached;
 
     std::map<std::string, textureChannel> m_texLibrary;
 
