@@ -83,6 +83,9 @@ protected:
     VirtualTrackball m_hyif;
     glm::ivec2 m_windowSize;
 
+    Timer m_transitionTimer;
+    int m_transitionState;
+
 public:
     FlyingMouse m_fm;
     glm::vec3 m_keyboardMove;

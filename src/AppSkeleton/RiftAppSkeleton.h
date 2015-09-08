@@ -133,9 +133,6 @@ protected:
 
     std::map<std::string, textureChannel> m_texLibrary;
 
-    Timer m_transitionTimer;
-    int m_transitionState;
-
 public:
     float m_fboMinScale;
 #ifdef USE_ANTTWEAKBAR

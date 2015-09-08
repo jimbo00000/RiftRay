@@ -36,8 +36,6 @@ RiftAppSkeleton::RiftAppSkeleton()
 , m_presentDistMeshL()
 , m_presentDistMeshR()
 , m_texLibrary()
-, m_transitionTimer()
-, m_transitionState(0)
 , m_fboMinScale(0.05f)
 #ifdef USE_ANTTWEAKBAR
 , m_pTweakbar(NULL)
