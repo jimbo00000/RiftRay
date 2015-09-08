@@ -43,7 +43,6 @@ public:
     void DismissHealthAndSafetyWarning() const;
     bool CheckForTapOnHmd();
 
-    void DoSceneRenderPrePasses() const;
     void display_raw() const;
     void display_buffered(bool setViewport=true) const;
     void display_stereo_undistorted() const;
@@ -105,7 +104,6 @@ protected:
         const glm::mat4* eyeProjMatrix,
         const glm::mat4* eyeMvMtxWorld,
         const ovrRecti* rvpFull) const;
-    void _RenderRaymarchSceneToCamBuffer() const;
 
     void _StoreHmdPose(const ovrPosef& eyePose) const;
     void _StretchBlitDownscaledBuffer() const;
@@ -113,7 +111,6 @@ protected:
     void _SaveShaderSettings(const std::string toFilename);
 
     virtual glm::mat4 makeWorldToEyeMatrix() const;
-    glm::mat4 makeWorldToChassisMatrix() const;
 
     ovrHmd m_Hmd;
     ovrFovPort m_EyeFov[2];
@@ -147,7 +144,6 @@ protected:
     int m_transitionState;
 
 public:
-    float m_headSize;
     float m_fboMinScale;
 #ifdef USE_ANTTWEAKBAR
     TwBar* m_pTweakbar;

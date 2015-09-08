@@ -41,6 +41,8 @@ public:
         const ovrRecti& rvp,
         const float* pMvLocal) const;
 
+    void DoSceneRenderPrePasses() const;
+
     // For eye ray tracking - set during draw function
     mutable glm::vec3 m_hmdRo;
     mutable glm::vec3 m_hmdRd;
@@ -59,6 +61,9 @@ public:
 #endif
 
 protected:
+    void _RenderRaymarchSceneToCamBuffer() const;
+    glm::mat4 makeWorldToChassisMatrix() const;
+
     std::vector<IScene*> m_scenes;
 
     glm::vec3 m_chassisPos;
@@ -79,6 +84,7 @@ public:
     float m_keyboardDeltaPitch;
     float m_keyboardDeltaRoll;
 
+    float m_headSize;
     float m_cinemaScopeFactor;
 
 private: // Disallow copy ctor and assignment operator

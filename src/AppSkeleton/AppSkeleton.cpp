@@ -43,6 +43,7 @@ AppSkeleton::AppSkeleton()
 , m_mouseDeltaYaw(0.f)
 , m_keyboardDeltaPitch(0.f)
 , m_keyboardDeltaRoll(0.f)
+, m_headSize(1.f)
 , m_cinemaScopeFactor(0.f)
 {
     // Add as many scenes here as you like. They will share color and depth buffers,
@@ -95,6 +96,11 @@ void AppSkeleton::ResetChassisTransformations()
         m_chassisPos = pST->GetHeadPos();
         m_chassisYaw = static_cast<float>(M_PI);
     }
+}
+
+glm::mat4 AppSkeleton::makeWorldToChassisMatrix() const
+{
+    return makeChassisMatrix_glm(m_chassisYaw, m_chassisPitch, m_chassisRoll, m_chassisPos);
 }
 
 void AppSkeleton::initGL()
@@ -157,3 +163,50 @@ void AppSkeleton::_DrawScenes(
     glDisable(GL_SCISSOR_TEST);
 }
 
+void AppSkeleton::DoSceneRenderPrePasses() const
+{
+    for (std::vector<IScene*>::const_iterator it = m_scenes.begin();
+        it != m_scenes.end();
+        ++it)
+    {
+        const IScene* pScene = *it;
+        if (pScene != NULL)
+        {
+            pScene->RenderPrePass();
+        }
+    }
+    _RenderRaymarchSceneToCamBuffer();
+}
+
+///@brief Render the raymarch scene to the camera FBO in DashboardScene's CamPane.
+void AppSkeleton::_RenderRaymarchSceneToCamBuffer() const
+{
+    ///@note Not truly const as we are rendering to it - don't tell the compiler!
+    const CamPane& camPane = m_dashScene.m_camPane;
+    const FBO& fbo = camPane.m_paneRenderBuffer;
+    bindFBO(fbo);
+    {
+        glClearColor(0.f, 0.f, 0.f, 1.f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glDisable(GL_SCISSOR_TEST);
+        glDisable(GL_DEPTH_TEST);
+        const glm::mat4 persp = glm::perspective(
+            70.f,
+            static_cast<float>(fbo.w) / static_cast<float>(fbo.h),
+            .004f,
+            500.f);
+        const float* pMtx = m_fm.mtxR; ///@todo Iron out discrepancies in L/R Hydra controllers
+
+        glm::mat4 camMtx = glm::make_mat4(pMtx);
+        const float s = m_headSize; // scale translation by headSize
+        camMtx[3].x *= s;
+        camMtx[3].y *= s;
+        camMtx[3].z *= s;
+
+        const glm::mat4 mvmtx = makeWorldToChassisMatrix() * camMtx;
+        const float* pMv = glm::value_ptr(glm::inverse(mvmtx));
+        const float* pPersp = glm::value_ptr(persp);
+        m_galleryScene.RenderForOneEye(pMv, pPersp);
+    }
+    unbindFBO();
+}
