@@ -38,7 +38,6 @@ public:
     void exitVR();
     void RecenterPose();
     virtual void ResetChassisTransformations();
-    void SetChassisPosition(glm::vec3 p) { m_chassisPos = p; }
     int ConfigureRendering();
     int ConfigureSDKRendering();
     int ConfigureClientRendering();

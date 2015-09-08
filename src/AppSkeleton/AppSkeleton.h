@@ -33,6 +33,7 @@ public:
     virtual ~AppSkeleton();
 
     virtual void ResetChassisTransformations();
+    void SetChassisPosition(glm::vec3 p) { m_chassisPos = p; }
     virtual void initGL();
 
     // For eye ray tracking - set during draw function
