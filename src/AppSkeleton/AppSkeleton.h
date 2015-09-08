@@ -65,6 +65,7 @@ public:
 
 protected:
     void _resetGLState() const;
+    void _drawSceneMono() const;
     void _RenderRaymarchSceneToCamBuffer() const;
     glm::mat4 makeWorldToChassisMatrix() const;
 

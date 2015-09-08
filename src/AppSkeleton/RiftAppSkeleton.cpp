@@ -817,33 +817,6 @@ void RiftAppSkeleton::_StoreHmdPose(const ovrPosef& eyePose) const
     m_eyePoseCached = eyePose; // cache this for movement direction
 }
 
-void RiftAppSkeleton::_drawSceneMono() const
-{
-    _resetGLState();
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    const glm::mat4 mvLocal = glm::mat4(1.f);
-    const glm::mat4 mvWorld = mvLocal *
-        glm::inverse(makeWorldToChassisMatrix());
-
-    const int w = static_cast<int>(m_fboScale * static_cast<float>(m_renderBuffer.w));
-    const int h = static_cast<int>(m_fboScale * static_cast<float>(m_renderBuffer.h));
-    const glm::mat4 persp = glm::perspective(
-        90.0f,
-        static_cast<float>(w)/static_cast<float>(h),
-        0.004f,
-        500.0f);
-
-    const ovrRecti rvp = {0,0,w,h};
-    _DrawScenes(
-        glm::value_ptr(mvWorld),
-        glm::value_ptr(persp),
-        rvp,
-        glm::value_ptr(mvLocal)
-        );
-}
-
 void RiftAppSkeleton::display_raw() const
 {
     const int w = m_windowSize.x;

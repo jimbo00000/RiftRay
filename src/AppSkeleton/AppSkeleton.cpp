@@ -233,3 +233,30 @@ void AppSkeleton::_RenderRaymarchSceneToCamBuffer() const
     }
     unbindFBO();
 }
+
+void AppSkeleton::_drawSceneMono() const
+{
+    _resetGLState();
+    glClearColor(0.f, 0.f, 0.f, 0.f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    const glm::mat4 mvLocal = glm::mat4(1.f);
+    const glm::mat4 mvWorld = mvLocal *
+        glm::inverse(makeWorldToChassisMatrix());
+
+    const int w = static_cast<int>(m_fboScale * static_cast<float>(m_renderBuffer.w));
+    const int h = static_cast<int>(m_fboScale * static_cast<float>(m_renderBuffer.h));
+    const glm::mat4 persp = glm::perspective(
+        90.f,
+        static_cast<float>(w)/static_cast<float>(h),
+        .004f,
+        500.f);
+
+    const ovrRecti rvp = {0,0,w,h};
+    _DrawScenes(
+        glm::value_ptr(mvWorld),
+        glm::value_ptr(persp),
+        rvp,
+        glm::value_ptr(mvLocal)
+        );
+}
