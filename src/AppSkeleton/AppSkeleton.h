@@ -44,6 +44,8 @@ public:
 
     void DoSceneRenderPrePasses() const;
 
+    void resize(int w, int h);
+
     // For eye ray tracking - set during draw function
     mutable glm::vec3 m_hmdRo;
     mutable glm::vec3 m_hmdRd;
@@ -79,6 +81,7 @@ protected:
     float m_chassisRoll;
 
     VirtualTrackball m_hyif;
+    glm::ivec2 m_windowSize;
 
 public:
     FlyingMouse m_fm;

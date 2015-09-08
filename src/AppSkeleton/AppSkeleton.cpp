@@ -260,3 +260,11 @@ void AppSkeleton::_drawSceneMono() const
         glm::value_ptr(mvLocal)
         );
 }
+
+void AppSkeleton::resize(int w, int h)
+{
+    (void)w;
+    (void)h;
+    m_windowSize.x = w;
+    m_windowSize.y = h;
+}

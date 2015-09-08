@@ -58,7 +58,6 @@ public:
 #endif
 
     void timestep(double absTime, double dt);
-    void resize(int w, int h);
 
     void DiscoverShaders(bool recurse=true);
     void SetTextureLibraryPointer();
@@ -133,7 +132,6 @@ protected:
     float m_chassisYawCached;
 
     std::map<std::string, textureChannel> m_texLibrary;
-    glm::ivec2 m_windowSize;
 
     Timer m_transitionTimer;
     int m_transitionState;

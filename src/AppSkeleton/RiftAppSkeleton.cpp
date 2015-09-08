@@ -395,14 +395,6 @@ bool RiftAppSkeleton::CheckForTapOnHmd()
     return false;
 }
 
-void RiftAppSkeleton::resize(int w, int h)
-{
-    (void)w;
-    (void)h;
-    m_windowSize.x = w;
-    m_windowSize.y = h;
-}
-
 void RiftAppSkeleton::SetFBOScale(float s)
 {
     m_fboScale = s;
