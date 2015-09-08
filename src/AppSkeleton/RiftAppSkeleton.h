@@ -154,7 +154,6 @@ protected:
 
 public:
     float m_headSize;
-    float m_cinemaScopeFactor;
     float m_fboMinScale;
 #ifdef USE_ANTTWEAKBAR
     TwBar* m_pTweakbar;

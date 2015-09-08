@@ -74,6 +74,8 @@ public:
     float m_keyboardDeltaPitch;
     float m_keyboardDeltaRoll;
 
+    float m_cinemaScopeFactor;
+
 private: // Disallow copy ctor and assignment operator
     AppSkeleton(const AppSkeleton&);
     AppSkeleton& operator=(const AppSkeleton&);

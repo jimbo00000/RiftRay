@@ -40,7 +40,6 @@ RiftAppSkeleton::RiftAppSkeleton()
 , m_transitionTimer()
 , m_transitionState(0)
 , m_headSize(1.0f)
-, m_cinemaScopeFactor(0.0f)
 , m_fboMinScale(0.05f)
 #ifdef USE_ANTTWEAKBAR
 , m_pTweakbar(NULL)
