@@ -37,6 +37,7 @@ AppSkeleton::AppSkeleton()
 , m_hyif()
 , m_transitionTimer()
 , m_transitionState(0)
+, m_texLibrary()
 , m_fm()
 , m_keyboardMove(0.f)
 , m_joystickMove(0.f)
@@ -130,6 +131,14 @@ void AppSkeleton::initGL()
 void AppSkeleton::exitGL()
 {
     deallocateFBO(m_renderBuffer);
+
+    for (std::map<std::string, textureChannel>::iterator it = m_texLibrary.begin();
+        it != m_texLibrary.end();
+        ++it)
+    {
+        textureChannel& tc = it->second;
+        glDeleteTextures(1, &tc.texID);
+    }
 }
 
 ///@brief Sometimes the OVR SDK modifies OpenGL state.

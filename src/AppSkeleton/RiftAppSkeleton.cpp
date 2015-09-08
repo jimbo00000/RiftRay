@@ -35,7 +35,6 @@ RiftAppSkeleton::RiftAppSkeleton()
 , m_presentFbo()
 , m_presentDistMeshL()
 , m_presentDistMeshR()
-, m_texLibrary()
 , m_fboMinScale(0.05f)
 #ifdef USE_ANTTWEAKBAR
 , m_pTweakbar(NULL)
@@ -48,13 +47,6 @@ RiftAppSkeleton::RiftAppSkeleton()
 
 RiftAppSkeleton::~RiftAppSkeleton()
 {
-    for (std::map<std::string, textureChannel>::iterator it = m_texLibrary.begin();
-        it != m_texLibrary.end();
-        ++it)
-    {
-        textureChannel& tc = it->second;
-        glDeleteTextures(1, &tc.texID);
-    }
 }
 
 void RiftAppSkeleton::RecenterPose()

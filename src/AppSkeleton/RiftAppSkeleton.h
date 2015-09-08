@@ -127,8 +127,6 @@ protected:
     ShaderWithVariables m_presentDistMeshL;
     ShaderWithVariables m_presentDistMeshR;
 
-    std::map<std::string, textureChannel> m_texLibrary;
-
 public:
     float m_fboMinScale;
 #ifdef USE_ANTTWEAKBAR

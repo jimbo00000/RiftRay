@@ -88,6 +88,8 @@ protected:
     Timer m_transitionTimer;
     int m_transitionState;
 
+    std::map<std::string, textureChannel> m_texLibrary;
+
 public:
     FlyingMouse m_fm;
     glm::vec3 m_keyboardMove;
