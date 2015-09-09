@@ -39,7 +39,6 @@ public:
     virtual void DismissHealthAndSafetyWarning() const;
     bool CheckForTapOnHmd();
 
-    void display_raw() const;
     void display_buffered(bool setViewport=true) const;
     void display_stereo_undistorted() const;
     void display_sdk() const;

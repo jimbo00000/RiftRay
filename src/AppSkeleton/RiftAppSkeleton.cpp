@@ -416,15 +416,6 @@ void RiftAppSkeleton::_StoreHmdPose(const ovrPosef& eyePose) const
     m_eyePoseCached = eyePose; // cache this for movement direction
 }
 
-void RiftAppSkeleton::display_raw() const
-{
-    const int w = m_windowSize.x;
-    const int h = m_windowSize.y;
-    glViewport(0, 0, w, h);
-
-    _drawSceneMono();
-}
-
 void RiftAppSkeleton::display_buffered(bool setViewport) const
 {
     OVR::Posef p = OVR::Posef();

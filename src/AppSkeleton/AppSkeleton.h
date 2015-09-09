@@ -41,6 +41,8 @@ public:
     virtual void initGL();
     virtual void exitGL();
 
+    void display_raw() const;
+
     virtual void DismissHealthAndSafetyWarning() const {}
 
     void _DrawScenes(

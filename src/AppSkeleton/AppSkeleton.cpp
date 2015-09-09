@@ -281,6 +281,15 @@ void AppSkeleton::_drawSceneMono() const
         );
 }
 
+void AppSkeleton::display_raw() const
+{
+    const int w = m_windowSize.x;
+    const int h = m_windowSize.y;
+    glViewport(0, 0, w, h);
+
+    _drawSceneMono();
+}
+
 void AppSkeleton::resize(int w, int h)
 {
     (void)w;
