@@ -42,6 +42,7 @@ public:
     virtual void exitGL();
 
     void display_raw() const;
+    void display_buffered(bool setViewport=true) const;
 
     virtual void DismissHealthAndSafetyWarning() const {}
 

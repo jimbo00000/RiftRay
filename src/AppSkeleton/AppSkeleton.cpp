@@ -343,6 +343,40 @@ void AppSkeleton::display_raw() const
     _drawSceneMono();
 }
 
+void AppSkeleton::display_buffered(bool setViewport) const
+{
+    bindFBO(m_renderBuffer, m_fboScale);
+    _drawSceneMono();
+    unbindFBO();
+
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+
+    if (setViewport)
+    {
+        const int w = m_windowSize.x;
+        const int h = m_windowSize.y;
+        glViewport(0, 0, w, h);
+    }
+
+    // Present FBO to screen
+    const GLuint prog = m_presentFbo.prog();
+    glUseProgram(prog);
+    m_presentFbo.bindVAO();
+    {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_renderBuffer.tex);
+        glUniform1i(m_presentFbo.GetUniLoc("fboTex"), 0);
+
+        // This is the only uniform that changes per-frame
+        glUniform1f(m_presentFbo.GetUniLoc("fboScale"), m_fboScale);
+
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    }
+    glBindVertexArray(0);
+    glUseProgram(0);
+}
+
 void AppSkeleton::resize(int w, int h)
 {
     (void)w;
