@@ -35,6 +35,8 @@ RiftAppSkeleton::RiftAppSkeleton()
 , m_presentDistMeshR()
 {
     m_eyePoseCached = OVR::Posef();
+    _StoreHmdPose(m_eyePoseCached);
+
     ResetChassisTransformations();
 }
 
@@ -418,9 +420,6 @@ void RiftAppSkeleton::_StoreHmdPose(const ovrPosef& eyePose) const
 
 void RiftAppSkeleton::display_buffered(bool setViewport) const
 {
-    OVR::Posef p = OVR::Posef();
-    _StoreHmdPose(p);
-
     bindFBO(m_renderBuffer, m_fboScale);
     _drawSceneMono();
     unbindFBO();
