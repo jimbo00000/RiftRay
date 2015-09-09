@@ -31,7 +31,11 @@
 #include <iostream>
 #include <sstream>
 
+#ifdef USE_OCULUSSDK
 #include "RiftAppSkeleton.h"
+#else
+#include "AppSkeleton.h"
+#endif
 #include "RenderingMode.h"
 #include "Timer.h"
 #include "FPSTimer.h"
@@ -44,7 +48,11 @@
 #include <sys/stat.h>
 #endif
 
+#ifdef USE_OCULUSSDK
 RiftAppSkeleton g_app;
+#else
+AppSkeleton g_app;
+#endif
 RenderingMode g_renderMode;
 Timer g_timer;
 double g_lastFrameTime = 0.0;
@@ -195,7 +203,10 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
         case '`':
             ///@todo Is there a way to create an auxiliary window in Direct to rift mode?
             /// The call to glfwCreateWindow crashes the app in Win7.
+
+#ifdef USE_OCULUSSDK
             if (g_app.UsingDirectMode() == false)
+#endif
             {
                 if (g_AuxWindow == NULL)
                 {
@@ -906,6 +917,7 @@ void displayToHMD()
         glfwSwapBuffers(g_pHMDWindow);
         break;
 
+#ifdef USE_OCULUSSDK
     case RenderingMode::SideBySide_Undistorted:
         g_app.display_stereo_undistorted();
         glfwSwapBuffers(g_pHMDWindow);
@@ -920,7 +932,7 @@ void displayToHMD()
         g_app.display_client();
         glfwSwapBuffers(g_pHMDWindow);
         break;
-
+#endif
     default:
         LOG_ERROR("Unknown display type: %d", g_renderMode.outputType);
         break;
@@ -1188,9 +1200,10 @@ int main(int argc, char** argv)
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 #endif
 
+    std::string windowTitle = "RiftRay-v" + std::string(pRiftRayVersion);
+#ifdef USE_OCULUSSDK
     const ovrSizei sz = g_app.getHmdResolution();
     const ovrVector2i pos = g_app.getHmdWindowPos();
-    std::string windowTitle = "RiftRay-v" + std::string(pRiftRayVersion);
 
     if (g_app.UsingDebugHmd() == true)
     {
@@ -1226,6 +1239,16 @@ int main(int argc, char** argv)
 
     resize(l_Window, sz.w, sz.h); // inform AppSkeleton of window size
 
+#else
+    const glm::vec2 sz(800, 600);
+    // Create a normal, decorated application window
+    LOG_INFO("Using No VR SDK.");
+    windowTitle += "-GLFW-NoVRSDK";
+    g_renderMode.outputType = RenderingMode::Mono_Buffered;
+
+    l_Window = glfwCreateWindow(sz.x, sz.y, windowTitle.c_str(), NULL, NULL);
+#endif //USE_OSVR|USE_OCULUSSDK
+
     if (!l_Window)
     {
         LOG_INFO("Glfw failed to create a window. Exiting.");
@@ -1233,11 +1256,13 @@ int main(int argc, char** argv)
         exit(EXIT_FAILURE);
     }
 
+#ifdef USE_OCULUSSDK
     // Required for SDK rendering (to do the buffer swap on its own)
-#if defined(_WIN32)
+#  if defined(_WIN32)
     g_app.setWindow(glfwGetWin32Window(l_Window));
-#elif defined(__linux__)
+#  elif defined(__linux__)
     g_app.setWindow(glfwGetX11Display());
+#  endif
 #endif
 
     glfwMakeContextCurrent(l_Window);

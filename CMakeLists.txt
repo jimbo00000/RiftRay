@@ -87,6 +87,7 @@ IF( WIN32 )
         ENDIF()
     ENDIF()
     SET( OVR_LIBS LibOVR.lib )
+    ADD_DEFINITIONS( -DUSE_OCULUSSDK )
 
     IF( USE_SIXENSE )
         MESSAGE("Using Sixense SDK.")

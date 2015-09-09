@@ -41,6 +41,16 @@ public:
     virtual void initGL();
     virtual void exitGL();
 
+    // These vestigial functions match the entry points in OVRSDK05AppSkeleton.
+    // Having them here is ugly, but doesn't seem as bad as a ton of #ifdefs in main.
+    void initHMD() {}
+    void initVR(bool swapBackBufferDims = false) {}
+    void exitVR() {}
+    void RecenterPose() {}
+    bool UsingDebugHmd() const { return true; }
+    bool UsingDirectMode() const { return true; }
+    bool CheckForTapOnHmd() const { return true; }
+
     void display_raw() const;
     void display_buffered(bool setViewport=true) const;
 
@@ -80,7 +90,9 @@ public:
     RaymarchShaderScene m_raymarchScene;
     ShaderGalleryScene m_galleryScene;
     DashboardScene m_dashScene;
+#ifdef USE_OCULUSSDK
     OVRScene m_ovrScene;
+#endif
     FloorScene m_floorScene;
 #ifdef USE_SIXENSE
     HydraScene m_hydraScene;

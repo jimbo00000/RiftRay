@@ -29,7 +29,9 @@ AppSkeleton::AppSkeleton()
 , m_galleryScene()
 , m_raymarchScene()
 , m_dashScene()
+#ifdef USE_OCULUSSDK
 , m_ovrScene()
+#endif
 , m_floorScene()
 #ifdef USE_SIXENSE
 , m_hydraScene()
@@ -68,7 +70,9 @@ AppSkeleton::AppSkeleton()
     // take a little bit more work.
     //m_scenes.push_back(&m_raymarchScene);
     m_scenes.push_back(&m_galleryScene);
+#ifdef USE_OCULUSSDK
     m_scenes.push_back(&m_ovrScene);
+#endif
     m_scenes.push_back(&m_dashScene);
     m_scenes.push_back(&m_floorScene);
 #ifdef USE_SIXENSE
@@ -237,7 +241,9 @@ void AppSkeleton::_DrawScenes(
 
         // Show the warning box if we get too close to edge of tracking cam's fov.
         glDisable(GL_DEPTH_TEST);
+#ifdef USE_OCULUSSDK
         m_ovrScene.RenderForOneEye(pMvLocal, pPersp); // m_bChassisLocalSpace
+#endif
         m_dashScene.RenderForOneEye(pMvLocal, pPersp);
         glEnable(GL_DEPTH_TEST);
     }
