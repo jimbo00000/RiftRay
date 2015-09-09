@@ -38,6 +38,8 @@ AppSkeleton::AppSkeleton()
 , m_scenes()
 , m_fboScale(1.f)
 , m_presentFbo()
+, m_presentDistMeshL()
+, m_presentDistMeshR()
 , m_chassisYaw(0.f)
 , m_hyif()
 , m_transitionTimer()
@@ -137,6 +139,9 @@ void AppSkeleton::initGL()
     allocateFBO(m_renderBuffer, 800, 600);
     m_presentFbo.initProgram("presentfbo");
     _initPresentFbo();
+    m_presentDistMeshL.initProgram("presentmesh");
+    m_presentDistMeshR.initProgram("presentmesh");
+    // Init the present mesh VAO *after* initVR, which creates the mesh
 }
 
 ///@brief Destroy all OpenGL resources

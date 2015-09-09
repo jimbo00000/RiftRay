@@ -102,6 +102,8 @@ protected:
     float m_fboScale;
     FBO m_renderBuffer;
     ShaderWithVariables m_presentFbo;
+    ShaderWithVariables m_presentDistMeshL;
+    ShaderWithVariables m_presentDistMeshR;
 
     glm::vec3 m_chassisPos;
     float m_chassisYaw;

@@ -100,8 +100,6 @@ protected:
 
 protected:
     FBO m_rwwttBuffer;
-    ShaderWithVariables m_presentDistMeshL;
-    ShaderWithVariables m_presentDistMeshR;
 
 private: // Disallow copy ctor and assignment operator
     RiftAppSkeleton(const RiftAppSkeleton&);

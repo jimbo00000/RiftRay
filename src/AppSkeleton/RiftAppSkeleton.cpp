@@ -30,8 +30,6 @@ RiftAppSkeleton::RiftAppSkeleton()
 , m_Hmd(NULL)
 , m_usingDebugHmd(false)
 , m_directHmdMode(true)
-, m_presentDistMeshL()
-, m_presentDistMeshR()
 {
     m_eyePoseCached = OVR::Posef();
     _StoreHmdPose(m_eyePoseCached);
@@ -73,10 +71,6 @@ ovrVector2i RiftAppSkeleton::getHmdWindowPos() const
 void RiftAppSkeleton::initGL()
 {
     AppSkeleton::initGL();
-
-    m_presentDistMeshL.initProgram("presentmesh");
-    m_presentDistMeshR.initProgram("presentmesh");
-    // Init the present mesh VAO *after* initVR, which creates the mesh
 
     // sensible initial value?
     allocateFBO(m_rwwttBuffer, 800, 600);
