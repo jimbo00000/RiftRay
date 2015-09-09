@@ -58,7 +58,6 @@ public:
     bool UsingDirectMode() const { return m_directHmdMode; }
 
 protected:
-    void _initPresentFbo();
     void _initPresentDistMesh(ShaderWithVariables& shader, int eyeIdx);
     void _CalculatePerEyeRenderParams(
         const ovrPosef eyePoses[2],
@@ -101,7 +100,6 @@ protected:
 
 protected:
     FBO m_rwwttBuffer;
-    ShaderWithVariables m_presentFbo;
     ShaderWithVariables m_presentDistMeshL;
     ShaderWithVariables m_presentDistMeshR;
 

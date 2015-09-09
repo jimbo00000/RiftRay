@@ -88,6 +88,7 @@ public:
     GLuint getRenderBufferTex() const { return m_renderBuffer.tex; }
 
 protected:
+    void _initPresentFbo();
     void _resetGLState() const;
     void _drawSceneMono() const;
     void _RenderRaymarchSceneToCamBuffer() const;
@@ -100,6 +101,7 @@ protected:
     std::vector<IScene*> m_scenes;
     float m_fboScale;
     FBO m_renderBuffer;
+    ShaderWithVariables m_presentFbo;
 
     glm::vec3 m_chassisPos;
     float m_chassisYaw;
