@@ -4,7 +4,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#ifdef USE_OCULUSSDK
 #include <OVR.h>
+#endif
 
 glm::mat4 makeChassisMatrix_glm(
     float chassisYaw,
@@ -20,6 +22,7 @@ glm::mat4 makeChassisMatrix_glm(
         ;
 }
 
+#ifdef USE_OCULUSSDK
 /// Turn ovrPosef of the HMD into a glm matrix. Pose is delivered by libOVR per-frame
 /// as close to render time as possible to reduce latency.
 glm::mat4 makeMatrixFromPose(const ovrPosef& eyePose, float headSize)
@@ -41,3 +44,4 @@ OVR::Matrix4f makeOVRMatrixFromGlmMatrix(const glm::mat4& glm_m)
         16*sizeof(float));
     return ovr_m; // copied on return
 }
+#endif

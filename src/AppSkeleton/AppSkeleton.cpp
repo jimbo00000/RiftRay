@@ -198,9 +198,9 @@ void AppSkeleton::_initPresentFbo()
 
     glUseProgram(m_presentFbo.prog());
     {
-        OVR::Matrix4f id = OVR::Matrix4f::Identity();
-        glUniformMatrix4fv(m_presentFbo.GetUniLoc("mvmtx"), 1, false, &id.Transposed().M[0][0]);
-        glUniformMatrix4fv(m_presentFbo.GetUniLoc("prmtx"), 1, false, &id.Transposed().M[0][0]);
+        const glm::mat4 id(1.f);
+        glUniformMatrix4fv(m_presentFbo.GetUniLoc("mvmtx"), 1, false, glm::value_ptr(id));
+        glUniformMatrix4fv(m_presentFbo.GetUniLoc("prmtx"), 1, false, glm::value_ptr(id));
     }
     glUseProgram(0);
 

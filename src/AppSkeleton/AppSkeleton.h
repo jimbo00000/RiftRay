@@ -21,7 +21,10 @@
 #ifdef USE_SIXENSE
 #include "HydraScene.h"
 #endif
+#ifdef USE_OCULUSSDK
 #include "OVRScene.h"
+#endif
+
 #include "RaymarchShaderScene.h"
 #include "ShaderGalleryScene.h"
 #include "FloorScene.h"
