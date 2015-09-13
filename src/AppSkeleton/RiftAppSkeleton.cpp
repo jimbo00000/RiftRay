@@ -420,13 +420,15 @@ void RiftAppSkeleton::display_stereo_undistorted() const
 
         const ovrGLTexture& otex = m_EyeTexture[e];
         const ovrRecti& rvp = otex.OGL.Header.RenderViewport;
-        const ovrRecti rsc = {
-            static_cast<int>(m_fboScale * rvp.Pos.x),
-            static_cast<int>(m_fboScale * rvp.Pos.y),
-            static_cast<int>(m_fboScale * rvp.Size.w),
-            static_cast<int>(m_fboScale * rvp.Size.h)
+        const rect rsc = {
+            glm::ivec2(
+                static_cast<int>(m_fboScale * rvp.Pos.x),
+                static_cast<int>(m_fboScale * rvp.Pos.y)),
+            glm::ivec2(
+                static_cast<int>(m_fboScale * rvp.Size.w),
+                static_cast<int>(m_fboScale * rvp.Size.h))
         };
-        glViewport(rsc.Pos.x, rsc.Pos.y, rsc.Size.w, rsc.Size.h);
+        glViewport(rsc.Pos.x, rsc.Pos.y, rsc.Size.x, rsc.Size.y);
 
         const OVR::Matrix4f proj = ovrMatrix4f_Projection(
             m_EyeRenderDesc[e].Fov,
