@@ -266,7 +266,7 @@ ELSEIF( UNIX )
         SET( ANTTWEAKBAR_ROOT "${LIBS_HOME}/AntTweakBar" CACHE STRING "AntTweakBar root" )
         INCLUDE_DIRECTORIES( "${ANTTWEAKBAR_ROOT}/include" )
         LINK_DIRECTORIES   ( "${ANTTWEAKBAR_ROOT}/lib" )
-        SET( ANT_LIBS libAntTweakBar.a )
+        SET( ANT_LIBS libAntTweakBar.so )
         ADD_DEFINITIONS( -DUSE_ANTTWEAKBAR )
     ENDIF( USE_ANTTWEAKBAR )
 
