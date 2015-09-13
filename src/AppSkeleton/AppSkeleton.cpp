@@ -11,6 +11,7 @@
 #include <math.h>
 #include <algorithm>
 #include <sstream>
+#include <iostream>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -221,15 +222,15 @@ void AppSkeleton::_resetGLState() const
 void AppSkeleton::_DrawScenes(
     const float* pMvWorld,
     const float* pPersp,
-    const ovrRecti& rvp,
+    const rect& rvp,
     const float* pMvLocal) const
 {
     // Clip off top and bottom letterboxes
     glEnable(GL_SCISSOR_TEST);
     const float factor = m_cinemaScopeFactor;
-    const int yoff = static_cast<int>(static_cast<float>(rvp.Size.h) * factor);
+    const int yoff = static_cast<int>(static_cast<float>(rvp.Size.y) * factor);
     // Assume side-by-side single render texture
-    glScissor(0, yoff / 2, rvp.Pos.x + rvp.Size.w, rvp.Size.h - yoff);
+    glScissor(0, yoff / 2, rvp.Pos.x + rvp.Size.x, rvp.Size.y - yoff);
 
     // Special case for the ShaderToyScene: if it is on, make it the only one.
     // This is because shadertoys typically don't write to the depth buffer.
@@ -335,7 +336,7 @@ void AppSkeleton::_drawSceneMono() const
         .004f,
         500.f);
 
-    const ovrRecti rvp = {0,0,w,h};
+    const rect rvp = {glm::ivec2(0,0), glm::ivec2(w,h)};
     _DrawScenes(
         glm::value_ptr(mvWorld),
         glm::value_ptr(persp),
@@ -721,10 +722,6 @@ void AppSkeleton::timestep(double absTime, double dtd)
 #endif
 
     const glm::vec3 move_dt = m_headSize * (m_keyboardMove + m_joystickMove + m_mouseMove + hydraMove) * dt;
-    ovrVector3f kbm;
-    kbm.x = move_dt.x;
-    kbm.y = move_dt.y;
-    kbm.z = move_dt.z;
 
     // Move in the direction the viewer is facing.
     const glm::vec4 mv4 = makeWorldToEyeMatrix() * glm::vec4(move_dt, 0.0f);

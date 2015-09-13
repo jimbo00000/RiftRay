@@ -33,6 +33,11 @@
 #include "FlyingMouse.h"
 #include "VirtualTrackball.h"
 
+struct rect {
+    glm::ivec2 Pos;
+    glm::ivec2 Size;
+};
+
 class AppSkeleton
 {
 public:
@@ -62,7 +67,7 @@ public:
     void _DrawScenes(
         const float* pMview,
         const float* pPersp,
-        const ovrRecti& rvp,
+        const rect& rvp,
         const float* pMvLocal) const;
 
     void DoSceneRenderPrePasses() const;
