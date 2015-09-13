@@ -17,7 +17,7 @@ uniform float maxArg;
 #define FOG_COLOUR vec3(0.07, 0.05, 0.05)
 
 vec3 CSize;
-vec4 aStack[2];
+vec4 aStack[2] = vec4[](vec4(0.), vec4(0.));
 vec4 dStack[2];
 
 //----------------------------------------------------------------------------------------

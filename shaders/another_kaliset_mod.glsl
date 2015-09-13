@@ -7,7 +7,8 @@
 #define time iGlobalTime
 #define size iResolution
 
-vec3 mcol,ro;
+vec3 mcol = vec3(0.);
+vec3 ro = vec3(0.);
 float dL=100.0,mxscl=max(0.5,abs(sin(time*0.1))*2.5),ltpos=-1.5+sin(time*10.0);
 float DE(vec3 z0)
 {
