@@ -313,8 +313,8 @@ vec3 getSceneColor( in vec3 camPos, in vec3 rayDir )
         
         float maxheight = 1.5*pow((maxJ-1.0),0.3)*height+roof*0.07;
         if (camPos.z+rayDir.z*(length(camPos.xy - square) +0.71 - sign(rayDir.z)*0.71)/length(rayDir.xy)<maxheight){
-			vec2 vert1r;
-        	vec2 vert2r;
+			vec2 vert1r = vec2(0.);
+        	vec2 vert2r = vec2(0.);
             float zz = 0.0;
             float prevZZ = 0.0;
             for(int nf=1;nf<8;nf++){
