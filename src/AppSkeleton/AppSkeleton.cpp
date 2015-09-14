@@ -316,9 +316,7 @@ void AppSkeleton::_RenderRaymarchSceneToCamBuffer() const
 
 void AppSkeleton::_drawSceneMono() const
 {
-    m_hmdRo.x = m_chassisPos.x;
-    m_hmdRo.y = m_chassisPos.y;
-    m_hmdRo.z = m_chassisPos.z;
+    m_hmdRo = m_chassisPos;
 
     _resetGLState();
     glClearColor(0.f, 0.f, 0.f, 0.f);

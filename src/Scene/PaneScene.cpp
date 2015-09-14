@@ -207,7 +207,7 @@ bool PaneScene::_GetHmdViewRayIntersectionCoordinates(Pane* pPane, glm::vec2& pl
     glm::vec3 dir3 = *m_pHmdRd;
     if (glm::length(dir3) == 0)
     {
-        dir3 = glm::vec3(0.f, 0.f, 1.f);
+        dir3 = glm::vec3(0.f, 0.f, -1.f);
     }
     return pPane->GetPaneRayIntersectionCoordinates(origin3, dir3, planePt, tParam);
 }

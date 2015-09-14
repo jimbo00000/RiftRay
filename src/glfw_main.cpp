@@ -1244,6 +1244,7 @@ int main(int argc, char** argv)
     g_renderMode.outputType = RenderingMode::Mono_Buffered;
 
     l_Window = glfwCreateWindow(sz.x, sz.y, windowTitle.c_str(), NULL, NULL);
+    resize(l_Window, sz.x, sz.y); // inform AppSkeleton of window size
 #endif //USE_OSVR|USE_OCULUSSDK
 
     if (!l_Window)
