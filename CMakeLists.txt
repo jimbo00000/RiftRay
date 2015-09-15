@@ -16,6 +16,8 @@ SET( USE_ANTTWEAKBAR TRUE CACHE BOOL "Use AntTweakBar" )
 SET( USE_SIXENSE TRUE CACHE BOOL "Use Sixense" )
 
 SET( USE_OCULUSSDK TRUE CACHE BOOL "Use Oculus SDK" )
+
+SET( OVRSDK_VERSION "05" CACHE STRING "Which version of the OVR SDK to use - 05 or 06" )
 SET( USE_CORE_CONTEXT TRUE CACHE BOOL "Use Core Context" )
 IF( USE_CORE_CONTEXT )
     ADD_DEFINITIONS(-DUSE_CORE_CONTEXT)
@@ -65,7 +67,17 @@ IF( WIN32 )
     ADD_DEFINITIONS( -DGLEW_STATIC )
 
     IF( USE_OCULUSSDK )
-        SET( OCULUSSDK_ROOT "${LIBS_HOME}/OculusSDK" CACHE STRING "OculusSDK root" )
+        # TODO: the logic here needs work, OVR SDK dir is kept in cache until manually changed
+        IF( OVRSDK_VERSION STREQUAL "05" )
+            SET( OCULUSSDK_ROOT "${LIBS_HOME}/OculusSDK-0.5.0.1" CACHE STRING "OculusSDK root" )
+            ADD_DEFINITIONS( -DOVRSDK05 )
+        ELSEIF( OVRSDK_VERSION STREQUAL "06" )
+            SET( OCULUSSDK_ROOT "${LIBS_HOME}/OculusSDK" CACHE STRING "OculusSDK root" )
+            ADD_DEFINITIONS( -DOVRSDK06 )
+        ELSE()
+            MESSAGE("Unknown OVR SDK version.")
+        ENDIF()
+
         INCLUDE_DIRECTORIES( "${OCULUSSDK_ROOT}/LibOVR/Include" )
         INCLUDE_DIRECTORIES( "${OCULUSSDK_ROOT}/LibOVR/Src" )
         INCLUDE_DIRECTORIES( "${OCULUSSDK_ROOT}/LibOVRKernel/Src" )
@@ -244,6 +256,7 @@ ELSEIF( UNIX )
         INCLUDE_DIRECTORIES( "${OCULUSSDK_ROOT}/LibOVRKernel/Src" )
         LINK_DIRECTORIES   ( "${OCULUSSDK_ROOT}/LibOVR/Lib/Linux/Release/x86_64" )
         SET( OVR_LIBS -lOVR -ldl -ludev -lXinerama )
+        ADD_DEFINITIONS( -DOVRSDK05 ) # The only option for now
         ADD_DEFINITIONS( -DUSE_OCULUSSDK )
     ENDIF( USE_OCULUSSDK )
 
@@ -340,8 +353,22 @@ ENDIF(APPLE)
 IF( NOT USE_OCULUSSDK )
     MESSAGE( "Removing OVR-dependent files..." )
 
+    LIST(REMOVE_ITEM APPSKELETON_SOURCE_FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/AppSkeleton/OVRSDK05AppSkeleton.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/AppSkeleton/OVRSDK06AppSkeleton.cpp
+        )
+
     LIST(REMOVE_ITEM SCENE_SOURCE_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/Scene/OVRScene.cpp )
+ENDIF()
+
+# Manually exclude non-selected OVR SDK Skeleton classes
+IF( OVRSDK_VERSION STREQUAL "05" )
+    MESSAGE( "Removing OVR SDK06-dependent files..." )
+    LIST(REMOVE_ITEM APPSKELETON_SOURCE_FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/AppSkeleton/OVRSDK06AppSkeleton.cpp )
+ELSEIF( OVRSDK_VERSION STREQUAL "06" )
+    MESSAGE( "Removing OVR SDK05-dependent files..." )
     LIST(REMOVE_ITEM APPSKELETON_SOURCE_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/AppSkeleton/OVRSDK05AppSkeleton.cpp )
 ENDIF()
