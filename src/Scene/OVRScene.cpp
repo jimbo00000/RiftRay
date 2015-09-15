@@ -169,7 +169,7 @@ void OVRScene::RenderForOneEye(const float* pMview, const float* pPersp) const
     const glm::mat4 projection = glm::make_mat4(pPersp);
 
     // Assemble modelview matrix to lock camera in with real world geometry:
-    // We still have to use the assembled HMD stereo modelview matrices from RiftAppSkeleton,
+    // We still have to use the assembled HMD stereo modelview matrices from OVRSDK05AppSkeleton,
     // but we undo the effects of chassis yaw and position so the frustum follows the viewer.
     if (m_pHmd != NULL)
     {

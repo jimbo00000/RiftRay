@@ -1,4 +1,4 @@
-// RiftAppSkeleton.cpp
+// OVRSDK05AppSkeleton.cpp
 
 #ifdef _WIN32
 #  define WINDOWS_LEAN_AND_MEAN
@@ -18,14 +18,14 @@
 #include <iostream>
 #include <sstream>
 
-#include "RiftAppSkeleton.h"
+#include "OVRSDK05AppSkeleton.h"
 #include "ShaderToy.h"
 #include "ShaderFunctions.h"
 #include "MatrixFunctions.h"
 #include "GLUtils.h"
 #include "Logger.h"
 
-RiftAppSkeleton::RiftAppSkeleton()
+OVRSDK05AppSkeleton::OVRSDK05AppSkeleton()
 : AppSkeleton()
 , m_Hmd(NULL)
 , m_usingDebugHmd(false)
@@ -37,18 +37,18 @@ RiftAppSkeleton::RiftAppSkeleton()
     ResetChassisTransformations();
 }
 
-RiftAppSkeleton::~RiftAppSkeleton()
+OVRSDK05AppSkeleton::~OVRSDK05AppSkeleton()
 {
 }
 
-void RiftAppSkeleton::RecenterPose()
+void OVRSDK05AppSkeleton::RecenterPose()
 {
     if (m_Hmd == NULL)
         return;
     ovrHmd_RecenterPose(m_Hmd);
 }
 
-ovrSizei RiftAppSkeleton::getHmdResolution() const
+ovrSizei OVRSDK05AppSkeleton::getHmdResolution() const
 {
     if (m_Hmd == NULL)
     {
@@ -58,7 +58,7 @@ ovrSizei RiftAppSkeleton::getHmdResolution() const
     return m_Hmd->Resolution;
 }
 
-ovrVector2i RiftAppSkeleton::getHmdWindowPos() const
+ovrVector2i OVRSDK05AppSkeleton::getHmdWindowPos() const
 {
     if (m_Hmd == NULL)
     {
@@ -68,7 +68,7 @@ ovrVector2i RiftAppSkeleton::getHmdWindowPos() const
     return m_Hmd->WindowsPos;
 }
 
-void RiftAppSkeleton::initGL()
+void OVRSDK05AppSkeleton::initGL()
 {
     AppSkeleton::initGL();
 
@@ -77,7 +77,7 @@ void RiftAppSkeleton::initGL()
 }
 
 ///@brief Set this up early so we can get the HMD's display dimensions to create a window.
-void RiftAppSkeleton::initHMD()
+void OVRSDK05AppSkeleton::initHMD()
 {
     ovr_Initialize();
 
@@ -109,7 +109,7 @@ void RiftAppSkeleton::initHMD()
     m_ovrScene.SetHmdPointer(m_Hmd);
 }
 
-void RiftAppSkeleton::initVR()
+void OVRSDK05AppSkeleton::initVR()
 {
     m_Cfg.OGL.Header.BackBufferSize = getHmdResolution();
 
@@ -127,7 +127,7 @@ void RiftAppSkeleton::initVR()
     }
 }
 
-void RiftAppSkeleton::_initPresentDistMesh(ShaderWithVariables& shader, int eyeIdx)
+void OVRSDK05AppSkeleton::_initPresentDistMesh(ShaderWithVariables& shader, int eyeIdx)
 {
     // Init left and right VAOs separately
     shader.bindVAO();
@@ -181,7 +181,7 @@ void RiftAppSkeleton::_initPresentDistMesh(ShaderWithVariables& shader, int eyeI
     glBindVertexArray(0);
 }
 
-void RiftAppSkeleton::exitVR()
+void OVRSDK05AppSkeleton::exitVR()
 {
     AppSkeleton::exitGL();
     deallocateFBO(m_rwwttBuffer);
@@ -204,7 +204,7 @@ ovrSizei calculateCombinedTextureSize(ovrHmd pHmd)
 }
 
 ///@brief Writes to m_EyeTexture and m_EyeFov
-int RiftAppSkeleton::ConfigureRendering()
+int OVRSDK05AppSkeleton::ConfigureRendering()
 {
     if (m_Hmd == NULL)
         return 1;
@@ -243,7 +243,7 @@ int RiftAppSkeleton::ConfigureRendering()
 
 ///@brief Active GL context is required for the following
 /// Writes to m_Cfg
-int RiftAppSkeleton::ConfigureSDKRendering()
+int OVRSDK05AppSkeleton::ConfigureSDKRendering()
 {
     if (m_Hmd == NULL)
         return 1;
@@ -260,7 +260,7 @@ int RiftAppSkeleton::ConfigureSDKRendering()
 }
 
 ///@brief Writes to m_EyeRenderDesc, m_EyeRenderDesc and m_DistMeshes
-int RiftAppSkeleton::ConfigureClientRendering()
+int OVRSDK05AppSkeleton::ConfigureClientRendering()
 {
     if (m_Hmd == NULL)
         return 1;
@@ -286,7 +286,7 @@ int RiftAppSkeleton::ConfigureClientRendering()
 }
 
 ///@brief The HSW will be displayed by default when using SDK rendering.
-void RiftAppSkeleton::DismissHealthAndSafetyWarning() const
+void OVRSDK05AppSkeleton::DismissHealthAndSafetyWarning() const
 {
     ovrHSWDisplayState hswDisplayState;
     ovrHmd_GetHSWDisplayState(m_Hmd, &hswDisplayState);
@@ -298,7 +298,7 @@ void RiftAppSkeleton::DismissHealthAndSafetyWarning() const
 
 ///@brief This function will detect a moderate tap on the Rift via the accelerometer.
 ///@return true if a tap was detected, false otherwise.
-bool RiftAppSkeleton::CheckForTapOnHmd()
+bool OVRSDK05AppSkeleton::CheckForTapOnHmd()
 {
     const ovrTrackingState ts = ovrHmd_GetTrackingState(m_Hmd, ovr_GetTimeInSeconds());
     if (!(ts.StatusFlags & ovrStatus_OrientationTracked))
@@ -326,7 +326,7 @@ bool RiftAppSkeleton::CheckForTapOnHmd()
 
 /// Uses a cached copy of HMD orientation written to in display(which are const
 /// functions, but m_eyePoseCached is a mutable member).
-glm::mat4 RiftAppSkeleton::makeWorldToEyeMatrix() const
+glm::mat4 OVRSDK05AppSkeleton::makeWorldToEyeMatrix() const
 {
     return makeWorldToChassisMatrix() * makeMatrixFromPose(m_eyePoseCached, m_headSize);
 }
@@ -334,7 +334,7 @@ glm::mat4 RiftAppSkeleton::makeWorldToEyeMatrix() const
 // Store HMD position and direction for gaze tracking in timestep.
 // OVR SDK requires head pose be queried between ovrHmd_BeginFrameTiming and ovrHmd_EndFrameTiming.
 // Don't worry - we're just writing to _mutable_ members, it's still const!
-void RiftAppSkeleton::_StoreHmdPose(const ovrPosef& eyePose) const
+void OVRSDK05AppSkeleton::_StoreHmdPose(const ovrPosef& eyePose) const
 {
     m_hmdRo.x = eyePose.Position.x + m_chassisPos.x;
     m_hmdRo.y = eyePose.Position.y + m_chassisPos.y;
@@ -365,7 +365,7 @@ void RiftAppSkeleton::_StoreHmdPose(const ovrPosef& eyePose) const
 ///@todo Even though this function shares most of its code with client rendering,
 /// which appears to work fine, it is non-convergable. It appears that the projection
 /// matrices for each eye are too far apart? Could be modelview...
-void RiftAppSkeleton::display_stereo_undistorted() const
+void OVRSDK05AppSkeleton::display_stereo_undistorted() const
 {
     ovrHmd hmd = m_Hmd;
     if (hmd == NULL)
@@ -488,7 +488,7 @@ const ovrRecti getScaledRect(const ovrRecti& r, float s)
 }
 
 ///@brief Draw all scenes to a 
-void RiftAppSkeleton::_RenderScenesToStereoBuffer(
+void OVRSDK05AppSkeleton::_RenderScenesToStereoBuffer(
     const ovrHmd hmd,
     const glm::mat4* eyeProjMatrix,
     const glm::mat4* eyeMvMtxLocal,
@@ -592,7 +592,7 @@ void RiftAppSkeleton::_RenderScenesToStereoBuffer(
 
 ///@brief The extra blit imposes some overhead, so for better performance we can render
 /// only the raymarch scene to a downscaled buffer and pass that directly to OVR.
-void RiftAppSkeleton::_RenderOnlyRaymarchSceneToStereoBuffer(
+void OVRSDK05AppSkeleton::_RenderOnlyRaymarchSceneToStereoBuffer(
     const ovrHmd hmd,
     const glm::mat4* eyeProjMatrix,
     const glm::mat4* eyeMvMtxWorld,
@@ -632,7 +632,7 @@ void RiftAppSkeleton::_RenderOnlyRaymarchSceneToStereoBuffer(
 }
 
 ///@brief Blit the contents of the downscaled render buffer to the full-sized
-void RiftAppSkeleton::_StretchBlitDownscaledBuffer() const
+void OVRSDK05AppSkeleton::_StretchBlitDownscaledBuffer() const
 {
     glClearColor(0.f, 0.f, 0.f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -652,7 +652,7 @@ void RiftAppSkeleton::_StretchBlitDownscaledBuffer() const
 }
 
 ///@brief Populate the given arrrays of size eyeCount with per-eye rendering parameters.
-void RiftAppSkeleton::_CalculatePerEyeRenderParams(
+void OVRSDK05AppSkeleton::_CalculatePerEyeRenderParams(
     const ovrPosef eyePoses[2], // [in] Eye poses in local space from ovrHmd_GetEyePoses
     const ovrPosef eyePosesScaled[2], // [in] Eye poses from ovrHmd_GetEyePoses with head size applied
     ovrPosef* renderPose, // [out]
@@ -696,7 +696,7 @@ void RiftAppSkeleton::_CalculatePerEyeRenderParams(
     }
 }
 
-void RiftAppSkeleton::display_sdk() const
+void OVRSDK05AppSkeleton::display_sdk() const
 {
     ovrHmd hmd = m_Hmd;
     if (hmd == NULL)
@@ -754,7 +754,7 @@ void RiftAppSkeleton::display_sdk() const
     ovrHmd_EndFrame(hmd, renderPose, eyeTexture);
 }
 
-void RiftAppSkeleton::display_client() const
+void OVRSDK05AppSkeleton::display_client() const
 {
     ovrHmd hmd = m_Hmd;
     if (hmd == NULL)

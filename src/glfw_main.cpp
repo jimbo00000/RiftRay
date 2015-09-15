@@ -32,7 +32,7 @@
 #include <sstream>
 
 #ifdef USE_OCULUSSDK
-#include "RiftAppSkeleton.h"
+#include "OVRSDK05AppSkeleton.h"
 #else
 #include "AppSkeleton.h"
 #endif
@@ -49,7 +49,7 @@
 #endif
 
 #ifdef USE_OCULUSSDK
-RiftAppSkeleton g_app;
+OVRSDK05AppSkeleton g_app;
 #else
 AppSkeleton g_app;
 #endif

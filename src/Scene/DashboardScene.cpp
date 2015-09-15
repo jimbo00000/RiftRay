@@ -32,7 +32,7 @@ DashboardScene::DashboardScene()
 , m_pngPane()
 , m_camPane()
 {
-    // Like RiftAppSkeleton's ctor with vector of Scenes, add as many as desired here
+    // Like OVRSDK05AppSkeleton's ctor with vector of Scenes, add as many as desired here
     // and set initial conditions. Some may have awkward custom pointer setters.
     const glm::vec3 pos(-0.2f, 0.0f, -0.7f);
     m_antPane.m_tx.SetPosition(pos);
