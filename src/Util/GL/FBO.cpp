@@ -19,35 +19,36 @@ void allocateFBO(FBO& f, int w, int h)
     f.w = w;
     f.h = h;
 
-    glGenFramebuffersEXT(1, &f.id);
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, f.id);
+    glGenFramebuffers(1, &f.id);
+    glBindFramebuffer(GL_FRAMEBUFFER, f.id);
     
 #if 0
     // Depth buffer render target
-	glGenRenderbuffersEXT(1, &f.depth);
-	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, f.depth);
-	glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, w, h);
-	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,
-                                 GL_DEPTH_ATTACHMENT_EXT,
-                                 GL_RENDERBUFFER_EXT,
-                                 f.depth);
+    glGenRenderbuffers(1, &f.depth);
+    glBindRenderbuffer(GL_RENDERBUFFER, f.depth);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, w, h);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER,
+                              GL_DEPTH_ATTACHMENT,
+                              GL_RENDERBUFFER,
+                              f.depth);
 #else
     // Depth buffer texture target
-    glGenTextures( 1, &f.depth );
-    glBindTexture( GL_TEXTURE_2D, f.depth );
+    glGenTextures(1, &f.depth);
+    glBindTexture(GL_TEXTURE_2D, f.depth);
     {
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-        //glTexParameteri( GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_INTENSITY ); //deprecated, out in 3.1
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        //glTexParameteri( GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_INTENSITY); //deprecated, out in 3.1
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
                      w, h, 0,
-                     GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL );
+                     GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
     }
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, f.depth, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, f.depth, 0);
 #endif
 
 
@@ -59,34 +60,35 @@ void allocateFBO(FBO& f, int w, int h)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8,
                      w, h, 0,
                      GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     }
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
-                              GL_COLOR_ATTACHMENT0_EXT,
-                              GL_TEXTURE_2D,
-                              f.tex, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER,
+                           GL_COLOR_ATTACHMENT0,
+                           GL_TEXTURE_2D,
+                           f.tex, 0);
 
     // Check status
-    GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
-    if (status != GL_FRAMEBUFFER_COMPLETE_EXT)
+    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if (status != GL_FRAMEBUFFER_COMPLETE)
     {
         //printf("BufferStructs.cpp: Framebuffer is incomplete with status %d\n", status);
         //assert(false);
     }
 
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void deallocateFBO(FBO& f)
 {
-    glDeleteFramebuffersEXT(1, &f.id), f.id = 0;
+    glDeleteFramebuffers(1, &f.id), f.id = 0;
     glDeleteTextures(1, &f.tex), f.tex = 0;
 #if 0
-    glDeleteRenderbuffersEXT(1, &f.depth), f.depth = 0;
+    glDeleteRenderbuffers(1, &f.depth), f.depth = 0;
 #else
     glDeleteTextures(1, &f.depth), f.depth = 0;
 #endif
@@ -98,7 +100,7 @@ static GLint s_vp[4];
 // Set viewport here, then restore it in unbind
 void bindFBO(const FBO& f, float fboScale)
 {
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, f.id);
+    glBindFramebuffer(GL_FRAMEBUFFER, f.id);
     glGetIntegerv(GL_VIEWPORT, &s_vp[0]);
 
     // Add 1 to the viewport sizes here to mitigate the edge effects on the render buffer -
@@ -111,7 +113,7 @@ void bindFBO(const FBO& f, float fboScale)
 
 void unbindFBO()
 {
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     ///@warning We hope here that the FBO being unbound is the last one that was bound.
     glViewport(s_vp[0], s_vp[1], s_vp[2], s_vp[3]);
 }
