@@ -11,7 +11,7 @@
 //#  include <features.h>
 #endif
 
-#if defined(__APPLE__) || defined (_LINUX)
+#if defined(__APPLE__) || defined (_UNIX)
 #include <sys/stat.h>
 #endif
 
