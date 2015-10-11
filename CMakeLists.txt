@@ -23,6 +23,8 @@ IF( USE_CORE_CONTEXT )
     ADD_DEFINITIONS(-DUSE_CORE_CONTEXT)
 ENDIF()
 
+MESSAGE( "CMAKE_SYSTEM_NAME: ${CMAKE_SYSTEM_NAME}" )
+
 #
 # Platform-dependent section
 #
@@ -138,7 +140,7 @@ IF( WIN32 )
         ${ANT_LIBS}
         )
 
-    ADD_DEFINITIONS( /W4 )
+    ADD_DEFINITIONS( /W4 -D_CRT_SECURE_NO_WARNINGS )
 
     # These lines will silence some linker warnings on VS2010,
     # but also remove debug info from the debug build.
@@ -159,11 +161,11 @@ IF( WIN32 )
 ELSEIF( APPLE )
     ADD_DEFINITIONS( -D_MACOS )
 
+    # Todo - build OVR with RTTI support
     SET(CMAKE_CXX_FLAGS "-fno-rtti")
 
     SET( LIBS_HOME "~/Development/" )
     SET( OCULUSSDK_ROOT "${LIBS_HOME}/OculusSDK" )
-    
 
     INCLUDE_DIRECTORIES ( /System/Library/Frameworks )
     FIND_LIBRARY(COCOA_LIBRARY Cocoa)
@@ -193,9 +195,6 @@ ELSEIF( APPLE )
         INCLUDE_DIRECTORIES( "${OCULUSSDK_ROOT}/LibOVRKernel/Src" )
         ADD_DEFINITIONS( -DUSE_OCULUSSDK )
     ENDIF( USE_OCULUSSDK )
-
-    # Todo - build OVR with RTTI suppo
-    SET(CMAKE_CXX_FLAGS "-fno-rtti")
 
     IF( USE_SIXENSE )
         MESSAGE("Using Sixense SDK.")
@@ -228,10 +227,20 @@ ELSEIF( APPLE )
         # TODO: SDL2 or glfw
 
 ELSEIF( UNIX )
-    ADD_DEFINITIONS( -D_LINUX )
+    ADD_DEFINITIONS( -D_UNIX )
+    IF( CMAKE_SYSTEM_NAME STREQUAL "Linux" )
+        ADD_DEFINITIONS( -D_LINUX )
+    ELSEIF( CMAKE_SYSTEM_NAME STREQUAL "FreeBSD" )
+        ADD_DEFINITIONS( -D_FREEBSD )
+        INCLUDE_DIRECTORIES( /usr/local/include )
+        LINK_DIRECTORIES( /usr/local/lib )
+    ENDIF()
+
     SET( LIBS_HOME "~/lib" )
-    
+
     ADD_DEFINITIONS( -D_DEBUG )
+    SET(CMAKE_CXX_FLAGS "-ggdb")
+    SET(CMAKE_CXX_FLAGS_DEBUG "-ggdb")
 
     SET( GLM_ROOT "${LIBS_HOME}/glm-0.9.5.4/glm" CACHE STRING "glm root" )
     INCLUDE_DIRECTORIES( "${GLM_ROOT}" )
@@ -324,8 +333,8 @@ FILE( GLOB_RECURSE SCENE_SOURCE_FILES
     )
 
 FILE( GLOB_RECURSE FLYINGMOUSE_SOURCE_FILES
-        src/FlyingMouse/*.cpp
-        src/FlyingMouse/*.h
+    src/FlyingMouse/*.cpp
+    src/FlyingMouse/*.h
     )
 
 IF(APPLE)

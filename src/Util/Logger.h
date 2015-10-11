@@ -16,7 +16,7 @@
 #  define LOG_ERROR(string, ...) Logger::Instance().Write(string , __VA_ARGS__)
 #  endif
 
-#  ifdef _LINUX
+#  ifdef _UNIX
 #  define LOG_INFO(string, args...) Logger::Instance().Write(string, ## args)
 #  define LOG_ERROR(string, args...) Logger::Instance().Write(string, ## args)
 #  endif

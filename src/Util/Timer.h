@@ -41,7 +41,7 @@ class Timer {
 #endif //_WIN32
 
 
-#if _LINUX
+#if _UNIX
 #include <time.h>
 
 // http://www.guyrutenberg.com/2007/09/22/profiling-code-using-clock_gettime/

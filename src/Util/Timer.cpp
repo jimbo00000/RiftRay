@@ -1,6 +1,6 @@
 // Timer.cpp
 
-#ifdef _LINUX
+#ifdef _UNIX
 
 #include "Timer.h"
 

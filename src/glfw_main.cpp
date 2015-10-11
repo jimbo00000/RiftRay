@@ -16,7 +16,7 @@
 
 #include <GLFW/glfw3.h>
 
-#if !defined(__APPLE__)
+#if defined(_WIN32) || defined(_LINUX)
 #  include <GLFW/glfw3native.h>
 #endif
 
