@@ -18,9 +18,9 @@
 
 #include "FBO.h"
 
-#ifdef USE_SIXENSE
 #include "HydraScene.h"
-#endif
+#include "DashboardScene.h"
+
 #ifdef USE_OCULUSSDK
 #include "OVRScene.h"
 #endif
@@ -28,7 +28,6 @@
 #include "RaymarchShaderScene.h"
 #include "ShaderGalleryScene.h"
 #include "FloorScene.h"
-#include "DashboardScene.h"
 
 #include "FlyingMouse.h"
 #include "VirtualTrackball.h"
@@ -45,9 +44,22 @@ public:
     virtual ~AppSkeleton();
 
     virtual void ResetChassisTransformations();
-    void SetChassisPosition(glm::vec3 p) { m_chassisPos = p; }
+    void _DrawScenes(
+        const float* pMview,
+        const float* pPersp,
+        const rect& rvp,
+        const float* pMvLocal) const;
+
+    void DoSceneRenderPrePasses() const;
+    void display_raw() const;
+    void display_buffered(bool setViewport=true) const;
+    void timestep(double absTime, double dt);
+    void resize(int w, int h);
+
     virtual void initGL();
     virtual void exitGL();
+    void SetChassisPosition(glm::vec3 p) { m_chassisPos = p; }
+    GLuint getRenderBufferTex() const { return m_renderBuffer.tex; }
 
     // These vestigial functions match the entry points in OVRSDK05AppSkeleton.
     // Having them here is ugly, but doesn't seem as bad as a ton of #ifdefs in main.
@@ -58,28 +70,8 @@ public:
     bool UsingDebugHmd() const { return true; }
     bool UsingDirectMode() const { return true; }
     bool CheckForTapOnHmd() const { return true; }
-
-    void display_raw() const;
-    void display_buffered(bool setViewport=true) const;
-
     virtual void DismissHealthAndSafetyWarning() const {}
 
-    void _DrawScenes(
-        const float* pMview,
-        const float* pPersp,
-        const rect& rvp,
-        const float* pMvLocal) const;
-
-    void DoSceneRenderPrePasses() const;
-
-    void resize(int w, int h);
-    void timestep(double absTime, double dt);
-
-    float GetFBOScale() const { return m_fboScale; }
-    void SetFBOScale(float s);
-#ifdef USE_ANTTWEAKBAR
-    float* GetFBOScalePointer() { return &m_fboScale; }
-#endif
 
     void DiscoverShaders(bool recurse=true);
     void SetTextureLibraryPointer();
@@ -92,7 +84,6 @@ public:
     mutable glm::vec3 m_hmdRd;
     mutable glm::vec3 m_hmdRoLocal;
     mutable glm::vec3 m_hmdRdLocal;
-
 public:
     // This public section is for exposing state variables to AntTweakBar
     RaymarchShaderScene m_raymarchScene;
@@ -106,7 +97,11 @@ public:
     HydraScene m_hydraScene;
 #endif
 
-    GLuint getRenderBufferTex() const { return m_renderBuffer.tex; }
+    float GetFBOScale() const { return m_fboScale; }
+    void SetFBOScale(float s);
+#ifdef USE_ANTTWEAKBAR
+    float* GetFBOScalePointer() { return &m_fboScale; }
+#endif
 
 protected:
     void _initPresentFbo();
@@ -120,8 +115,8 @@ protected:
     virtual glm::mat4 makeWorldToEyeMatrix() const { return makeWorldToChassisMatrix(); }
 
     std::vector<IScene*> m_scenes;
-    float m_fboScale;
     FBO m_renderBuffer;
+    float m_fboScale;
     ShaderWithVariables m_presentFbo;
     ShaderWithVariables m_presentDistMeshL;
     ShaderWithVariables m_presentDistMeshR;
