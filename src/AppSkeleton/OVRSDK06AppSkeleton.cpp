@@ -60,22 +60,24 @@ void OVRSDK06AppSkeleton::ToggleMirroringType()
     m_mirror = static_cast<MirrorType>(m);
 }
 
-ovrSizei OVRSDK06AppSkeleton::getHmdResolution() const
-{
-    if (m_Hmd == NULL)
-    {
-        ovrSizei empty = {0, 0};
-        return empty;
-    }
-    return m_Hmd->Resolution;
-}
-
 void OVRSDK06AppSkeleton::initGL()
 {
     AppSkeleton::initGL();
 
     // sensible initial value?
     allocateFBO(m_rwwttBuffer, 800, 600);
+}
+
+void OVRSDK06AppSkeleton::exitVR()
+{
+    AppSkeleton::exitGL();
+    deallocateFBO(m_rwwttBuffer);
+    for (int i = 0; i < 2; ++i)
+    {
+        ovrHmd_DestroySwapTextureSet(m_Hmd, m_pTexSet[i]);
+    }
+    ovrHmd_Destroy(m_Hmd);
+    ovr_Shutdown();
 }
 
 ///@brief Set this up early so we can get the HMD's display dimensions to create a window.
@@ -265,16 +267,14 @@ void OVRSDK06AppSkeleton::initVR()
     //}
 }
 
-void OVRSDK06AppSkeleton::exitVR()
+ovrSizei OVRSDK06AppSkeleton::getHmdResolution() const
 {
-    AppSkeleton::exitGL();
-    deallocateFBO(m_rwwttBuffer);
-    for (int i = 0; i < 2; ++i)
+    if (m_Hmd == NULL)
     {
-        ovrHmd_DestroySwapTextureSet(m_Hmd, m_pTexSet[i]);
+        ovrSizei empty = { 0, 0 };
+        return empty;
     }
-    ovrHmd_Destroy(m_Hmd);
-    ovr_Shutdown();
+    return m_Hmd->Resolution;
 }
 
 /// Add together the render target size fields of the HMD laid out side-by-side.
