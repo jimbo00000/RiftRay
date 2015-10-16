@@ -383,7 +383,7 @@ void OVRSDK06AppSkeleton::_RenderScenesToStereoBuffer(
     float fboScale = m_fboScale;
 
     // Draw to the surface that will be presented to OVR SDK via ovrHmd_EndFrame
-    bindFBO(m_rwwttBuffer);
+    //bindFBO(m_rwwttBuffer);
     {
         glClearColor(0.f, 0.f, 0.f, 0.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -410,7 +410,7 @@ void OVRSDK06AppSkeleton::_RenderScenesToStereoBuffer(
                 else
                 {
                     // A state object would be nice here, disable scissoring temporarily.
-                    bindFBO(m_renderBuffer);
+                    //bindFBO(m_renderBuffer);
                     glDisable(GL_SCISSOR_TEST); // disable cinemascope scissor to fill render target
                     glClearColor(0.f, 0.f, 0.f, 0.f);
                     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -453,6 +453,7 @@ void OVRSDK06AppSkeleton::_RenderScenesToStereoBuffer(
                 pScene->RenderForOneEye(pMv, pPersp);
             } // eye loop
 
+#if 0
             // Post-render scene-specific actions
             if (doRaymarch && (pScene == &m_galleryScene))
             {
@@ -464,11 +465,12 @@ void OVRSDK06AppSkeleton::_RenderScenesToStereoBuffer(
                 glEnable(GL_SCISSOR_TEST); // re-enable for cinemascope
                 fboScale = 1.f;
             }
+#endif
 
         } // scene loop
         glDisable(GL_SCISSOR_TEST); // cinemaScope letterbox bars
     }
-    unbindFBO();
+    //unbindFBO();
 }
 
 ///@brief The extra blit imposes some overhead, so for better performance we can render
@@ -480,7 +482,7 @@ void OVRSDK06AppSkeleton::_RenderOnlyRaymarchSceneToStereoBuffer(
     const ovrRecti* rvpFull) const
 {
     const float fboScale = m_fboScale;
-    bindFBO(m_renderBuffer);
+    //bindFBO(m_renderBuffer);
     {
         glClearColor(0.f, 0.f, 0.f, 0.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -509,7 +511,7 @@ void OVRSDK06AppSkeleton::_RenderOnlyRaymarchSceneToStereoBuffer(
 
         glDisable(GL_SCISSOR_TEST);
     }
-    unbindFBO();
+    //unbindFBO();
 }
 
 ///@brief Blit the contents of the downscaled render buffer to the full-sized
@@ -537,7 +539,6 @@ void OVRSDK06AppSkeleton::_CalculatePerEyeRenderParams(
     const ovrPosef eyePoses[2], // [in] Eye poses in local space from ovrHmd_GetEyePoses
     const ovrPosef eyePosesScaled[2], // [in] Eye poses from ovrHmd_GetEyePoses with head size applied
     ovrPosef* renderPose, // [out]
-    ovrTexture* eyeTexture, // [out]
     glm::mat4* eyeProjMatrix, // [out]
     glm::mat4* eyeMvMtxLocal, // [out]
     glm::mat4* eyeMvMtxWorld, // [out]
@@ -547,22 +548,15 @@ void OVRSDK06AppSkeleton::_CalculatePerEyeRenderParams(
     ovrHmd hmd = m_Hmd;
     if (hmd == NULL)
         return;
-#if 0
     // Calculate eye poses for rendering and to pass to OVR SDK after rendering
     for (int eyeIndex=0; eyeIndex<ovrEye_Count; eyeIndex++)
     {
         const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
         const ovrPosef eyePose = eyePoses[e];
         const ovrPosef eyePoseScaled = eyePosesScaled[e];
-        const ovrGLTexture& otex = m_EyeTexture[e];
-        const ovrEyeRenderDesc& erd = m_EyeRenderDesc[e];
 
         renderPose[e] = eyePose;
-        eyeTexture[e] = otex.Texture;
-        renderVp[e] = otex.OGL.Header.RenderViewport;
 
-        const OVR::Matrix4f proj = ovrMatrix4f_Projection(erd.Fov, 0.01f, 10000.0f, true);
-        eyeProjMatrix[e] = glm::make_mat4(&proj.Transposed().M[0][0]);
         eyeMvMtxLocal[e] = makeMatrixFromPose(eyePose);
         const glm::mat4 eyeMvMtxLocalScaled = makeMatrixFromPose(eyePoseScaled, m_headSize);
         eyeMvMtxWorld[e] = makeWorldToChassisMatrix() * eyeMvMtxLocalScaled;
@@ -575,7 +569,6 @@ void OVRSDK06AppSkeleton::_CalculatePerEyeRenderParams(
             _StoreHmdPose(eyePose);
         }
     }
-#endif
 }
 
 void OVRSDK06AppSkeleton::display_sdk() const
@@ -588,55 +581,106 @@ void OVRSDK06AppSkeleton::display_sdk() const
     ovrHmd_GetEyePoses(m_Hmd, m_frameIndex, m_eyeOffsets,
         m_eyePoses, &outHmdTrackingState);
 
-
-
-#if 0
-    ovrVector3f e2v[2] = {
-        OVR::Vector3f(m_EyeRenderDesc[0].HmdToEyeViewOffset),
-        OVR::Vector3f(m_EyeRenderDesc[1].HmdToEyeViewOffset),
-    };
-    ovrVector3f e2vScaled[2] = {
-        OVR::Vector3f(e2v[0]) * m_headSize,
-        OVR::Vector3f(e2v[1]) * m_headSize,
-    };
-
-    ovrTrackingState ohts;
     ovrPosef outEyePoses[2];
     ovrPosef outEyePosesScaled[2];
-    ovrHmd_GetEyePoses(hmd, 0, e2v, outEyePoses, &ohts);
-    ovrHmd_GetEyePoses(hmd, 0, e2vScaled, outEyePosesScaled, &ohts);
-
     ovrPosef renderPose[ovrEye_Count]; // Pass to ovrHmd_EndFrame post-rendering
-    ovrTexture eyeTexture[ovrEye_Count]; // Pass to ovrHmd_EndFrame post-rendering
+
     glm::mat4 eyeProjMatrix[ovrEye_Count];
     glm::mat4 eyeMvMtxLocal[ovrEye_Count];
     glm::mat4 eyeMvMtxWorld[ovrEye_Count];
     ovrRecti renderVp[ovrEye_Count];
-    _CalculatePerEyeRenderParams(outEyePoses, outEyePosesScaled, renderPose, eyeTexture, eyeProjMatrix, eyeMvMtxLocal, eyeMvMtxWorld, renderVp);
 
-    _resetGLState();
+    _CalculatePerEyeRenderParams(m_eyePoses, m_eyePoses, renderPose, eyeProjMatrix, eyeMvMtxLocal, eyeMvMtxWorld, renderVp);
 
-    const bool doRaymarch = m_galleryScene.GetActiveShaderToy() != NULL;
-    const bool drawBar = m_dashScene.m_bDraw;
-    if (doRaymarch && !drawBar)
+    for (ovrEyeType eye = ovrEyeType::ovrEye_Left;
+        eye < ovrEyeType::ovrEye_Count;
+        eye = static_cast<ovrEyeType>(eye + 1))
     {
-        _RenderOnlyRaymarchSceneToStereoBuffer(hmd, eyeProjMatrix, eyeMvMtxWorld, renderVp);
-
-        // Inform SDK of downscaled texture target size(performance scaling)
-        for (int i=0; i<ovrEye_Count; ++i)
+        const ovrSwapTextureSet& swapSet = *m_pTexSet[eye];
+        glBindFramebuffer(GL_FRAMEBUFFER, m_swapFBO.id);
+        ovrGLTexture& tex = (ovrGLTexture&)(swapSet.Textures[swapSet.CurrentIndex]);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex.OGL.TexId, 0);
         {
-            const ovrSizei& ts = m_EyeTexture[i].Texture.Header.TextureSize;
-            ovrRecti& rr = eyeTexture[i].Header.RenderViewport;
-            rr.Size.w = static_cast<int>(static_cast<float>(ts.w/2) * m_fboScale);
-            rr.Size.h = static_cast<int>(static_cast<float>(ts.h) * m_fboScale);
-            rr.Pos.x = i * rr.Size.w;
+            // Handle render target resolution scaling
+            m_layerEyeFov.Viewport[eye].Size = ovrHmd_GetFovTextureSize(m_Hmd, eye, m_layerEyeFov.Fov[eye], m_fboScale);
+            ovrRecti& vp = m_layerEyeFov.Viewport[eye];
+            if (m_layerEyeFov.Header.Flags & ovrLayerFlag_TextureOriginAtBottomLeft)
+            {
+                ///@note It seems that the render viewport should be vertically centered within the swapSet texture.
+                /// See also OculusWorldDemo.cpp:1443 - "The usual OpenGL viewports-don't-match-UVs oddness."
+                const int texh = swapSet.Textures[swapSet.CurrentIndex].Header.TextureSize.h;
+                vp.Pos.y = (texh - vp.Size.h) / 2;
+            }
+
+            glViewport(vp.Pos.x, vp.Pos.y, vp.Size.w, vp.Size.h);
+            // Render the scene for the current eye
+            const ovrPosef& eyePose = m_eyePoses[eye];
+            const glm::mat4& proj = eyeProjMatrix[eye];
+            const glm::mat4& viewLocal = eyeMvMtxLocal[eye];
+            const glm::mat4& viewWorld = eyeMvMtxWorld[eye];
+
+            _RenderScenesToStereoBuffer(hmd, &proj, &viewLocal, &viewWorld, &vp);
+
+            m_layerEyeFov.RenderPose[eye] = eyePose;
         }
-    }
-    else
-    {
-        _RenderScenesToStereoBuffer(hmd, eyeProjMatrix, eyeMvMtxLocal, eyeMvMtxWorld, renderVp);
+
+#if 1
+        // Grab a copy of the left eye's undistorted render output for presentation
+        // to the desktop window instead of the barrel distorted mirror texture.
+        // This blit, while cheap, could cost some framerate to the HMD.
+        // An over-the-shoulder view is another option, at a greater performance cost.
+        if (m_mirror == MirrorUndistorted)
+        {
+            if (eye == ovrEyeType::ovrEye_Left)
+            {
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                glBindFramebuffer(GL_READ_FRAMEBUFFER, m_swapFBO.id);
+                glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_undistortedFBO.id);
+                glViewport(0, 0, m_undistortedFBO.w, m_undistortedFBO.h);
+                glBlitFramebuffer(
+                    0, static_cast<int>(static_cast<float>(m_swapFBO.h)*m_fboScale),
+                    static_cast<int>(static_cast<float>(m_swapFBO.w)*m_fboScale), 0, ///@todo Fix for FBO scaling
+                    0, 0, m_undistortedFBO.w, m_undistortedFBO.h,
+                    GL_COLOR_BUFFER_BIT, GL_NEAREST);
+                glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+                glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+                glBindFramebuffer(GL_FRAMEBUFFER, m_swapFBO.id);
+            }
+        }
+#endif
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
+    ovrLayerEyeFov& layer = m_layerEyeFov;
+    ovrLayerHeader* layers = &layer.Header;
+    ovrResult result = ovrHmd_SubmitFrame(hmd, m_frameIndex, NULL, &layers, 1);
+
+    // Increment counters in swap texture set
+    for (ovrEyeType eye = ovrEyeType::ovrEye_Left;
+        eye < ovrEyeType::ovrEye_Count;
+        eye = static_cast<ovrEyeType>(eye + 1))
+    {
+        ovrSwapTextureSet& swapSet = *m_pTexSet[eye];
+        ++swapSet.CurrentIndex %= swapSet.TextureCount;
+    }
+
+#if 1
+    // Blit output to main app window to show something on screen in addition
+    // to what's in the Rift. This could optionally be the distorted texture
+    // from the OVR SDK's mirror texture, or perhaps a single eye's undistorted
+    // view, or even a third-person render(at a performance cost).
+    if (m_mirror != MirrorNone)
+    {
+        glViewport(0, 0, m_appWindowSize.w, m_appWindowSize.h);
+        const FBO& srcFBO = m_mirror == MirrorDistorted ? m_mirrorFBO : m_undistortedFBO;
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, srcFBO.id);
+        glBlitFramebuffer(
+            0, srcFBO.h, srcFBO.w, 0,
+            0, 0, m_appWindowSize.w, m_appWindowSize.h,
+            GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+    }
 #endif
 
     ++m_frameIndex;

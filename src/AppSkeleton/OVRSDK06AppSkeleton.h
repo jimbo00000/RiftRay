@@ -58,7 +58,6 @@ protected:
         const ovrPosef eyePoses[2],
         const ovrPosef eyePosesScaled[2],
         ovrPosef* renderPose,
-        ovrTexture* eyeTexture,
         glm::mat4* eyeProjMatrix,
         glm::mat4* eyeMvMtxLocal,
         glm::mat4* eyeMvMtxWorld,
