@@ -581,17 +581,6 @@ void OVRSDK06AppSkeleton::display_sdk() const
     ovrHmd_GetEyePoses(m_Hmd, m_frameIndex, m_eyeOffsets,
         m_eyePoses, &outHmdTrackingState);
 
-    ovrPosef outEyePoses[2];
-    ovrPosef outEyePosesScaled[2];
-    ovrPosef renderPose[ovrEye_Count]; // Pass to ovrHmd_EndFrame post-rendering
-
-    glm::mat4 eyeProjMatrix[ovrEye_Count];
-    glm::mat4 eyeMvMtxLocal[ovrEye_Count];
-    glm::mat4 eyeMvMtxWorld[ovrEye_Count];
-    ovrRecti renderVp[ovrEye_Count];
-
-    _CalculatePerEyeRenderParams(m_eyePoses, m_eyePoses, renderPose, eyeProjMatrix, eyeMvMtxLocal, eyeMvMtxWorld, renderVp);
-
     for (ovrEyeType eye = ovrEyeType::ovrEye_Left;
         eye < ovrEyeType::ovrEye_Count;
         eye = static_cast<ovrEyeType>(eye + 1))
@@ -613,13 +602,32 @@ void OVRSDK06AppSkeleton::display_sdk() const
             }
 
             glViewport(vp.Pos.x, vp.Pos.y, vp.Size.w, vp.Size.h);
+            glClearColor(0.f, 0.f, 0.f, 0.f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
             // Render the scene for the current eye
             const ovrPosef& eyePose = m_eyePoses[eye];
-            const glm::mat4& proj = eyeProjMatrix[eye];
-            const glm::mat4& viewLocal = eyeMvMtxLocal[eye];
-            const glm::mat4& viewWorld = eyeMvMtxWorld[eye];
+            const glm::mat4 viewLocal = makeMatrixFromPose(eyePose);
+            const glm::mat4 viewWorld = makeWorldToChassisMatrix() * viewLocal;
+            const glm::mat4& proj = m_eyeProjections[eye];
 
-            _RenderScenesToStereoBuffer(hmd, &proj, &viewLocal, &viewWorld, &vp);
+            {
+                const float* pMvWorld = glm::value_ptr(glm::inverse(viewWorld));
+                const float* pPersp = glm::value_ptr(proj);
+                const float* pMvLocal = glm::value_ptr(glm::inverse(viewLocal));
+
+                for (std::vector<IScene*>::const_iterator it = m_scenes.begin();
+                    it != m_scenes.end();
+                    ++it)
+                {
+                    const IScene* pScene = *it;
+                    if (pScene != NULL)
+                    {
+                        const float* pMv = pScene->m_bChassisLocalSpace ? pMvLocal : pMvWorld;
+                        pScene->RenderForOneEye(pMv, pPersp);
+                    }
+                }
+            }
 
             m_layerEyeFov.RenderPose[eye] = eyePose;
         }
