@@ -186,5 +186,5 @@ void ShaderGalleryScene::RenderThumbnails() const
         pP->DrawShaderInfoText(fsh, fnt);
     }
 
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, bound_fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, bound_fbo);
 }

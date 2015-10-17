@@ -78,7 +78,7 @@ void AntPane::DrawToFBO() const
     unbindFBO();
 
     // Restore previous state
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, bound_fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, bound_fbo);
     glUseProgram(bound_prog);
     //glEnable(GL_SCISSOR_TEST);
 }

@@ -602,6 +602,7 @@ void OVRSDK06AppSkeleton::display_sdk() const
             }
 
             glViewport(vp.Pos.x, vp.Pos.y, vp.Size.w, vp.Size.h);
+
             glClearColor(0.f, 0.f, 0.f, 0.f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -632,7 +633,6 @@ void OVRSDK06AppSkeleton::display_sdk() const
             m_layerEyeFov.RenderPose[eye] = eyePose;
         }
 
-#if 1
         // Grab a copy of the left eye's undistorted render output for presentation
         // to the desktop window instead of the barrel distorted mirror texture.
         // This blit, while cheap, could cost some framerate to the HMD.
@@ -655,7 +655,7 @@ void OVRSDK06AppSkeleton::display_sdk() const
                 glBindFramebuffer(GL_FRAMEBUFFER, m_swapFBO.id);
             }
         }
-#endif
+
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
@@ -673,7 +673,6 @@ void OVRSDK06AppSkeleton::display_sdk() const
         ++swapSet.CurrentIndex %= swapSet.TextureCount;
     }
 
-#if 1
     // Blit output to main app window to show something on screen in addition
     // to what's in the Rift. This could optionally be the distorted texture
     // from the OVR SDK's mirror texture, or perhaps a single eye's undistorted
@@ -689,7 +688,6 @@ void OVRSDK06AppSkeleton::display_sdk() const
             GL_COLOR_BUFFER_BIT, GL_NEAREST);
         glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
     }
-#endif
 
     ++m_frameIndex;
 }

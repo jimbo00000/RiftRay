@@ -234,7 +234,7 @@ void ShaderToyPane::DrawToFBO() const
         glEnable(GL_DEPTH_TEST);
     }
 
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, bound_fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, bound_fbo);
 
     glUseProgram(bound_prog);
 }

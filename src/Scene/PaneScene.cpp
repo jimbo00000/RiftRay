@@ -161,7 +161,7 @@ void PaneScene::RenderPrePass() const
         pP->DrawToFBO();
         unbindFBO();
     }
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, bound_fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, bound_fbo);
 }
 
 void PaneScene::RenderForOneEye(const float* pMview, const float* pPersp) const
