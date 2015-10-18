@@ -609,9 +609,22 @@ void OVRSDK06AppSkeleton::display_sdk() const
         return;
 
     ovrTrackingState outHmdTrackingState = { 0 };
-    ovrHmd_GetEyePoses(m_Hmd, m_frameIndex, m_eyeOffsets,
-        m_eyePoses, &outHmdTrackingState);
+    ovrHmd_GetEyePoses(m_Hmd, m_frameIndex, m_eyeOffsets, m_eyePoses, &outHmdTrackingState);
     _StoreHmdPose(m_eyePoses[0]);
+
+    // Get scaled eye poses to apply head size
+    ovrVector3f scaledEyeOffsets[ovrEye_Count];
+    ovrPosef scaledEyePoses[ovrEye_Count];
+    for (ovrEyeType eye = ovrEyeType::ovrEye_Left;
+        eye < ovrEyeType::ovrEye_Count;
+        eye = static_cast<ovrEyeType>(eye + 1))
+    {
+        scaledEyeOffsets[eye] = m_eyeOffsets[eye];
+        scaledEyeOffsets[eye].x *= m_headSize;
+        scaledEyeOffsets[eye].y *= m_headSize;
+        scaledEyeOffsets[eye].z *= m_headSize;
+    }
+    ovrHmd_GetEyePoses(m_Hmd, m_frameIndex, scaledEyeOffsets, scaledEyePoses, &outHmdTrackingState);
 
     for (ovrEyeType eye = ovrEyeType::ovrEye_Left;
         eye < ovrEyeType::ovrEye_Count;
@@ -639,8 +652,8 @@ void OVRSDK06AppSkeleton::display_sdk() const
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             // Render the scene for the current eye
-            const ovrPosef& eyePose = m_eyePoses[eye];
-            const glm::mat4 viewLocal = makeMatrixFromPose(eyePose);
+            const ovrPosef& eyePose = scaledEyePoses[eye];
+            const glm::mat4 viewLocal = makeMatrixFromPose(eyePose, m_headSize);
             const glm::mat4 viewWorld = makeWorldToChassisMatrix() * viewLocal;
             const glm::mat4& proj = m_eyeProjections[eye];
 
