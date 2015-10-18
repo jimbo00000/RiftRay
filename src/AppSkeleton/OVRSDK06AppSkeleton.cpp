@@ -582,11 +582,23 @@ void OVRSDK06AppSkeleton::_RenderScenesToEyeBuffer(
         ++it)
     {
         const IScene* pScene = *it;
-        if (pScene != NULL)
+        if (pScene == NULL)
+            continue;
+
+        // Pre-render per-scene actions
+        // These blocks depend on the order scenes were added to the vector.
+        const bool doRaymarch = m_galleryScene.GetActiveShaderToy() != NULL;
+        if (pScene == &m_floorScene)
         {
-            const float* pMv = pScene->m_bChassisLocalSpace ? eyeMvMtxLocal : eyeMvMtxWorld;
-            pScene->RenderForOneEye(pMv, eyeProjMatrix);
+            if (doRaymarch)
+            {
+                glEnable(GL_DEPTH_TEST);
+                break; // out of Scene loop; no need to draw floor
+            }
         }
+
+        const float* pMv = pScene->m_bChassisLocalSpace ? eyeMvMtxLocal : eyeMvMtxWorld;
+        pScene->RenderForOneEye(pMv, eyeProjMatrix);
     }
 }
 
