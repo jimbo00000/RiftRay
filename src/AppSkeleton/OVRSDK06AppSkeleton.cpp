@@ -580,6 +580,7 @@ void OVRSDK06AppSkeleton::display_sdk() const
     ovrTrackingState outHmdTrackingState = { 0 };
     ovrHmd_GetEyePoses(m_Hmd, m_frameIndex, m_eyeOffsets,
         m_eyePoses, &outHmdTrackingState);
+    _StoreHmdPose(m_eyePoses[0]);
 
     for (ovrEyeType eye = ovrEyeType::ovrEye_Left;
         eye < ovrEyeType::ovrEye_Count;
