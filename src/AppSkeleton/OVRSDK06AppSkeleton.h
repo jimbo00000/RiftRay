@@ -74,6 +74,11 @@ protected:
         const glm::mat4* eyeMvMtxWorld,
         const ovrRecti* rvpFull) const;
 
+    void _RenderScenesToEyeBuffer(
+        const float* eyeProjMatrix,
+        const float* eyeMvMtxLocal,
+        const float* eyeMvMtxWorld) const;
+
     void _StoreHmdPose(const ovrPosef& eyePose) const;
     void _StretchBlitDownscaledBuffer() const;
 

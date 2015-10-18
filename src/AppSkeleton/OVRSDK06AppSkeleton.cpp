@@ -571,6 +571,25 @@ void OVRSDK06AppSkeleton::_CalculatePerEyeRenderParams(
     }
 }
 
+// Viewport is set for a single eye and render target cleared on entry of this function.
+void OVRSDK06AppSkeleton::_RenderScenesToEyeBuffer(
+    const float* eyeProjMatrix,
+    const float* eyeMvMtxLocal,
+    const float* eyeMvMtxWorld) const
+{
+    for (std::vector<IScene*>::const_iterator it = m_scenes.begin();
+        it != m_scenes.end();
+        ++it)
+    {
+        const IScene* pScene = *it;
+        if (pScene != NULL)
+        {
+            const float* pMv = pScene->m_bChassisLocalSpace ? eyeMvMtxLocal : eyeMvMtxWorld;
+            pScene->RenderForOneEye(pMv, eyeProjMatrix);
+        }
+    }
+}
+
 void OVRSDK06AppSkeleton::display_sdk() const
 {
     ovrHmd hmd = m_Hmd;
@@ -613,23 +632,11 @@ void OVRSDK06AppSkeleton::display_sdk() const
             const glm::mat4 viewWorld = makeWorldToChassisMatrix() * viewLocal;
             const glm::mat4& proj = m_eyeProjections[eye];
 
-            {
-                const float* pMvWorld = glm::value_ptr(glm::inverse(viewWorld));
-                const float* pPersp = glm::value_ptr(proj);
-                const float* pMvLocal = glm::value_ptr(glm::inverse(viewLocal));
+            const float* pPersp = glm::value_ptr(proj);
+            const float* pMvLocal = glm::value_ptr(glm::inverse(viewLocal));
+            const float* pMvWorld = glm::value_ptr(glm::inverse(viewWorld));
 
-                for (std::vector<IScene*>::const_iterator it = m_scenes.begin();
-                    it != m_scenes.end();
-                    ++it)
-                {
-                    const IScene* pScene = *it;
-                    if (pScene != NULL)
-                    {
-                        const float* pMv = pScene->m_bChassisLocalSpace ? pMvLocal : pMvWorld;
-                        pScene->RenderForOneEye(pMv, pPersp);
-                    }
-                }
-            }
+            _RenderScenesToEyeBuffer(pPersp, pMvLocal, pMvWorld);
 
             m_layerEyeFov.RenderPose[eye] = eyePose;
         }
