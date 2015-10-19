@@ -452,21 +452,6 @@ void OVRSDK06AppSkeleton::_RenderScenesToStereoBuffer(
 
                 pScene->RenderForOneEye(pMv, pPersp);
             } // eye loop
-
-#if 0
-            // Post-render scene-specific actions
-            if (doRaymarch && (pScene == &m_galleryScene))
-            {
-                // rwwtt scene is now rendered to downscaled buffer.
-                // Stay bound to this FBO for UI accoutrements rendering.
-                glDisable(GL_SCISSOR_TEST); // disable cinemascope scissor to fill render target
-                bindFBO(m_renderBuffer);
-                _StretchBlitDownscaledBuffer();
-                glEnable(GL_SCISSOR_TEST); // re-enable for cinemascope
-                fboScale = 1.f;
-            }
-#endif
-
         } // scene loop
         glDisable(GL_SCISSOR_TEST); // cinemaScope letterbox bars
     }
@@ -512,26 +497,6 @@ void OVRSDK06AppSkeleton::_RenderOnlyRaymarchSceneToStereoBuffer(
         glDisable(GL_SCISSOR_TEST);
     }
     //unbindFBO();
-}
-
-///@brief Blit the contents of the downscaled render buffer to the full-sized
-void OVRSDK06AppSkeleton::_StretchBlitDownscaledBuffer() const
-{
-    glClearColor(0.f, 0.f, 0.f, 0.f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    const GLuint prog = m_presentFbo.prog();
-    glUseProgram(prog);
-    m_presentFbo.bindVAO();
-    {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_rwwttBuffer.tex);
-        glUniform1i(m_presentFbo.GetUniLoc("fboTex"), 0);
-        glUniform1f(m_presentFbo.GetUniLoc("fboScale"), m_fboScale);
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-    }
-    glBindVertexArray(0);
-    glUseProgram(0);
 }
 
 ///@brief Populate the given arrrays of size eyeCount with per-eye rendering parameters.

@@ -80,7 +80,6 @@ protected:
         const float* eyeMvMtxWorld) const;
 
     void _StoreHmdPose(const ovrPosef& eyePose) const;
-    void _StretchBlitDownscaledBuffer() const;
 
     virtual glm::mat4 makeWorldToEyeMatrix() const;
 
