@@ -54,14 +54,6 @@ public:
     void display_client() const { display_sdk(); }
 
 protected:
-    void _CalculatePerEyeRenderParams(
-        const ovrPosef eyePoses[2],
-        const ovrPosef eyePosesScaled[2],
-        ovrPosef* renderPose,
-        glm::mat4* eyeProjMatrix,
-        glm::mat4* eyeMvMtxLocal,
-        glm::mat4* eyeMvMtxWorld,
-        ovrRecti* renderVp) const;
     void _RenderScenesToStereoBuffer(
         const ovrHmd hmd,
         const glm::mat4* eyeProjMatrix,

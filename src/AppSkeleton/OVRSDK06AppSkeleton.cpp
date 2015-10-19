@@ -499,43 +499,6 @@ void OVRSDK06AppSkeleton::_RenderOnlyRaymarchSceneToStereoBuffer(
     //unbindFBO();
 }
 
-///@brief Populate the given arrrays of size eyeCount with per-eye rendering parameters.
-void OVRSDK06AppSkeleton::_CalculatePerEyeRenderParams(
-    const ovrPosef eyePoses[2], // [in] Eye poses in local space from ovrHmd_GetEyePoses
-    const ovrPosef eyePosesScaled[2], // [in] Eye poses from ovrHmd_GetEyePoses with head size applied
-    ovrPosef* renderPose, // [out]
-    glm::mat4* eyeProjMatrix, // [out]
-    glm::mat4* eyeMvMtxLocal, // [out]
-    glm::mat4* eyeMvMtxWorld, // [out]
-    ovrRecti* renderVp // [out]
-    ) const
-{
-    ovrHmd hmd = m_Hmd;
-    if (hmd == NULL)
-        return;
-    // Calculate eye poses for rendering and to pass to OVR SDK after rendering
-    for (int eyeIndex=0; eyeIndex<ovrEye_Count; eyeIndex++)
-    {
-        const ovrEyeType e = hmd->EyeRenderOrder[eyeIndex];
-        const ovrPosef eyePose = eyePoses[e];
-        const ovrPosef eyePoseScaled = eyePosesScaled[e];
-
-        renderPose[e] = eyePose;
-
-        eyeMvMtxLocal[e] = makeMatrixFromPose(eyePose);
-        const glm::mat4 eyeMvMtxLocalScaled = makeMatrixFromPose(eyePoseScaled, m_headSize);
-        eyeMvMtxWorld[e] = makeWorldToChassisMatrix() * eyeMvMtxLocalScaled;
-        // These two matrices will be used directly for rendering
-        eyeMvMtxLocal[e] = glm::inverse(eyeMvMtxLocal[e]);
-        eyeMvMtxWorld[e] = glm::inverse(eyeMvMtxWorld[e]);
-
-        if (eyeIndex == 0)
-        {
-            _StoreHmdPose(eyePose);
-        }
-    }
-}
-
 // Viewport is set for a single eye and render target cleared on entry of this function.
 void OVRSDK06AppSkeleton::_RenderScenesToEyeBuffer(
     const float* eyeProjMatrix,
