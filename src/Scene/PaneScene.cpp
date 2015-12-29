@@ -113,6 +113,11 @@ void PaneScene::initGL()
     m_font.initGL();
 }
 
+void PaneScene::exitGL()
+{
+    ///@todo Free all GL resources
+}
+
 /// Draw the scene(matrices have already been set up).
 void PaneScene::DrawScene(
     const glm::mat4& modelview,

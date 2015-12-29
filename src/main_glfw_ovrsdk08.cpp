@@ -20,7 +20,10 @@
 #include "FBO.h"
 #include "Timer.h"
 #include "Logger.h"
+
 #include "Scene.h"
+#include "ShaderGalleryScene.h"
+
 #ifdef USE_ANTTWEAKBAR
 #  include <AntTweakBar.h>
 #endif
@@ -49,6 +52,7 @@ ovrPerfHudMode m_perfHudMode = ovrPerfHud_Off;
 FBO m_swapFBO;
 
 IScene* g_pScene = NULL;
+ShaderGalleryScene g_gallery;
 
 AntQuad g_tweakbarQuad;
 #ifdef USE_ANTTWEAKBAR
@@ -412,21 +416,6 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
             g_tweakbarQuad.SetHoldingFlag(m_eyePoses[0], true);
             break;
 
-        case GLFW_KEY_F5:
-        {
-            if (g_pScene != NULL)
-            {
-                g_pScene->exitGL();
-                delete g_pScene;
-            }
-            g_pScene = new Scene();
-            if (g_pScene != NULL)
-            {
-                g_pScene->initGL();
-            }
-        }
-        break;
-
         case GLFW_KEY_ESCAPE:
             glfwSetWindowShouldClose(g_pMirrorWindow, 1);
             break;
@@ -507,6 +496,22 @@ void resize(GLFWwindow* pWindow, int w, int h)
     g_mirrorWindowSz.y = h;
 }
 
+void StartShaderLoad()
+{
+   // g_app.SetTextureLibraryPointer();
+    const bool g_loadShadertoysRecursive = false;
+    g_gallery.DiscoverShaders(g_loadShadertoysRecursive);
+
+    ///@todo It would save some time to compile all these shaders in parallel on
+    /// a multicore machine. Even cooler would be compiling them in a background thread
+    /// while display is running, but trying that yields large frame rate drops
+    /// which would make the VR experience unacceptably uncomfortable.
+    //g_app.LoadTextureLibrary();
+    g_gallery.CompileShaders();
+    g_gallery.RearrangePanes();
+    g_gallery.RenderThumbnails();
+}
+
 // OpenGL debug callback
 void GLAPIENTRY myCallback(
     GLenum source, GLenum type, GLuint id, GLenum severity,
@@ -581,11 +586,14 @@ int main(int argc, char** argv)
     initAnt();
 #endif
 
-    g_pScene = new Scene();
-
+    g_pScene = &g_gallery;// new ShaderGalleryScene();
     if (g_pScene != NULL)
+    {
         g_pScene->initGL();
+    }
+
     initVR();
+    StartShaderLoad();
     glfwSwapInterval(0);
     while (!glfwWindowShouldClose(l_Window))
     {

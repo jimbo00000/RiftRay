@@ -2,6 +2,7 @@
 
 #include "ShaderGalleryScene.h"
 #include "ShaderToyPane.h"
+#include "DirectoryFunctions.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -20,6 +21,26 @@ ShaderGalleryScene::ShaderGalleryScene()
 
 ShaderGalleryScene::~ShaderGalleryScene()
 {
+}
+
+void ShaderGalleryScene::DiscoverShaders(bool recurse)
+{
+    const std::vector<std::string> shadernames = recurse ?
+        GetListOfFilesFromDirectoryAndSubdirs(ShaderToy::s_shaderDir) :
+        GetListOfFilesFromDirectory(ShaderToy::s_shaderDir);
+    for (std::vector<std::string>::const_iterator it = shadernames.begin();
+        it != shadernames.end();
+        ++it)
+    {
+        const std::string& s = *it;
+
+        ShaderToy* pSt = new ShaderToy(s);
+        if (pSt == NULL)
+            continue;
+
+        Pane* pP = AddShaderToyPane(pSt);
+        pP->initGL();
+    }
 }
 
 Pane* ShaderGalleryScene::AddShaderToyPane(ShaderToy* pSt)

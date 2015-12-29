@@ -26,6 +26,7 @@ public:
 
     virtual void RenderForOneEye(const float* pMview, const float* pPersp) const;
 
+    virtual void DiscoverShaders(bool recurse);
     virtual void CompileShaders();
     virtual void RenderThumbnails() const;
 

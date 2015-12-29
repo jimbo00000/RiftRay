@@ -30,6 +30,7 @@ public:
     virtual ~PaneScene();
 
     virtual void initGL();
+    virtual void exitGL();
     virtual void timestep(double absTime, double dt);
     virtual void RenderPrePass() const;
     virtual void RenderForOneEye(const float* pMview, const float* pPersp) const;
