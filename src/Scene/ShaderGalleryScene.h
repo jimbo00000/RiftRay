@@ -14,6 +14,10 @@
 #include "ShaderToyFunctions.h"
 #include "ShaderToyGlobalState.h"
 
+#ifdef USE_ANTTWEAKBAR
+#  include <AntTweakBar.h>
+#endif
+
 class Pane;
 class ShaderToyPane;
 
@@ -24,6 +28,7 @@ public:
     ShaderGalleryScene();
     virtual ~ShaderGalleryScene();
 
+    virtual void timestep(double absTime, double dt);
     virtual void RenderForOneEye(const float* pMview, const float* pPersp) const;
 
     virtual void LoadTextureLibrary();
@@ -35,6 +40,7 @@ public:
     virtual void RearrangePanes();
     virtual void ResetTimer() { if(m_pActiveShaderToy) m_pActiveShaderToy->ResetTimer(); }
 
+    virtual void ToggleShaderWorld();
     virtual void SetActiveShaderToy(ShaderToy* pSt) { m_pActiveShaderToy = pSt; }
     virtual void SetActiveShaderToyPane(ShaderToyPane* pP) { m_pActiveShaderToyPane = pP; }
 
@@ -43,9 +49,17 @@ public:
     virtual const ShaderToyPane* GetActiveShaderToyPane() const { return m_pActiveShaderToyPane; }
 
 protected:
+    void _ToggleShaderWorld();
+
     ShaderToy* m_pActiveShaderToy;
     ShaderToyPane* m_pActiveShaderToyPane;
     std::map<std::string, textureChannel> m_texLibrary;
+    Timer m_transitionTimer;
+    int m_transitionState;
+#ifdef USE_ANTTWEAKBAR
+    TwBar* m_pTweakbar;
+    TwBar* m_pShaderTweakbar;
+#endif
 
 public:
     unsigned int m_paneDimensionPixels;

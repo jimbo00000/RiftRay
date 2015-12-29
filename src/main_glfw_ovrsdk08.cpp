@@ -438,8 +438,12 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
             }
             break;
 
-        case GLFW_KEY_ENTER:
+        case GLFW_KEY_TAB:
             g_tweakbarQuad.m_showQuadInWorld = !g_tweakbarQuad.m_showQuadInWorld;
+            break;
+
+        case GLFW_KEY_ENTER:
+            g_gallery.ToggleShaderWorld();
             break;
 
         case GLFW_KEY_SLASH:

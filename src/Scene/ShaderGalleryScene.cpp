@@ -3,16 +3,22 @@
 #include "ShaderGalleryScene.h"
 #include "ShaderToyPane.h"
 #include "DirectoryFunctions.h"
+#include "Logger.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <iostream>
+#include <sstream>
 
 ShaderGalleryScene::ShaderGalleryScene()
 : PaneScene()
 , m_pActiveShaderToy(NULL)
 , m_pActiveShaderToyPane(NULL)
 , m_texLibrary()
+, m_transitionTimer()
+, m_transitionState(0)
+, m_pTweakbar(NULL)
+, m_pShaderTweakbar(NULL)
 , m_paneDimensionPixels(400)
 , m_globalShadertoyState()
 , m_useFulldome(false)
@@ -217,4 +223,198 @@ void ShaderGalleryScene::RenderThumbnails() const
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, bound_fbo);
+}
+
+///@brief Initiate the change, timestep will call _ToggleShaderWorld after a small delay.
+void ShaderGalleryScene::ToggleShaderWorld()
+{
+    m_transitionState = 1;
+    m_transitionTimer.reset();
+}
+
+#ifdef USE_ANTTWEAKBAR
+static void TW_CALL GoToURLCB(void *clientData)
+{
+    const ShaderGalleryScene* pThis = reinterpret_cast<ShaderGalleryScene *>(clientData);
+    if (!pThis)
+        return;
+
+    const ShaderToyPane* pP = pThis->GetFocusedPane();
+    if (pP == NULL)
+        return;
+
+    ShaderToy* pST = pP->m_pShadertoy;
+    if (pST == NULL)
+        return;
+
+    const std::string url = pST->GetStringByName("url");
+    if (url.empty())
+        return;
+
+#ifdef _WIN32
+    ShellExecute(NULL, "open", url.c_str(), NULL, NULL, SW_SHOWNORMAL);
+#elif _LINUX
+    std::string command = "x-www-browser ";
+    command += url;
+    system(command.c_str());
+#elif __APPLE__
+    std::string command = "open ";
+    command += url;
+    system(command.c_str());
+#endif
+}
+
+static void TW_CALL ResetShaderVariablesCB(void *clientData)
+{
+    ShaderToy* pST = (ShaderToy*)clientData;
+    if (pST == NULL)
+        return;
+    pST->ResetVariables();
+}
+#endif
+
+void ShaderGalleryScene::_ToggleShaderWorld()
+{
+    if (GetActiveShaderToy() != NULL)
+    {
+        // Back into gallery
+        LOG_INFO("Back to gallery");
+        //ResetChassisTransformations();
+        //m_chassisPos = m_chassisPosCached;
+        //m_chassisYaw = m_chassisYawCached;
+        //m_headSize = 1.0f;
+        SetActiveShaderToy(NULL);
+        SetActiveShaderToyPane(NULL);
+
+#ifdef USE_ANTTWEAKBAR
+        //m_dashScene.SendMouseClick(0); // Leaving a drag in progress can cause a crash!
+        TwRemoveVar(m_pTweakbar, "title");
+        TwRemoveVar(m_pTweakbar, "author");
+        TwRemoveVar(m_pTweakbar, "gotourl");
+        TwRemoveAllVars(m_pShaderTweakbar);
+#endif
+        return;
+    }
+
+    ShaderToyPane* pP = const_cast<ShaderToyPane*>(GetFocusedPane());
+    if (pP == NULL)
+        return;
+
+    ShaderToy* pST = pP->m_pShadertoy;
+    if (pST == NULL)
+        return;
+
+    // Transitioning into shader world
+    ///@todo Will we drop frames here? Clear to black if so.
+    LOG_INFO("Transition to shadertoy: %s", pST->GetSourceFile().c_str());
+    SetActiveShaderToy(pST);
+    SetActiveShaderToyPane(pP);
+
+    // Return to the gallery in the same place we left it
+    //m_chassisPosCached = m_chassisPos;
+    //m_chassisYawCached = m_chassisYaw;
+
+    //m_chassisPos = pST->GetHeadPos();
+    //m_headSize = pST->GetHeadSize();
+    //m_chassisYaw = static_cast<float>(M_PI);
+
+#ifdef USE_ANTTWEAKBAR
+    const std::string titleStr = "title: " + pST->GetSourceFile();
+    const std::string authorStr = "author: " + pST->GetStringByName("author");
+
+    std::stringstream ss;
+    // Assemble a string to pass into help here
+    ss << " label='"
+        << titleStr
+        << "' group=Shader ";
+    TwAddButton(m_pTweakbar, "title", NULL, NULL, ss.str().c_str());
+
+    ss.str("");
+    ss << " label='"
+        << authorStr
+        << "' group=Shader ";
+    TwAddButton(m_pTweakbar, "author", NULL, NULL, ss.str().c_str());
+
+    TwAddButton(m_pTweakbar, "gotourl", GoToURLCB, this, " label='Go to URL'  group='Shader' ");
+
+    TwAddButton(m_pShaderTweakbar, "Reset Variables", ResetShaderVariablesCB, pST, " label='Reset Variables' ");
+
+    // for each var type, add vec3 direction control
+    ///@todo Different type widths
+    std::map<std::string, shaderVariable>& tweakVars = pST->m_tweakVars;
+    for (std::map<std::string, shaderVariable>::iterator it = tweakVars.begin();
+        it != tweakVars.end();
+        ++it)
+    {
+        const std::string& name = it->first;
+        const shaderVariable& var = it->second;
+
+        std::ostringstream oss;
+        oss << " group='Shader' ";
+
+        ETwType t = TW_TYPE_FLOAT;
+        if (var.width == 1)
+        {
+            // Assemble min/max/incr param string for ant
+            oss
+                << "min="
+                << var.minVal.x
+                << " max="
+                << var.maxVal.x
+                << " step="
+                << var.incr
+                << " ";
+        }
+        else if (var.width == 3)
+        {
+            t = TW_TYPE_DIR3F;
+            if (var.varType == shaderVariable::Direction)
+            {
+                t = TW_TYPE_DIR3F;
+            }
+            else if (var.varType == shaderVariable::Color)
+            {
+                t = TW_TYPE_COLOR3F;
+            }
+            ///@todo handle free, non-normalized values
+            else
+            {
+            }
+        }
+        const glm::vec4& tv = var.value;
+        const std::string vn = name;
+        TwAddVarRW(m_pShaderTweakbar, vn.c_str(), t, (void*)glm::value_ptr(tv), oss.str().c_str());
+    }
+#endif
+}
+
+void ShaderGalleryScene::timestep(double absTime, double dt)
+{
+    if (m_bDraw == false)
+        return;
+    PaneScene::timestep(absTime, dt);
+
+    // Manage transition animations
+    {
+        const float duration = 0.15f;
+        const float t = static_cast<float>(m_transitionTimer.seconds()) / duration;
+        if (t >= 1.0f)
+        {
+            if (m_transitionState == 1)
+            {
+                _ToggleShaderWorld();
+                m_transitionState = 2;
+            }
+        }
+        if (t < 2.0f)
+        {
+            // eye blink transition
+            //const float fac = std::max(1.0f - t, t - 1.0f);
+            //m_cinemaScopeFactor = 1.0f - fac;
+        }
+        else
+        {
+            m_transitionState = 0;
+        }
+    }
 }
