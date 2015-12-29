@@ -12,7 +12,7 @@ ShaderGalleryScene::ShaderGalleryScene()
 : PaneScene()
 , m_pActiveShaderToy(NULL)
 , m_pActiveShaderToyPane(NULL)
-, m_pTexLibrary(NULL)
+, m_texLibrary()
 , m_paneDimensionPixels(400)
 , m_globalShadertoyState()
 , m_useFulldome(false)
@@ -21,6 +21,15 @@ ShaderGalleryScene::ShaderGalleryScene()
 
 ShaderGalleryScene::~ShaderGalleryScene()
 {
+}
+
+void ShaderGalleryScene::LoadTextureLibrary()
+{
+    Timer t;
+    std::map<std::string, textureChannel>& texLib = m_texLibrary;
+    const std::string texdir("../textures/");
+    LoadShaderToyTexturesFromDirectory(texLib, texdir);
+    std::cout << "Textures loaded in " << t.seconds() << " seconds." << std::endl;
 }
 
 void ShaderGalleryScene::DiscoverShaders(bool recurse)
@@ -60,7 +69,7 @@ Pane* ShaderGalleryScene::AddShaderToyPane(ShaderToy* pSt)
     pP->m_tx.SetOrientation(ori);
 
     pP->m_pShadertoy = pSt;
-    pP->SetTextureLibraryPointer(m_pTexLibrary);
+    pP->SetTextureLibraryPointer(&m_texLibrary);
     // It feels ugly to do all this pointer setting, but is it worse than a singleton?
     pP->SetFontShaderPointer(&m_fontShader);
     pP->SetFontPointer(&m_font);

@@ -498,7 +498,7 @@ void resize(GLFWwindow* pWindow, int w, int h)
 
 void StartShaderLoad()
 {
-   // g_app.SetTextureLibraryPointer();
+    g_gallery.LoadTextureLibrary();
     const bool g_loadShadertoysRecursive = false;
     g_gallery.DiscoverShaders(g_loadShadertoysRecursive);
 
