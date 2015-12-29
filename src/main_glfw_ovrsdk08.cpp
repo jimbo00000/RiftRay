@@ -65,6 +65,8 @@ float m_cinemaScope = 0.f;
 int m_keyStates[GLFW_KEY_LAST];
 glm::vec3 m_keyboardMove(0.f);
 glm::vec3 m_chassisPos(0.f);
+glm::vec3 m_hmdRo;
+glm::vec3 m_hmdRd;
 
 void initAnt()
 {
@@ -220,7 +222,30 @@ void initVR()
 
 glm::vec3 getChassisWorldPos()
 {
-    return glm::vec3(0.f, 1.f, 1.f) + m_chassisPos;
+    return //glm::vec3(0.f, 1.f, 1.f) + 
+        m_chassisPos;
+}
+
+glm::mat4 makeWorldToChassisMatrix()
+{
+    //return makeChassisMatrix_glm(0.f, 0.f, 0.f, m_chassisPos);
+    return glm::translate(glm::mat4(1.f), m_chassisPos);
+}
+
+void storeHmdPose(const ovrPosef& eyePose)
+{
+    m_hmdRo.x = eyePose.Position.x + m_chassisPos.x;
+    m_hmdRo.y = eyePose.Position.y + m_chassisPos.y;
+    m_hmdRo.z = eyePose.Position.z + m_chassisPos.z;
+
+    const float m_headSize = 1.f;
+    const glm::mat4 w2eye = makeWorldToChassisMatrix() * makeMatrixFromPose(eyePose, m_headSize);
+    const OVR::Matrix4f rotmtx = makeOVRMatrixFromGlmMatrix(w2eye);
+    const OVR::Vector4f lookFwd(0.f, 0.f, -1.f, 0.f);
+    const OVR::Vector4f rotvec = rotmtx.Transform(lookFwd);
+    m_hmdRd.x = rotvec.x;
+    m_hmdRd.y = rotvec.y;
+    m_hmdRd.z = rotvec.z;
 }
 
 // Display the old-fashioned way, to a monoscopic viewport on a desktop monitor.
@@ -242,6 +267,9 @@ void displayMonitor()
     glDisable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
     g_pScene->RenderForOneEye(glm::value_ptr(mview), glm::value_ptr(persp));
+
+    m_hmdRo = m_chassisPos;
+    m_hmdRd = glm::vec3(0.f, 0.f, -1.f);
 }
 
 // Display to an HMD with OVR SDK backend.
@@ -257,6 +285,8 @@ void displayHMD()
     ovrTrackingState outHmdTrackingState = { 0 };
     ovr_GetEyePoses(hmd, m_frameIndex, false, m_eyeOffsets,
         m_eyePoses, &outHmdTrackingState);
+
+    storeHmdPose(m_eyePoses[0]);
 
     for (ovrEyeType eye = ovrEyeType::ovrEye_Left;
         eye < ovrEyeType::ovrEye_Count;
@@ -591,6 +621,10 @@ int main(int argc, char** argv)
     {
         g_pScene->initGL();
     }
+
+    g_gallery.SetHmdPositionPointer(&m_hmdRo);
+    g_gallery.SetHmdDirectionPointer(&m_hmdRd);
+
 
     initVR();
     StartShaderLoad();
