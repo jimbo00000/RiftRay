@@ -42,7 +42,6 @@ public:
     virtual void SendHmdTap();
     virtual void SetHoldingFlag(int state);
 
-    virtual void SetFlyingMousePointer(FlyingMouse* pFM) { m_pFm = pFM; }
     virtual void SetHmdPositionPointer(glm::vec3* pRo) { m_pHmdRo = pRo; }
     virtual void SetHmdDirectionPointer(glm::vec3* pRd) { m_pHmdRd = pRd; }
     virtual void SetChassisTransformation(glm::mat4 tx) { m_chassisTransformCopy = tx; }
@@ -60,7 +59,6 @@ protected:
     virtual bool _GetHmdViewRayIntersectionCoordinates(Pane* pPane, glm::vec2& planePt, float& tParam);
     virtual void _SetHeldPanePositionAndOrientation(Pane* pP);
 
-    FlyingMouse* m_pFm;
     glm::vec3* m_pHmdRo;
     glm::vec3* m_pHmdRd;
     glm::mat4 m_chassisTransformCopy; // updated per-frame

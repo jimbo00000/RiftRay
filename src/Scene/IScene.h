@@ -12,6 +12,7 @@ public:
       {}
 
     virtual void initGL() = 0;
+    virtual void exitGL() = 0;
 
     virtual void timestep(double absTime, double dt) = 0;
 

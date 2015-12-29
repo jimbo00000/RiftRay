@@ -9,7 +9,6 @@
 RaymarchShaderScene::RaymarchShaderScene()
 : m_raymarch()
 , m_tx()
-, m_pFm(NULL)
 {
 }
 
@@ -113,14 +112,10 @@ void RaymarchShaderScene::RenderForOneEye(const float* pMview, const float* pPer
 
 void RaymarchShaderScene::timestep(double /*absTime*/, double /*dt*/)
 {
-    if (m_pFm == NULL)
-        return;
-
     // We could store the current matrices in a local buffer here, but
     // we might as well just get them on demand via the pointer.
     glm::vec3 origin3;
     glm::vec3 dir3;
-    m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, origin3, dir3);
 
     const glm::vec3 center(0.0f, 0.0f, 0.0f);
     glm::vec4 c4(center, 1.0f); // apply translation too

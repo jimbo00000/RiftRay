@@ -44,4 +44,16 @@ OVR::Matrix4f makeOVRMatrixFromGlmMatrix(const glm::mat4& glm_m)
         16*sizeof(float));
     return ovr_m; // copied on return
 }
+
+///@return the unit vector along negative z transformed by the given pose
+void GetHMDEyeRayPosAndDir(const ovrPosef& pose, glm::vec3& ro, glm::vec3& rd)
+{
+    const OVR::Matrix4f poseMtx(pose);
+    const OVR::Vector4f origin(0.f, 0.f, 0.f, 1.f);
+    const OVR::Vector4f lookFwd(0.f, 0.f, -1.f, 0.f);
+    const OVR::Vector4f ovrRo = poseMtx.Transform(origin);
+    const OVR::Vector4f ovrRd = poseMtx.Transform(lookFwd);
+    ro = glm::vec3(ovrRo.x, ovrRo.y, ovrRo.z);
+    rd = glm::vec3(ovrRd.x, ovrRd.y, ovrRd.z);
+}
 #endif

@@ -27,8 +27,7 @@
 #include "Logger.h"
 
 PaneScene::PaneScene(bool chassisLocal)
-: m_pFm(NULL)
-, m_pHmdRo(NULL)
+: m_pHmdRo(NULL)
 , m_pHmdRd(NULL)
 , m_chassisTransformCopy(1.f)
 , m_paneShader()
@@ -178,20 +177,7 @@ void PaneScene::RenderForOneEye(const float* pMview, const float* pPersp) const
 ///@param tParam [out] t parameter along ray of intersection point
 bool PaneScene::_GetFlyingMouseRightHandPaneRayIntersectionCoordinates(Pane* pPane, glm::vec2& planePt, float& tParam)
 {
-    if (pPane == NULL)
-        return false;
-    if (m_pFm == NULL)
-        return false;
-    if (m_pFm->ControllerIsOnBase(FlyingMouse::Right))
-        return false;
-
-    glm::vec3 origin3;
-    glm::vec3 dir3;
-    m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, origin3, dir3);
-    // Apply chassis-world transformation
-    origin3 = glm::vec3(m_chassisTransformCopy * glm::vec4(origin3, 1.f));
-    dir3 = glm::vec3(m_chassisTransformCopy * glm::vec4(dir3, 0.f));
-    return pPane->GetPaneRayIntersectionCoordinates(origin3, dir3, planePt, tParam);
+    return false;
 }
 
 bool PaneScene::_GetHmdViewRayIntersectionCoordinates(Pane* pPane, glm::vec2& planePt, float& tParam)
@@ -232,9 +218,6 @@ void PaneScene::_SetHeldPanePositionAndOrientation(Pane* pP)
     }
     else if (hold.m_holdingDevice == 1)
     {
-        if (m_pFm == NULL)
-            return;
-        m_pFm->GetControllerOriginAndDirection(FlyingMouse::Right, origin3, dir3);
     }
     else
     {

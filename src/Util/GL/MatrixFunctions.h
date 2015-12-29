@@ -15,7 +15,7 @@ glm::mat4 makeChassisMatrix_glm(
     glm::vec3 chassisPos);
 
 #ifdef USE_OCULUSSDK
-glm::mat4 makeMatrixFromPose(const ovrPosef& eyePose, float headSize=1.f);
-
+glm::mat4 makeMatrixFromPose(const ovrPosef& eyePose, float headSize = 1.f);
 OVR::Matrix4f makeOVRMatrixFromGlmMatrix(const glm::mat4& gm);
+void GetHMDEyeRayPosAndDir(const ovrPosef& pose, glm::vec3& ro, glm::vec3& rd);
 #endif

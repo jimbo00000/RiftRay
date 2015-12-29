@@ -15,7 +15,6 @@
 #include "IScene.h"
 #include "ShaderWithVariables.h"
 #include "VirtualTrackball.h"
-#include "FlyingMouse.h"
 
 ///@brief 
 class RaymarchShaderScene : public IScene
@@ -28,7 +27,6 @@ public:
     virtual void timestep(double absTime, double dt);
     virtual void RenderForOneEye(const float* pMview, const float* pPersp) const;
 
-    virtual void SetFlyingMousePointer(FlyingMouse* pFM) { m_pFm = pFM; }
     virtual Transformation* GetTransformationPointer() { return &m_tx; }
     virtual void ResetTransformation()
     {
@@ -47,7 +45,6 @@ protected:
 
     ShaderWithVariables m_raymarch;
     Transformation m_tx;
-    FlyingMouse* m_pFm;
 
 private: // Disallow copy ctor and assignment operator
     RaymarchShaderScene(const RaymarchShaderScene&);
