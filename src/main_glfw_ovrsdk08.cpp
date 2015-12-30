@@ -158,7 +158,7 @@ void initVR()
 
         // Allocate the frameBuffer that will hold the scene, and then be
         // re-rendered to the screen with distortion
-        if (!OVR_SUCCESS(ovr_CreateSwapTextureSetGL(m_Hmd, GL_RGBA, size.w, size.h, &m_pTexSet[eye])))
+        if (!OVR_SUCCESS(ovr_CreateSwapTextureSetGL(m_Hmd, GL_SRGB8_ALPHA8, size.w, size.h, &m_pTexSet[eye])))
         {
             LOG_ERROR("Unable to create swap textures");
             return;
