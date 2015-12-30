@@ -657,8 +657,6 @@ int main(int argc, char** argv)
         TwRefreshBar(g_pMainTweakbar);
         TwRefreshBar(g_pShaderTweakbar);
 #endif
-        glClearColor(1.0, 0.0, 0.0, 0.0);
-        glClear(GL_COLOR_BUFFER_BIT);
         displayHMD();
         glfwSwapBuffers(l_Window);
     }
