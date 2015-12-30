@@ -429,6 +429,10 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
             ovr_RecenterPose(m_Hmd);
             break;
 
+        case GLFW_KEY_R:
+            m_chassisPos = glm::vec3(0.f);
+            break;
+
         case GLFW_KEY_BACKSPACE:
             {
                 int phm = static_cast<int>(m_perfHudMode);
