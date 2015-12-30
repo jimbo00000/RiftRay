@@ -76,6 +76,14 @@ void ShaderToyPane::DrawPaneAsPortal(
         GLint vp[4];
         glGetIntegerv(GL_VIEWPORT, &vp[0]);
 
+        // Reconstruct FBO scale assuming vertically centered viewport
+        const int usedYPixels = vp[3];
+        const int unusedYPixels = 2 * vp[1];
+        const int totalYPixels = usedYPixels + unusedYPixels;
+        const float fboScale = static_cast<float>(usedYPixels) / static_cast<float>(totalYPixels);
+        const GLint u_fbs = glGetUniformLocation(prog, "u_fboScale");
+        glUniform1f(u_fbs, fboScale);
+
         const GLint u_res = glGetUniformLocation(prog, "iResolution");
         glUniform3f(u_res,
             static_cast<float>(vp[2]),

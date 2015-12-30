@@ -4,6 +4,8 @@
 // This can be thought of as an API - the purpose is to allow the uniforms
 // passed in from the Rift SDK to change viewpoint and direction.
 
+in vec2 vfUV;
+
 // http://blog.hvidtfeldts.net/
 // Translate the origin to the camera's location in world space.
 vec3 getEyePoint( mat4 mvmtx )
@@ -52,7 +54,7 @@ vec2 getSamplerUV( vec2 fragCoord )
 void main()
 {
 #if 1
-    vec2 fc = gl_FragCoord.xy / iResolution.xy;
+    vec2 fc = vec2(.5) + .5*vfUV; //gl_FragCoord.xy / iResolution.xy;
     fc.x = fract(fc.x);
 #else
     vec2 fc = vfFragCoord;

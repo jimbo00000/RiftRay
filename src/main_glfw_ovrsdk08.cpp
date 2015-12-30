@@ -50,6 +50,7 @@ FBO m_mirrorFBO;
 ovrSwapTextureSet* m_pTexSet[ovrEye_Count];
 ovrPerfHudMode m_perfHudMode = ovrPerfHud_Off;
 FBO m_swapFBO;
+FBO m_undistortedFBO;
 
 IScene* g_pScene = NULL;
 ShaderGalleryScene g_gallery;
@@ -223,6 +224,36 @@ void initVR()
     m_mirrorFBO.tex = pMirrorGLData->TexId;
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_mirrorFBO.tex, 0);
 
+
+
+    // Create another FBO for blitting the undistorted scene to for desktop window display.
+    m_undistortedFBO.w = size.w;
+    m_undistortedFBO.h = size.h;
+    glGenFramebuffers(1, &m_undistortedFBO.id);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_undistortedFBO.id);
+    glGenTextures(1, &m_undistortedFBO.tex);
+    glBindTexture(GL_TEXTURE_2D, m_undistortedFBO.tex);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8,
+        m_undistortedFBO.w, m_undistortedFBO.h, 0,
+        GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_undistortedFBO.tex, 0);
+
+    // Check status
+    {
+        const GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        if (status != GL_FRAMEBUFFER_COMPLETE)
+        {
+            LOG_ERROR("Framebuffer status incomplete: %d %x", status, status);
+        }
+    }
+
+
+
+
     const ovrSizei sz = { 600, 600 };
     g_tweakbarQuad.initGL(m_Hmd, sz);
 
@@ -256,6 +287,23 @@ void storeHmdPose(const ovrPosef& eyePose)
     m_hmdRd.x = rotvec.x;
     m_hmdRd.y = rotvec.y;
     m_hmdRd.z = rotvec.z;
+}
+
+void BlitLeftEyeRenderToUndistortedMirrorTexture()
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, m_swapFBO.id);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_undistortedFBO.id);
+    glViewport(0, 0, m_undistortedFBO.w, m_undistortedFBO.h);
+    const float fboScale = 1.f; //m_fboScale
+    glBlitFramebuffer(
+        0, static_cast<int>(static_cast<float>(m_swapFBO.h)*fboScale),
+        static_cast<int>(static_cast<float>(m_swapFBO.w)*fboScale), 0, ///@todo Fix for FBO scaling
+        0, 0, m_undistortedFBO.w, m_undistortedFBO.h,
+        GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_swapFBO.id);
 }
 
 // Display the old-fashioned way, to a monoscopic viewport on a desktop monitor.
@@ -344,6 +392,17 @@ void displayHMD()
         }
         glDisable(GL_SCISSOR_TEST);
 
+        // Grab a copy of the left eye's undistorted render output for presentation
+        // to the desktop window instead of the barrel distorted mirror texture.
+        // This blit, while cheap, could cost some framerate to the HMD.
+        // An over-the-shoulder view is another option, at a greater performance cost.
+        {
+            if (eye == ovrEyeType::ovrEye_Left)
+            {
+                BlitLeftEyeRenderToUndistortedMirrorTexture();
+            }
+        }
+
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
@@ -394,7 +453,7 @@ void displayHMD()
     // Blit mirror texture to monitor window
     {
         glViewport(0, 0, g_mirrorWindowSz.x, g_mirrorWindowSz.y);
-        const FBO& srcFBO = m_mirrorFBO;
+        const FBO& srcFBO = m_undistortedFBO;
         glBindFramebuffer(GL_READ_FRAMEBUFFER, srcFBO.id);
         glBlitFramebuffer(
             0, srcFBO.h, srcFBO.w, 0,
@@ -402,6 +461,11 @@ void displayHMD()
             GL_COLOR_BUFFER_BIT, GL_NEAREST);
         glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
     }
+
+#ifdef USE_ANTTWEAKBAR
+    TwDraw();
+#endif
+
 }
 
 void exitVR()
