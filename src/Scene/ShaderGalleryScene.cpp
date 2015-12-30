@@ -239,11 +239,7 @@ static void TW_CALL GoToURLCB(void *clientData)
     if (!pThis)
         return;
 
-    const ShaderToyPane* pP = pThis->GetFocusedPane();
-    if (pP == NULL)
-        return;
-
-    ShaderToy* pST = pP->m_pShadertoy;
+    const ShaderToy* pST = pThis->GetActiveShaderToy();
     if (pST == NULL)
         return;
 
