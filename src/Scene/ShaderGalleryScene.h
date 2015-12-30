@@ -56,12 +56,12 @@ protected:
     std::map<std::string, textureChannel> m_texLibrary;
     Timer m_transitionTimer;
     int m_transitionState;
-#ifdef USE_ANTTWEAKBAR
-    TwBar* m_pTweakbar;
-    TwBar* m_pShaderTweakbar;
-#endif
 
 public:
+#ifdef USE_ANTTWEAKBAR
+    TwBar* m_pMainTweakbar;
+    TwBar* m_pShaderTweakbar;
+#endif
     unsigned int m_paneDimensionPixels;
     ShaderToyGlobalState m_globalShadertoyState;
     bool m_useFulldome;

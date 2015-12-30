@@ -17,7 +17,7 @@ ShaderGalleryScene::ShaderGalleryScene()
 , m_texLibrary()
 , m_transitionTimer()
 , m_transitionState(0)
-, m_pTweakbar(NULL)
+, m_pMainTweakbar(NULL)
 , m_pShaderTweakbar(NULL)
 , m_paneDimensionPixels(400)
 , m_globalShadertoyState()
@@ -288,9 +288,9 @@ void ShaderGalleryScene::_ToggleShaderWorld()
 
 #ifdef USE_ANTTWEAKBAR
         //m_dashScene.SendMouseClick(0); // Leaving a drag in progress can cause a crash!
-        TwRemoveVar(m_pTweakbar, "title");
-        TwRemoveVar(m_pTweakbar, "author");
-        TwRemoveVar(m_pTweakbar, "gotourl");
+        TwRemoveVar(m_pMainTweakbar, "title");
+        TwRemoveVar(m_pMainTweakbar, "author");
+        TwRemoveVar(m_pMainTweakbar, "gotourl");
         TwRemoveAllVars(m_pShaderTweakbar);
 #endif
         return;
@@ -321,22 +321,18 @@ void ShaderGalleryScene::_ToggleShaderWorld()
 #ifdef USE_ANTTWEAKBAR
     const std::string titleStr = "title: " + pST->GetSourceFile();
     const std::string authorStr = "author: " + pST->GetStringByName("author");
-
     std::stringstream ss;
     // Assemble a string to pass into help here
     ss << " label='"
         << titleStr
         << "' group=Shader ";
-    TwAddButton(m_pTweakbar, "title", NULL, NULL, ss.str().c_str());
-
+    TwAddButton(m_pMainTweakbar, "title", NULL, NULL, ss.str().c_str());
     ss.str("");
     ss << " label='"
         << authorStr
         << "' group=Shader ";
-    TwAddButton(m_pTweakbar, "author", NULL, NULL, ss.str().c_str());
-
-    TwAddButton(m_pTweakbar, "gotourl", GoToURLCB, this, " label='Go to URL'  group='Shader' ");
-
+    TwAddButton(m_pMainTweakbar, "author", NULL, NULL, ss.str().c_str());
+    TwAddButton(m_pMainTweakbar, "gotourl", GoToURLCB, this, " label='Go to URL'  group='Shader' ");
     TwAddButton(m_pShaderTweakbar, "Reset Variables", ResetShaderVariablesCB, pST, " label='Reset Variables' ");
 
     // for each var type, add vec3 direction control
@@ -351,13 +347,11 @@ void ShaderGalleryScene::_ToggleShaderWorld()
 
         std::ostringstream oss;
         oss << " group='Shader' ";
-
         ETwType t = TW_TYPE_FLOAT;
         if (var.width == 1)
         {
             // Assemble min/max/incr param string for ant
-            oss
-                << "min="
+            oss << "min="
                 << var.minVal.x
                 << " max="
                 << var.maxVal.x

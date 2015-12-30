@@ -56,7 +56,8 @@ ShaderGalleryScene g_gallery;
 
 AntQuad g_tweakbarQuad;
 #ifdef USE_ANTTWEAKBAR
-TwBar* g_pTweakbar = NULL;
+TwBar* g_pMainTweakbar = NULL;
+TwBar* g_pShaderTweakbar = NULL;
 #endif
 
 float m_fboScale = 1.f;
@@ -73,15 +74,24 @@ void initAnt()
     ///@note Bad size errors will be thrown if this is not called before bar creation.
     TwWindowSize(g_mirrorWindowSz.x, g_mirrorWindowSz.y);
 
-    // Create a tweak bar
-    g_pTweakbar = TwNewBar("TweakBar");
-
     TwDefine(" GLOBAL fontsize=3 ");
     TwDefine(" TweakBar size='300 520' ");
 
-    TwAddVarRW(g_pTweakbar, "FBO Scale", TW_TYPE_FLOAT, &m_fboScale,
+    // Create a tweak bar
+    g_pMainTweakbar = TwNewBar("TweakBar");
+    g_pShaderTweakbar = TwNewBar("ShaderTweakBar");
+    g_gallery.m_pMainTweakbar = g_pMainTweakbar;
+    g_gallery.m_pShaderTweakbar = g_pShaderTweakbar;
+
+    TwDefine(" GLOBAL fontsize=3 ");
+    TwDefine(" TweakBar size='300 580' ");
+    TwDefine(" TweakBar position='10 10' ");
+    TwDefine(" ShaderTweakBar size='300 420' ");
+    TwDefine(" ShaderTweakBar position='290 170' ");
+
+    TwAddVarRW(g_pMainTweakbar, "FBO Scale", TW_TYPE_FLOAT, &m_fboScale,
         " min=0.05 max=1.0 step=0.005 group='Performance' ");
-    TwAddVarRW(g_pTweakbar, "Cinemascope", TW_TYPE_FLOAT, &m_cinemaScope,
+    TwAddVarRW(g_pMainTweakbar, "Cinemascope", TW_TYPE_FLOAT, &m_cinemaScope,
         " min=0.05 max=1.0 step=0.005 group='Performance' ");
 }
 
@@ -643,6 +653,10 @@ int main(int argc, char** argv)
         glfwPollEvents();
         timestep();
 
+#ifdef USE_ANTTWEAKBAR
+        TwRefreshBar(g_pMainTweakbar);
+        TwRefreshBar(g_pShaderTweakbar);
+#endif
         glClearColor(1.0, 0.0, 0.0, 0.0);
         glClear(GL_COLOR_BUFFER_BIT);
         displayHMD();
