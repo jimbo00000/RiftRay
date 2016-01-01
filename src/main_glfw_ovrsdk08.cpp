@@ -71,6 +71,7 @@ int m_keyStates[GLFW_KEY_LAST];
 glm::vec3 m_keyboardMove(0.f);
 glm::vec3 m_chassisPos(0.f);
 float m_chassisYaw = 0.f;
+float m_headSize = 1.f;
 glm::vec3 m_hmdRo;
 glm::vec3 m_hmdRd;
 
@@ -282,7 +283,6 @@ void storeHmdPose(const ovrPosef& eyePose)
     m_hmdRo.y = eyePose.Position.y + m_chassisPos.y;
     m_hmdRo.z = eyePose.Position.z + m_chassisPos.z;
 
-    const float m_headSize = 1.f;
     const glm::mat4 w2eye = makeWorldToChassisMatrix() * makeMatrixFromPose(eyePose, m_headSize);
     const OVR::Matrix4f rotmtx = makeOVRMatrixFromGlmMatrix(w2eye);
     const OVR::Vector4f lookFwd(0.f, 0.f, -1.f, 0.f);
@@ -387,7 +387,7 @@ void displayHMD()
             const ovrPosef& eyePose = m_eyePoses[eye];
             const glm::mat4 mview =
                 makeWorldToChassisMatrix() *
-                makeMatrixFromPose(eyePose);
+                makeMatrixFromPose(eyePose, m_headSize);
             const glm::mat4& proj = m_eyeProjections[eye];
             g_pScene->RenderForOneEye(glm::value_ptr(glm::inverse(mview)), glm::value_ptr(proj));
 
@@ -634,10 +634,10 @@ void timestep()
     }
 
     // Move in the direction the viewer is facing.
-    const glm::vec3 move_dt = m_keyboardMove * static_cast<float>(dt);
+    const glm::vec3 move_dt = m_keyboardMove * m_headSize * static_cast<float>(dt);
     const glm::mat4 moveTxfm =
         makeWorldToChassisMatrix() *
-        makeMatrixFromPose(m_eyePoses[0]);
+        makeMatrixFromPose(m_eyePoses[0], m_headSize);
     const glm::vec4 mv4 = moveTxfm * glm::vec4(move_dt, 0.f);
     m_chassisPos += glm::vec3(mv4);
 }
@@ -750,6 +750,7 @@ int main(int argc, char** argv)
     g_gallery.SetHmdDirectionPointer(&m_hmdRd);
     g_gallery.SetChassisPosPointer(&m_chassisPos);
     g_gallery.SetChassisYawPointer(&m_chassisYaw);
+    g_gallery.SetHeadSizePointer(&m_headSize);
 
     initVR();
     StartShaderLoad();
