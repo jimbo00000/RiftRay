@@ -72,3 +72,15 @@ void AntQuad::MouseMotion(int x, int y)
     TwMouseMotion(x, y);
 #endif
 }
+
+void AntQuad::SetHmdEyeRay(ovrPosef pose)
+{
+    MousingQuad::SetHmdEyeRay(pose);
+
+    const int mx = static_cast<int>(m_pointerCoords.x * static_cast<float>(m_fbo.w));
+    const int my = static_cast<int>(m_pointerCoords.y * static_cast<float>(m_fbo.h));
+
+#ifdef USE_ANTTWEAKBAR
+    TwMouseMotion(mx, my);
+#endif
+}

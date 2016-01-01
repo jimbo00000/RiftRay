@@ -495,6 +495,23 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
         m_keyStates[key] = action;
     }
 
+    switch (key)
+    {
+        default: break;
+        case GLFW_KEY_BACKSLASH:
+        {
+            if (action == GLFW_PRESS) g_tweakbarQuad.MouseClick(1);
+            else if (action == GLFW_RELEASE) g_tweakbarQuad.MouseClick(0);
+        }
+        break;
+        case GLFW_KEY_SLASH:
+        {
+            if (action == GLFW_PRESS)  g_tweakbarQuad.SetHoldingFlag(m_eyePoses[0], true);
+            else if (action == GLFW_RELEASE) g_tweakbarQuad.SetHoldingFlag(m_eyePoses[0], false);
+        }
+        break;
+    }
+
     if (action == GLFW_PRESS)
     {
     switch (key)
@@ -528,25 +545,12 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
             break;
 
         case GLFW_KEY_SLASH:
-            g_tweakbarQuad.SetHoldingFlag(m_eyePoses[0], true);
             break;
 
         case GLFW_KEY_ESCAPE:
             glfwSetWindowShouldClose(g_pMirrorWindow, 1);
             break;
     }
-    }
-    else if (action == GLFW_RELEASE)
-    {
-        switch (key)
-        {
-        default:
-            break;
-
-        case GLFW_KEY_SLASH:
-            g_tweakbarQuad.SetHoldingFlag(m_eyePoses[0], false);
-            break;
-        }
     }
 
     // Handle keyboard movement(WASD keys)

@@ -23,6 +23,7 @@ public:
     virtual void DrawToQuad();
     virtual void MouseClick(int state);
     virtual void MouseMotion(int x, int y);
+    virtual void SetHmdEyeRay(ovrPosef pose);
 
 protected:
 
