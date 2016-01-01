@@ -631,7 +631,9 @@ void timestep()
 
     // Move in the direction the viewer is facing.
     const glm::vec3 move_dt = m_keyboardMove * static_cast<float>(dt);
-    const glm::mat4 moveTxfm = makeMatrixFromPose(m_eyePoses[0]);
+    const glm::mat4 moveTxfm =
+        makeWorldToChassisMatrix() *
+        makeMatrixFromPose(m_eyePoses[0]);
     const glm::vec4 mv4 = moveTxfm * glm::vec4(move_dt, 0.f);
     m_chassisPos += glm::vec3(mv4);
 }
