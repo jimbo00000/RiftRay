@@ -292,6 +292,27 @@ void storeHmdPose(const ovrPosef& eyePose)
     m_hmdRd.z = rotvec.z;
 }
 
+bool CheckForTapOnHmd(const OVR::Vector3f& v)
+{
+    // Arbitrary value and representing moderate tap on the side of the DK2 Rift.
+    // When HMD is stationary, gravity alone should yield ~= 9.8^2 == 96.04
+    const float lenSq = v.LengthSq();
+    const float tapThreshold = 250.f;
+    if (lenSq > tapThreshold)
+    {
+        // Limit tapping rate
+        static double lastTapTime = 0.0;
+        if (ovr_GetTimeInSeconds() - lastTapTime > 0.5)
+        {
+            lastTapTime = ovr_GetTimeInSeconds();
+            //DismissHealthAndSafetyWarning();
+            g_gallery.ToggleShaderWorld();
+            return true;
+        }
+    }
+    return false;
+}
+
 void BlitLeftEyeRenderToUndistortedMirrorTexture()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -348,6 +369,8 @@ void displayHMD()
         m_eyePoses, &outHmdTrackingState);
 
     storeHmdPose(m_eyePoses[0]);
+    const OVR::Vector3f accel(outHmdTrackingState.RawSensorData.Accelerometer);
+    CheckForTapOnHmd(accel);
 
     for (ovrEyeType eye = ovrEyeType::ovrEye_Left;
         eye < ovrEyeType::ovrEye_Count;
