@@ -581,11 +581,25 @@ void mouseDown(GLFWwindow* pWindow, int button, int action, int mods)
 {
     (void)pWindow;
     (void)mods;
+
+    // Hold right button and press left
+    if ((action == GLFW_PRESS) &&
+        (button == GLFW_MOUSE_BUTTON_LEFT) &&
+        (which_mouse_button == GLFW_MOUSE_BUTTON_RIGHT))
+    {
+        g_gallery.ToggleShaderWorld();
+    }
+
     g_tweakbarQuad.MouseClick(action); ///@todo button id
     which_mouse_button = button;
     if (action == GLFW_RELEASE)
     {
         which_mouse_button = -1;
+    }
+
+    if ((action == GLFW_PRESS) && (button == GLFW_MOUSE_BUTTON_MIDDLE))
+    {
+        g_tweakbarQuad.m_showQuadInWorld = !g_tweakbarQuad.m_showQuadInWorld;
     }
 }
 
