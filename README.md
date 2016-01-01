@@ -10,11 +10,8 @@ Tap the side of the Rift with one finger to dismiss the Health and Safety Warnin
 ## Features  
 - Floating AntTweakbar pane for live shader parameter editing  
 - Dynamic framebuffer scaling  
-- Vertical FOV adjustment(per developer guide section 8.5.4)  
-- Xbox controller, Gamepad support  
-- Sixense Razer Hydra support  
-- Tracking volume display(on when near the boundary)  
-- Auxiliary window display mirroring  
+- Vertical FOV adjustment(per developer guide section 8.5.4)   
+- Display mirroring  
 
 
 ## Controls  
@@ -28,57 +25,20 @@ Gamepad and Hydra are supported, but optional. You can get by with only the HMD 
 - **Enter** - Enter shader/return to gallery  
 - **Escape** - Quit  
 - **WASD** - Movement  
-- **QE13** - Movement(elevation/yaw)  
+- **QE** - Movement(elevation)  
 - **Shift/Control** - Slow/fast movement  
 - **PgUp/PgDn** - Open/Close cinemascope(letterbox)  
-- **F5-F8** - Adjust render target size manually  
-- **F9-F11** - VSync Off/On/Adaptive  
 - **Tab** - Toggle Tweakbar pane  
+- **Backspace** - Toggle OVR Perf HUD  
 - **\\(Backslash)** - Click in pane  
 - **/(Slash)** - Reposition pane  
 - **R** - Reset world position  
-- **Print Screen** - Save shader variables to settings directory  
 
 #### Mouse:  
 - **Wheel - adjust vertical** - Cinemascope | Letterbox | vFOV  
 - **Middle click** - Toggle Tweakbar pane  
-- **Left click & drag** - Yaw  
-- **Right click & drag** - Movement in horizontal plane  
-- **Middle click & drag** - Movement in vertical plane  
 - **Hold Right click & Left Click** - Enter shader/return to gallery  
-- **Hold Right click & Wheel** - Adjust render target size manually  
-
-#### Xbox Controller:  
-- **Start** - Enter shader/return to gallery  
-- **Left analog stick** - Movement  
-- **Right analog stick** - Yaw  
-- **A** - Move up  
-- **B** - Move down  
-- **Y** - Toggle Tweakbar pane  
-- **X** - Click in pane  
-- **Left Bumper** - Recenter view  
-- **Right Bumper** - Reset position  
-- **Left Trigger** - Move quickly  
-- **Right Trigger** - Move slowly  
-- **Dpad** - Resolution, vFOV  
-
-#### Gravis Gamepad Pro:  
-- **Right side buttons** - Movement  
-- **Left Shoulder 1(upper)** - Move quickly/Reposition pane  
-- **Left Shoulder 2(lower)** - Move slowly  
-- **Start** - Enter shader  
-- **Select** - Toggle Tweakbar pane  
-- **Right Shoulder 1(upper)** - Click in pane  
-
-#### Razer Hydra:  
-- **Right Controller translation/rotation** - Select shader, pointer in pane  
-- **Right Stick** - Movement(press in for vertical plane)  
-- **Right Trigger** - Move quickly  
-- **Right Start Button** - Enter shader/return to gallery  
-- **Right Bumper** - Toggle Tweakbar pane  
-- **Right Button 1** - Click in pane  
-- **Right Button 2** - Reposition pane  
-- **Left Stick** - Resolution, vFOV  
+- **Hold Left click & Wheel** - Adjust render target size manually  
 
 ## Related work
   - [Shadertoy VR](http://www.reddit.com/r/oculus/comments/2q0ard/new_build_of_shadertoy_vr/) - Qt-enabled shader editing in VR  
@@ -94,7 +54,7 @@ Gamepad and Hydra are supported, but optional. You can get by with only the HMD 
 All shader code under shaders/shadertoy/ was written by the top developers in the field and is covered by the **Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License** <http://creativecommons.org/licenses/by-nc-sa/3.0/us/> unless stated otherwise in the code.  
 
 ### Huge Thanks to:
-- Iñigo Quilez for [Shadertoy](https://shadertoy.com) and all the code and tutorials on his site [www.iquilezles.org](http://www.iquilezles.org/)  
+- BeautyPi: Iñigo Quilez and Pol Jeremias for [Shadertoy](https://shadertoy.com) and all the code and tutorials on his site [www.iquilezles.org](http://www.iquilezles.org/)  
 - All the members of [Shadertoy](https://shadertoy.com) for their beautiful GLSL code  
 - Mikael Hvidtfeldt Christensen for the blog [blog.hvidtfeldts.net](http://blog.hvidtfeldts.net/)  
 - Micah Dedmon for Mac porting and packaging  
