@@ -276,7 +276,6 @@ void ShaderGalleryScene::_ToggleShaderWorld()
     {
         // Back into gallery
         LOG_INFO("Back to gallery");
-        //ResetChassisTransformations();
         *m_pChassisPos = glm::vec3(0.f);
         //m_chassisYaw = m_chassisYawCached;
         //m_headSize = 1.0f;

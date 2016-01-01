@@ -45,7 +45,6 @@ public:
 
     virtual void SetHmdPositionPointer(const glm::vec3* pRo) { m_pHmdRo = pRo; }
     virtual void SetHmdDirectionPointer(const glm::vec3* pRd) { m_pHmdRd = pRd; }
-    virtual void SetChassisTransformation(glm::mat4 tx) { m_chassisTransformCopy = tx; }
 
     const ShaderWithVariables& GetFontShader() const { return m_fontShader; }
     const BMFont& GetFont() const { return m_font; }
@@ -62,7 +61,6 @@ protected:
 
     const glm::vec3* m_pHmdRo; ///< Used to query HMD position during timestep
     const glm::vec3* m_pHmdRd;
-    glm::mat4 m_chassisTransformCopy; // updated per-frame
     ShaderWithVariables m_paneShader;
     ShaderWithVariables m_fontShader;
     BMFont m_font;

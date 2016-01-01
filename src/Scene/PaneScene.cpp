@@ -29,7 +29,6 @@
 PaneScene::PaneScene(bool chassisLocal)
 : m_pHmdRo(NULL)
 , m_pHmdRd(NULL)
-, m_chassisTransformCopy(1.f)
 , m_paneShader()
 , m_fontShader()
 , m_font("../textures/arial.fnt")
