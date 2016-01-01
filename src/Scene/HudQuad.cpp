@@ -13,6 +13,7 @@ HudQuad::HudQuad()
 , m_pQuadTex(NULL)
 , m_showQuadInWorld(true)
 , m_quadLocation(0.f)
+, m_quadSize(.5f)
 , m_holding(false)
 , m_hitPtPositionAtGrab(0.f)
 , m_hitPtTParam(-1.f)
@@ -46,17 +47,15 @@ void HudQuad::initGL(ovrHmd hmd, ovrSizei sz)
     layer.Viewport.Pos = { 0, 0 };
     layer.Viewport.Size = sz;
 
-
-
     layer.QuadPoseCenter.Orientation = //{ 0.f, 0.f, 0.f, 1.f };
         {0.129206583, 0.0310291424, 0.000810863741, -0.991131783};
-    layer.QuadPoseCenter.Position = { 0.f, -.75f, -1.5f };
+    layer.QuadPoseCenter.Position = { 0.f, -.375f, -.75f };
 
     m_quadLocation.x = layer.QuadPoseCenter.Position.x;
     m_quadLocation.y = layer.QuadPoseCenter.Position.y;
     m_quadLocation.z = layer.QuadPoseCenter.Position.z;
 
-    layer.QuadSize = { 1.f, 1.f };
+    layer.QuadSize = { m_quadSize.x, m_quadSize.y };
 
     // Manually assemble quad m_fbo
     m_fbo.w = sz.w;
@@ -157,10 +156,10 @@ bool HudQuad::GetPaneRayIntersectionCoordinates(
 
     // Standard Oculus quad layer coordinates
     glm::vec3 pts[] = {
-        glm::vec3(-.5f, -.5f, 0.f),
-        glm::vec3( .5f, -.5f, 0.f),
-        glm::vec3( .5f,  .5f, 0.f),
-        glm::vec3(-.5f,  .5f, 0.f),
+        glm::vec3(-.5f*m_quadSize.x, -.5f*m_quadSize.y, 0.f),
+        glm::vec3( .5f*m_quadSize.x, -.5f*m_quadSize.y, 0.f),
+        glm::vec3( .5f*m_quadSize.x,  .5f*m_quadSize.y, 0.f),
+        glm::vec3(-.5f*m_quadSize.x,  .5f*m_quadSize.y, 0.f),
     };
     for (int i = 0; i < 4; ++i)
     {

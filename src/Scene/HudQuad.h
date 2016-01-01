@@ -46,6 +46,7 @@ protected:
 
     FBO m_fbo;
     glm::vec3 m_quadLocation;
+    glm::vec2 m_quadSize;
 
     // Movement state
     bool m_holding;
