@@ -36,7 +36,7 @@ void AntQuad::DrawToQuad()
     _PrepareToDrawToQuad();
     {
         const float g = .05f;
-        glClearColor(1.f, g, g, 0.f);
+        glClearColor(g, g, g, 0.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDisable(GL_DEPTH_TEST);
 
