@@ -269,8 +269,7 @@ glm::vec3 getChassisWorldPos()
 
 glm::mat4 makeWorldToChassisMatrix()
 {
-    //return makeChassisMatrix_glm(0.f, 0.f, 0.f, m_chassisPos);
-    return glm::translate(glm::mat4(1.f), m_chassisPos);
+    return makeChassisMatrix_glm(0.f, 0.f, 0.f, m_chassisPos);
 }
 
 void storeHmdPose(const ovrPosef& eyePose)
@@ -383,7 +382,7 @@ void displayHMD()
             // Render the scene for the current eye
             const ovrPosef& eyePose = m_eyePoses[eye];
             const glm::mat4 mview =
-                glm::translate(glm::mat4(1.f), getChassisWorldPos()) *
+                makeWorldToChassisMatrix() *
                 makeMatrixFromPose(eyePose);
             const glm::mat4& proj = m_eyeProjections[eye];
             g_pScene->RenderForOneEye(glm::value_ptr(glm::inverse(mview)), glm::value_ptr(proj));
