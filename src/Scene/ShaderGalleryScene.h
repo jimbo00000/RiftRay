@@ -48,6 +48,8 @@ public:
     virtual const ShaderToy* GetActiveShaderToy() const { return m_pActiveShaderToy; }
     virtual const ShaderToyPane* GetActiveShaderToyPane() const { return m_pActiveShaderToyPane; }
 
+    virtual void SetChassisPosPointer(glm::vec3* pCp) { m_pChassisPos = pCp; }
+
 protected:
     void _ToggleShaderWorld();
 
@@ -65,6 +67,7 @@ public:
     unsigned int m_paneDimensionPixels;
     ShaderToyGlobalState m_globalShadertoyState;
     bool m_useFulldome;
+    glm::vec3* m_pChassisPos;
 
 private: // Disallow copy ctor and assignment operator
     ShaderGalleryScene(const ShaderGalleryScene&);

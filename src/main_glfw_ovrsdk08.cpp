@@ -707,7 +707,7 @@ int main(int argc, char** argv)
 
     g_gallery.SetHmdPositionPointer(&m_hmdRo);
     g_gallery.SetHmdDirectionPointer(&m_hmdRd);
-
+    g_gallery.SetChassisPosPointer(&m_chassisPos);
 
     initVR();
     StartShaderLoad();

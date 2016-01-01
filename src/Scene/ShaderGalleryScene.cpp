@@ -22,6 +22,7 @@ ShaderGalleryScene::ShaderGalleryScene()
 , m_paneDimensionPixels(400)
 , m_globalShadertoyState()
 , m_useFulldome(false)
+, m_pChassisPos(NULL)
 {
 }
 
@@ -276,7 +277,7 @@ void ShaderGalleryScene::_ToggleShaderWorld()
         // Back into gallery
         LOG_INFO("Back to gallery");
         //ResetChassisTransformations();
-        //m_chassisPos = m_chassisPosCached;
+        *m_pChassisPos = glm::vec3(0.f);
         //m_chassisYaw = m_chassisYawCached;
         //m_headSize = 1.0f;
         SetActiveShaderToy(NULL);
@@ -307,10 +308,8 @@ void ShaderGalleryScene::_ToggleShaderWorld()
     SetActiveShaderToyPane(pP);
 
     // Return to the gallery in the same place we left it
-    //m_chassisPosCached = m_chassisPos;
+    *m_pChassisPos = pST->GetHeadPos();
     //m_chassisYawCached = m_chassisYaw;
-
-    //m_chassisPos = pST->GetHeadPos();
     //m_headSize = pST->GetHeadSize();
     //m_chassisYaw = static_cast<float>(M_PI);
 
