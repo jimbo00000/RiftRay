@@ -43,8 +43,8 @@ public:
     virtual void SendHmdTap();
     virtual void SetHoldingFlag(int state);
 
-    virtual void SetHmdPositionPointer(glm::vec3* pRo) { m_pHmdRo = pRo; }
-    virtual void SetHmdDirectionPointer(glm::vec3* pRd) { m_pHmdRd = pRd; }
+    virtual void SetHmdPositionPointer(const glm::vec3* pRo) { m_pHmdRo = pRo; }
+    virtual void SetHmdDirectionPointer(const glm::vec3* pRd) { m_pHmdRd = pRd; }
     virtual void SetChassisTransformation(glm::mat4 tx) { m_chassisTransformCopy = tx; }
 
     const ShaderWithVariables& GetFontShader() const { return m_fontShader; }
@@ -60,8 +60,8 @@ protected:
     virtual bool _GetHmdViewRayIntersectionCoordinates(Pane* pPane, glm::vec2& planePt, float& tParam);
     virtual void _SetHeldPanePositionAndOrientation(Pane* pP);
 
-    glm::vec3* m_pHmdRo;
-    glm::vec3* m_pHmdRd;
+    const glm::vec3* m_pHmdRo; ///< Used to query HMD position during timestep
+    const glm::vec3* m_pHmdRd;
     glm::mat4 m_chassisTransformCopy; // updated per-frame
     ShaderWithVariables m_paneShader;
     ShaderWithVariables m_fontShader;
