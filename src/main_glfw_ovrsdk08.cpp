@@ -5,6 +5,7 @@
 
 #include <GL/glew.h>
 #if defined(_WIN32)
+#  define NOMINMAX
 #  include <Windows.h>
 #endif
 #include <GLFW/glfw3.h>
@@ -17,6 +18,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <vector>
+#include <algorithm>
 #include "FBO.h"
 #include "Timer.h"
 #include "Logger.h"
@@ -64,6 +66,7 @@ TwBar* g_pShaderTweakbar = NULL;
 float m_fboScale = 1.f;
 float m_cinemaScope = 0.f;
 
+int which_mouse_button = -1;
 int m_keyStates[GLFW_KEY_LAST];
 glm::vec3 m_keyboardMove(0.f);
 glm::vec3 m_chassisPos(0.f);
@@ -575,6 +578,11 @@ void mouseDown(GLFWwindow* pWindow, int button, int action, int mods)
     (void)pWindow;
     (void)mods;
     g_tweakbarQuad.MouseClick(action); ///@todo button id
+    which_mouse_button = button;
+    if (action == GLFW_RELEASE)
+    {
+        which_mouse_button = -1;
+    }
 }
 
 void mouseMove(GLFWwindow* pWindow, double xd, double yd)
@@ -583,6 +591,32 @@ void mouseMove(GLFWwindow* pWindow, double xd, double yd)
     const int x = static_cast<int>(xd);
     const int y = static_cast<int>(yd);
     g_tweakbarQuad.MouseMotion(x, y);
+}
+
+void mouseWheel(GLFWwindow* pWindow, double x, double y)
+{
+    (void)pWindow;
+    (void)x;
+
+    const float delta = static_cast<float>(y);
+    const float incr = 0.05f;
+
+    if (which_mouse_button == GLFW_MOUSE_BUTTON_LEFT)
+    {
+        float fbosc = m_fboScale;
+        fbosc += incr * delta;
+        fbosc = std::max(.15f, fbosc);
+        fbosc = std::min(1.f, fbosc);
+        m_fboScale = fbosc;
+    }
+    else
+    {
+        float cscope = m_cinemaScope;
+        cscope += incr * delta;
+        cscope = std::max(0.0f, cscope);
+        cscope = std::min(0.95f, cscope);
+        m_cinemaScope = cscope;
+    }
 }
 
 void timestep()
@@ -672,6 +706,7 @@ int main(int argc, char** argv)
     glfwSetKeyCallback(l_Window, keyboard);
     glfwSetMouseButtonCallback(l_Window, mouseDown);
     glfwSetCursorPosCallback(l_Window, mouseMove);
+    glfwSetScrollCallback(l_Window, mouseWheel);
     glfwSetWindowSizeCallback(l_Window, resize);
     g_pMirrorWindow = l_Window;
 
