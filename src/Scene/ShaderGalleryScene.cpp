@@ -23,6 +23,7 @@ ShaderGalleryScene::ShaderGalleryScene()
 , m_globalShadertoyState()
 , m_useFulldome(false)
 , m_pChassisPos(NULL)
+, m_pChassisYaw(NULL)
 {
 }
 
@@ -277,7 +278,7 @@ void ShaderGalleryScene::_ToggleShaderWorld()
         // Back into gallery
         LOG_INFO("Back to gallery");
         *m_pChassisPos = glm::vec3(0.f);
-        //m_chassisYaw = m_chassisYawCached;
+        *m_pChassisYaw = 0.f; //m_chassisYawCached;
         //m_headSize = 1.0f;
         SetActiveShaderToy(NULL);
         SetActiveShaderToyPane(NULL);
@@ -308,9 +309,9 @@ void ShaderGalleryScene::_ToggleShaderWorld()
 
     // Return to the gallery in the same place we left it
     *m_pChassisPos = pST->GetHeadPos();
+    *m_pChassisYaw = static_cast<float>(M_PI);
     //m_chassisYawCached = m_chassisYaw;
     //m_headSize = pST->GetHeadSize();
-    //m_chassisYaw = static_cast<float>(M_PI);
 
 #ifdef USE_ANTTWEAKBAR
     const std::string titleStr = "title: " + pST->GetSourceFile();

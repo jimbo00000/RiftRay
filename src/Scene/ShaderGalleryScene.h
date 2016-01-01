@@ -48,7 +48,9 @@ public:
     virtual const ShaderToy* GetActiveShaderToy() const { return m_pActiveShaderToy; }
     virtual const ShaderToyPane* GetActiveShaderToyPane() const { return m_pActiveShaderToyPane; }
 
+    // main_glfw... allows this class to set these global variables
     virtual void SetChassisPosPointer(glm::vec3* pCp) { m_pChassisPos = pCp; }
+    virtual void SetChassisYawPointer(float* pY) { m_pChassisYaw = pY; }
 
 protected:
     void _ToggleShaderWorld();
@@ -68,6 +70,7 @@ public:
     ShaderToyGlobalState m_globalShadertoyState;
     bool m_useFulldome;
     glm::vec3* m_pChassisPos;
+    float* m_pChassisYaw;
 
 private: // Disallow copy ctor and assignment operator
     ShaderGalleryScene(const ShaderGalleryScene&);

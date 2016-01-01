@@ -67,6 +67,7 @@ float m_cinemaScope = 0.f;
 int m_keyStates[GLFW_KEY_LAST];
 glm::vec3 m_keyboardMove(0.f);
 glm::vec3 m_chassisPos(0.f);
+float m_chassisYaw = 0.f;
 glm::vec3 m_hmdRo;
 glm::vec3 m_hmdRd;
 
@@ -269,7 +270,7 @@ glm::vec3 getChassisWorldPos()
 
 glm::mat4 makeWorldToChassisMatrix()
 {
-    return makeChassisMatrix_glm(0.f, 0.f, 0.f, m_chassisPos);
+    return makeChassisMatrix_glm(m_chassisYaw, 0.f, 0.f, m_chassisPos);
 }
 
 void storeHmdPose(const ovrPosef& eyePose)
@@ -707,6 +708,7 @@ int main(int argc, char** argv)
     g_gallery.SetHmdPositionPointer(&m_hmdRo);
     g_gallery.SetHmdDirectionPointer(&m_hmdRd);
     g_gallery.SetChassisPosPointer(&m_chassisPos);
+    g_gallery.SetChassisYawPointer(&m_chassisYaw);
 
     initVR();
     StartShaderLoad();
