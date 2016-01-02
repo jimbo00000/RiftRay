@@ -47,6 +47,7 @@ Gamepad and Hydra are supported, but optional. You can get by with only the HMD 
   - [Fragmentarium](http://syntopia.github.io/Fragmentarium/) - native cross-platform shader IDE
   - [GLSL Sandbox](http://glslsandbox.com/) - web app, similar to Shadertoy
   - [Synthclipse](http://synthclipse.sourceforge.net/user_guide/shadertoy.html) - plugin for Eclipse
+  - [Julius Horsthuis' videos](http://www.julius-horsthuis.com/vr-projects/)
 
 
 ## Acknowledgments
