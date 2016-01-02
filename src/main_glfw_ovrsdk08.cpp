@@ -22,6 +22,7 @@
 #include "FBO.h"
 #include "Timer.h"
 #include "Logger.h"
+#include "version.h"
 
 #include "Scene.h"
 #include "ShaderGalleryScene.h"
@@ -738,7 +739,8 @@ int main(int argc, char** argv)
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 #endif
 
-    GLFWwindow* l_Window = glfwCreateWindow(g_mirrorWindowSz.x, g_mirrorWindowSz.y, "Mirror window", NULL, NULL);
+    const std::string windowName = "RiftRay v" + std::string(pRiftRayVersion);
+    GLFWwindow* l_Window = glfwCreateWindow(g_mirrorWindowSz.x, g_mirrorWindowSz.y, windowName.c_str(), NULL, NULL);
     if (!l_Window)
     {
         LOG_ERROR("Glfw failed to create a window. Exiting.");
