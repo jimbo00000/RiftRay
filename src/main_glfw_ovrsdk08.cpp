@@ -77,6 +77,7 @@ float m_chassisYaw = 0.f;
 float m_headSize = 1.f;
 glm::vec3 m_hmdRo;
 glm::vec3 m_hmdRd;
+const bool m_snapTurn = true;
 
 void initAnt()
 {
@@ -532,11 +533,25 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
         break;
     }
 
+    const float yawIncr = 0.3f;
     if (action == GLFW_PRESS)
     {
     switch (key)
     {
         default:
+            break;
+
+        case GLFW_KEY_1:
+            if (m_snapTurn == true)
+            {
+                m_chassisYaw -= yawIncr;
+            }
+            break;
+        case GLFW_KEY_3:
+            if (m_snapTurn == true)
+            {
+                m_chassisYaw += yawIncr;
+            }
             break;
 
         case GLFW_KEY_SPACE:
@@ -679,8 +694,8 @@ void timestep()
     const glm::vec4 mv4 = moveTxfm * glm::vec4(move_dt, 0.f);
     m_chassisPos += glm::vec3(mv4);
 
-    // Yaw control
-    ///@todo "Snap turn" toggle
+    // Yaw control - snap turn is handled directly in keyboard function
+    if (m_snapTurn == false)
     {
         const float rotSpeed = 10.f;
         m_chassisYaw += m_keyboardYaw * static_cast<float>(dt);
