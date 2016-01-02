@@ -79,6 +79,10 @@ glm::vec3 m_hmdRo;
 glm::vec3 m_hmdRd;
 bool m_snapTurn = true;
 
+int g_joystickIdx = -1;
+glm::vec3 m_joystickMove = glm::vec3(0.f);
+float m_joystickYaw = 0.f;
+
 void initAnt()
 {
     ///@note Bad size errors will be thrown if this is not called before bar creation.
@@ -561,7 +565,7 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
             break;
 
         case GLFW_KEY_R:
-            m_chassisPos = glm::vec3(0.f);
+            m_chassisPos = glm::vec3(0.f, 1.f, 0.f);
             break;
 
         case GLFW_KEY_BACKSPACE:
@@ -616,6 +620,206 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
         mag *= 10.0f;
     m_keyboardMove = mag * keyboardMove;
     m_keyboardYaw = mag * keyboardYaw;
+}
+
+///@brief Check all available joysticks for an Xbox Controller
+/// and store its idx in g_joystickIdx.
+/// Unfortunately, this operation is too time-consuming to call every frame
+/// in a VR app. The workaround is to call it on key press, space or 'G'.
+void FindPreferredJoystick()
+{
+    g_joystickIdx = -1;
+    for (int i = GLFW_JOYSTICK_1; i <= GLFW_JOYSTICK_LAST; ++i)
+    {
+        if (GL_FALSE == glfwJoystickPresent(i))
+            continue;
+
+        const char* pJoyName = glfwGetJoystickName(i);
+        if (pJoyName == NULL)
+            continue;
+
+        int numAxes = 0;
+        int numButtons = 0;
+        glfwGetJoystickAxes(i, &numAxes);
+        glfwGetJoystickButtons(i, &numButtons);
+        LOG_INFO("Glfw found Joystick #%d: %s w/ %d axes, %d buttons", i, pJoyName, numAxes, numButtons);
+
+        // Take an educated guess that this is an Xbox controller - glfw's
+        // id string says "Microsoft PC Joystick" for most gamepad types.
+        ///@todo Why does GLFW on Linux return a different, more descriptive string?
+        if (numAxes == 5 && numButtons == 14)
+        {
+            g_joystickIdx = i;
+            return;
+        }
+    }
+}
+
+void joystick_XboxController(
+    int, // joyidx
+    const float* pAxisStates,
+    int numAxes,
+    const unsigned char* pButtonStates,
+    int numButtons,
+    const char* pLastButtonStates)
+{
+    //ASSERT(numAxes == 5);
+    //ASSERT(numButtons == 14);
+    if (numAxes != 5)
+        return;
+    if (numButtons != 14)
+        return;
+
+    // Xbox controller layout in glfw:
+    // numAxes 5, numButtons 14
+    // 0 A (down position)
+    // 1 B (right position)
+    // 2 X (left position)
+    // 3 Y (up position)
+    // 4 L bumper
+    // 5 R bumper
+    // 6 Back (left center)
+    // 7 Start (right center)
+    // 8 Left stick push
+    // 9 Right stick push
+    // 10 Dpad Up
+    // 11 Dpad right
+    // 12 Dpad down
+    // 13 Dpad left
+    // Axis 0 1 Left stick x y
+    // Axis 2 triggers, left positive right negative
+    // Axis 3 4 right stick y x
+
+    glm::vec3 joystickMove(0.0f, 0.0f, 0.0f);
+    // Xbox controller Left stick controls movement
+    if (numAxes >= 2)
+    {
+        const float x_move = pAxisStates[0];
+        const float y_move = pAxisStates[1];
+        const glm::vec3 forward(0.f, 0.f, -1.f);
+        const glm::vec3 right(1.f, 0.f, 0.f);
+        const float deadzone = 0.5f;
+        if (fabs(x_move) > deadzone)
+            joystickMove += x_move * right;
+        if (fabs(y_move) > deadzone)
+            joystickMove -= y_move * forward;
+    }
+
+    if (pButtonStates[0] == GLFW_PRESS) // A button
+        joystickMove += glm::vec3(0.f, 1.f, 0.f);
+    if (pButtonStates[1] == GLFW_PRESS) // B button
+        joystickMove += glm::vec3(0.f, -1.f, 0.f);
+
+    float mag = 1.f;
+    if (numAxes > 2)
+    {
+        // Xbox left and right analog triggers control speed
+        mag = pow(10.f, pAxisStates[2]);
+    }
+    m_joystickMove = mag * joystickMove;
+
+    // Right stick controls yaw
+    ///@todo Pitch, Roll(instant nausea!)
+    if (numAxes > 3)
+    {
+        float x_move = pAxisStates[4];
+        const glm::vec3 up(0.f, 1.f, 0.f);
+        const float deadzone = 0.2f;
+        if (fabs(x_move) < deadzone)
+            x_move = 0.f;
+        m_joystickYaw = 0.75f * static_cast<float>(x_move);
+    }
+
+    // Check for recent button pushes
+    const float f = 0.9f;
+    for (int i = 0; i<numButtons; ++i)
+    {
+        const bool pressed = (pButtonStates[i] == GLFW_PRESS) &&
+            (pLastButtonStates[i] != GLFW_PRESS);
+        const bool released = (pButtonStates[i] != GLFW_PRESS) &&
+            (pLastButtonStates[i] == GLFW_PRESS);
+        if (pressed)
+        {
+            //DismissHealthAndSafetyWarning();
+
+            if (i == 13) // Dpad left
+            {
+                m_fboScale *= f;
+            }
+            if (i == 11) // Dpad right
+            {
+                m_fboScale /= f;
+            }
+            if (i == 10) // Dpad up
+            {
+                m_cinemaScope -= 0.1f;
+                m_cinemaScope = std::max(0.f, m_cinemaScope);
+            }
+            if (i == 12) // Dpad down
+            {
+                m_cinemaScope += 0.1f;
+                m_cinemaScope = std::min(.95f, m_cinemaScope);
+            }
+            if (i == 4) // Left Bumper
+            {
+                ovr_RecenterPose(m_Hmd);
+            }
+            if (i == 5) // Right Bumper
+            {
+                m_chassisPos = glm::vec3(0.f, 1.f, 0.f);
+            }
+            if (i == 7) // Start
+            {
+                g_gallery.ToggleShaderWorld();
+            }
+            if (i == 3) // Y button
+            {
+                g_tweakbarQuad.m_showQuadInWorld = !g_tweakbarQuad.m_showQuadInWorld;
+            }
+        }
+        if (pressed || released)
+        {
+            if (i == 2) // X button
+            {
+                g_tweakbarQuad.MouseClick(pressed ? 1 : 0);
+            }
+            if (i == 9) // Right stick push
+            {
+                g_tweakbarQuad.MouseClick(pressed ? 1 : 0);
+            }
+        }
+    }
+}
+
+void joystick()
+{
+    static char s_lastButtons[256] = { 0 };
+
+    ///@todo Handle multiple joysticks
+
+    ///@todo Do these calls take time? We can move them out if so
+    int joyStick1Present = GL_FALSE;
+    joyStick1Present = glfwJoystickPresent(g_joystickIdx);
+    if (joyStick1Present != GL_TRUE)
+    {
+        if (g_joystickIdx == -1)
+            return;
+    }
+
+    // Poll joystick
+    int numAxes = 0;
+    const float* pAxisStates = glfwGetJoystickAxes(g_joystickIdx, &numAxes);
+    int numButtons = 0;
+    const unsigned char* pButtonStates = glfwGetJoystickButtons(g_joystickIdx, &numButtons);
+
+    // Take an educated guess that this is an Xbox controller - glfw's
+    // id string says "Microsoft PC Joystick" for most gamepad types.
+    ///@todo Why does GLFW on Linux return a different, more descriptive string?
+    if (numAxes == 5 && numButtons == 14)
+    {
+        joystick_XboxController(g_joystickIdx, pAxisStates, numAxes, pButtonStates, numButtons, s_lastButtons);
+    }
+    memcpy(s_lastButtons, pButtonStates, numButtons);
 }
 
 void mouseDown(GLFWwindow* pWindow, int button, int action, int mods)
@@ -689,7 +893,7 @@ void timestep()
     }
 
     // Move in the direction the viewer is facing.
-    const glm::vec3 move_dt = m_keyboardMove * m_headSize * static_cast<float>(dt);
+    const glm::vec3 move_dt = (m_keyboardMove + m_joystickMove) * m_headSize * static_cast<float>(dt);
     const glm::mat4 moveTxfm =
         makeWorldToChassisMatrix() *
         makeMatrixFromPose(m_eyePoses[0], m_headSize);
@@ -700,7 +904,7 @@ void timestep()
     if (m_snapTurn == false)
     {
         const float rotSpeed = 10.f;
-        m_chassisYaw += m_keyboardYaw * static_cast<float>(dt);
+        m_chassisYaw += (m_keyboardYaw + m_joystickYaw) * static_cast<float>(dt);
     }
 }
 
@@ -780,6 +984,7 @@ int main(int argc, char** argv)
     g_pMirrorWindow = l_Window;
 
     memset(m_keyStates, 0, GLFW_KEY_LAST*sizeof(int));
+    FindPreferredJoystick();
 
     glewExperimental = GL_TRUE;
     if (glewInit() != GLEW_OK)
@@ -821,6 +1026,7 @@ int main(int argc, char** argv)
     while (!glfwWindowShouldClose(l_Window))
     {
         glfwPollEvents();
+        joystick();
         timestep();
 
 #ifdef USE_ANTTWEAKBAR
