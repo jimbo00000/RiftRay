@@ -82,7 +82,6 @@ void initAnt()
     TwWindowSize(g_mirrorWindowSz.x, g_mirrorWindowSz.y);
 
     TwDefine(" GLOBAL fontsize=3 ");
-    TwDefine(" TweakBar size='300 520' ");
 
     // Create a tweak bar
     g_pMainTweakbar = TwNewBar("TweakBar");
