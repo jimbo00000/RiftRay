@@ -309,7 +309,6 @@ bool CheckForTapOnHmd(const OVR::Vector3f& v)
         if (ovr_GetTimeInSeconds() - lastTapTime > 0.5)
         {
             lastTapTime = ovr_GetTimeInSeconds();
-            //DismissHealthAndSafetyWarning();
             g_gallery.ToggleShaderWorld();
             return true;
         }
@@ -740,8 +739,6 @@ void joystick_XboxController(
             (pLastButtonStates[i] == GLFW_PRESS);
         if (pressed)
         {
-            //DismissHealthAndSafetyWarning();
-
             if (i == 13) // Dpad left
             {
                 m_fboScale *= f;
