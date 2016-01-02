@@ -40,6 +40,20 @@ Gamepad and Hydra are supported, but optional. You can get by with only the HMD 
 - **Hold Right click & Left Click** - Enter shader/return to gallery  
 - **Hold Left click & Wheel** - Adjust render target size manually  
 
+#### Xbox Controller:  
+- **Start** - Enter shader/return to gallery  
+- **Left analog stick** - Movement  
+- **Right analog stick** - Yaw  
+- **A** - Move up  
+- **B** - Move down  
+- **Y** - Toggle Tweakbar pane  
+- **X** - Click in pane  
+- **Left Bumper** - Recenter view  
+- **Right Bumper** - Reset position  
+- **Left Trigger** - Move quickly  
+- **Right Trigger** - Move slowly  
+- **Dpad** - Resolution, vFOV  
+
 ## Related work
   - [Shadertoy VR](http://www.reddit.com/r/oculus/comments/2q0ard/new_build_of_shadertoy_vr/) - Qt-enabled shader editing in VR  
     - Part of Brad Davis(jherico)'s [Oculus Rift in Action]()
