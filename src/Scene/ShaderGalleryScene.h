@@ -13,6 +13,7 @@
 #include "ShaderToy.h"
 #include "ShaderToyFunctions.h"
 #include "ShaderToyGlobalState.h"
+#include "FloorScene.h"
 
 #ifdef USE_ANTTWEAKBAR
 #  include <AntTweakBar.h>
@@ -28,6 +29,7 @@ public:
     ShaderGalleryScene();
     virtual ~ShaderGalleryScene();
 
+    virtual void initGL();
     virtual void timestep(double absTime, double dt);
     virtual void RenderForOneEye(const float* pMview, const float* pPersp) const;
 
@@ -61,6 +63,7 @@ protected:
     std::map<std::string, textureChannel> m_texLibrary;
     Timer m_transitionTimer;
     int m_transitionState;
+    FloorScene m_floor;
 
 public:
 #ifdef USE_ANTTWEAKBAR

@@ -43,6 +43,11 @@ void FloorScene::initGL()
     glBindVertexArray(0);
 }
 
+void FloorScene::exitGL()
+{
+    ///@todo
+}
+
 ///@brief While the basic VAO is bound, gen and bind all buffers and attribs.
 void FloorScene::_InitPlaneAttributes()
 {

@@ -18,6 +18,7 @@ ShaderGalleryScene::ShaderGalleryScene()
 , m_texLibrary()
 , m_transitionTimer()
 , m_transitionState(0)
+, m_floor()
 , m_pMainTweakbar(NULL)
 , m_pShaderTweakbar(NULL)
 , m_paneDimensionPixels(400)
@@ -183,6 +184,7 @@ void ShaderGalleryScene::RenderForOneEye(const float* pMview, const float* pPers
     if (m_pActiveShaderToy == NULL)
     {
         // Draw the gallery of panes
+        m_floor.RenderForOneEye(pMview, pPersp);
         PaneScene::RenderForOneEye(pMview, pPersp);
         return;
     }
@@ -279,7 +281,7 @@ void ShaderGalleryScene::_ToggleShaderWorld()
     {
         // Back into gallery
         LOG_INFO("Back to gallery");
-        *m_pChassisPos = glm::vec3(0.f);
+        *m_pChassisPos = glm::vec3(0.f, 1.f, 0.f);
         *m_pChassisYaw = 0.f; //m_chassisYawCached;
         *m_pHeadSize = 1.f;
         SetActiveShaderToy(NULL);
@@ -377,6 +379,12 @@ void ShaderGalleryScene::_ToggleShaderWorld()
         TwAddVarRW(m_pShaderTweakbar, vn.c_str(), t, (void*)glm::value_ptr(tv), oss.str().c_str());
     }
 #endif
+}
+
+void ShaderGalleryScene::initGL()
+{
+    PaneScene::initGL();
+    m_floor.initGL();
 }
 
 void ShaderGalleryScene::timestep(double absTime, double dt)

@@ -24,6 +24,7 @@ public:
     virtual ~FloorScene();
 
     virtual void initGL();
+    virtual void exitGL();
     virtual void timestep(double, double) {}
     virtual void RenderForOneEye(const float* pMview, const float* pPersp) const;
 

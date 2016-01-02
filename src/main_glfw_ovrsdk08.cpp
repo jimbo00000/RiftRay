@@ -72,7 +72,7 @@ int which_mouse_button = -1;
 int m_keyStates[GLFW_KEY_LAST];
 glm::vec3 m_keyboardMove(0.f);
 float m_keyboardYaw = 0.f;
-glm::vec3 m_chassisPos(0.f);
+glm::vec3 m_chassisPos(0.f, 1.f, 0.f);
 float m_chassisYaw = 0.f;
 float m_headSize = 1.f;
 glm::vec3 m_hmdRo;
