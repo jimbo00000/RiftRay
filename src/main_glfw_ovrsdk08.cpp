@@ -230,8 +230,6 @@ void initVR()
     m_mirrorFBO.tex = pMirrorGLData->TexId;
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_mirrorFBO.tex, 0);
 
-
-
     // Create another FBO for blitting the undistorted scene to for desktop window display.
     m_undistortedFBO.w = size.w;
     m_undistortedFBO.h = size.h;
@@ -256,9 +254,6 @@ void initVR()
             LOG_ERROR("Framebuffer status incomplete: %d %x", status, status);
         }
     }
-
-
-
 
     const ovrSizei sz = { 600, 600 };
     g_tweakbarQuad.initGL(m_Hmd, sz);
