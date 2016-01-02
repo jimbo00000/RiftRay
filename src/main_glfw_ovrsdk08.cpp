@@ -850,6 +850,18 @@ void mouseMove(GLFWwindow* pWindow, double xd, double yd)
     glfwGetCursorPos(pWindow, &xd, &yd);
     const int x = static_cast<int>(xd);
     const int y = static_cast<int>(yd);
+
+    // Manual pointer capture - do not allow it to leave mousing quad //window bounds.
+    {
+        double xc = xd;
+        double yc = yd;
+        xc = std::max(0., xc);
+        yc = std::max(0., yc);
+        xc = std::min(xc, 600.); // static_cast<double>(g_mirrorWindowSz.x));
+        yc = std::min(yc, 600.); // static_cast<double>(g_mirrorWindowSz.y));
+        glfwSetCursorPos(pWindow, xc, yc);
+    }
+
     g_tweakbarQuad.MouseMotion(x, y);
 }
 
@@ -978,6 +990,7 @@ int main(int argc, char** argv)
     glfwSetCursorPosCallback(l_Window, mouseMove);
     glfwSetScrollCallback(l_Window, mouseWheel);
     glfwSetWindowSizeCallback(l_Window, resize);
+    glfwSetInputMode(l_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     g_pMirrorWindow = l_Window;
 
     memset(m_keyStates, 0, GLFW_KEY_LAST*sizeof(int));
