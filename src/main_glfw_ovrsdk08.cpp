@@ -66,7 +66,7 @@ TwBar* g_pShaderTweakbar = NULL;
 #endif
 
 float m_fboScale = 1.f;
-float m_cinemaScope = 0.f;
+float m_cinemaScope = 1.f;
 
 int which_mouse_button = -1;
 int m_keyStates[GLFW_KEY_LAST];
@@ -400,7 +400,7 @@ void displayHMD()
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             // Cinemascope - letterbox bars scissoring off pixels above and below vp center
-            const float hc = .5f * m_cinemaScope;
+            const float hc = .5f * (1.f - m_cinemaScope);
             const int scisPx = static_cast<int>(hc * static_cast<float>(vp.Size.h));
             ovrRecti sp(vp);
             sp.Pos.y += scisPx;
