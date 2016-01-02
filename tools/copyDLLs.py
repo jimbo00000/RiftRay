@@ -16,10 +16,7 @@ libsHome = os.path.join('C:', os.sep, 'lib')
 # These home directories may be overridden by cmd line args
 libraryRootDirs = {
 	'ANTTWEAKBAR_ROOT': os.path.join(libsHome, 'AntTweakBar_116', 'AntTweakBar'),
-	'SIXENSE_ROOT': os.path.join(libsHome, 'SixenseSDK'),
 	'GLEW_ROOT': os.path.join(libsHome, 'glew-1.12.0'),
-	'SDL2_ROOT': os.path.join(libsHome, 'SDL2-2.0.3'),
-	'SFML_ROOT': os.path.join(libsHome, 'SFML-2.2'),
 }
 
 # List of DLLs to copy for this project. Paths are listed in components to easily accomodate
@@ -28,20 +25,12 @@ libraryRootDirs = {
 commonDllList = [
 	['ANTTWEAKBAR_ROOT', ['lib'], 'AntTweakBar.dll' ],
 	['GLEW_ROOT', ['bin', 'Release', 'Win32'], 'glew32.dll' ],
-	['SDL2_ROOT', ['lib','x86'], 'SDL2.dll' ],
-	['SIXENSE_ROOT', ['samples','win32','sixense_simple3d'], 'DeviceDLL.dll' ],
 ]
 
 debugDllList = [
-	['SIXENSE_ROOT', ['bin','win32','debug_dll'], 'sixensed.dll' ],
-	['SIXENSE_ROOT', ['bin','win32','debug_dll'], 'sixense_utilsd.dll' ],
-	['SFML_ROOT', ['bin'], 'sfml-system-2.dll' ],
-	['SFML_ROOT', ['bin'], 'sfml-window-2.dll' ],
 ]
 
 releaseDllList = [
-	['SIXENSE_ROOT', ['bin','win32','release_dll'], 'sixense.dll' ],
-	['SIXENSE_ROOT', ['bin','win32','release_dll'], 'sixense_utils.dll' ],
 ]
 
 def assembleBuild(buildHome, buildname, dllList):
