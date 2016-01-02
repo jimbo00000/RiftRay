@@ -45,7 +45,6 @@ void FloorScene::initGL()
 
 void FloorScene::exitGL()
 {
-    ///@todo
 }
 
 ///@brief While the basic VAO is bound, gen and bind all buffers and attribs.
