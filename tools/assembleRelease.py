@@ -41,22 +41,12 @@ for f in docs:
 
 # binaries
 binSrcDir = os.path.join(srcDir, os.path.join("build", "Release"))
-bins = ["RiftRay2.exe"]
+bins = ["RiftRay3.exe"]
 bins.extend(glob.glob(os.path.join(binSrcDir, "*.dll")))
 bins = [os.path.basename(b) for b in bins]
 
-bin = "bin"
-binDstDir = os.path.join(dstDir, bin)
+binDstDir = os.path.join(dstDir)
 if not os.path.exists(binDstDir):
     os.mkdir(binDstDir)
 for b in bins:
     shutil.copy(os.path.join(binSrcDir,b), os.path.join(binDstDir, b))
-
-# simple run script
-script = """
-@echo off
-cd /d bin
-start "" RiftRay2.exe
-"""
-with open(os.path.join(dstDir,"RunRiftRay.bat"), "w") as outfile:
-    print(script, file=outfile)
