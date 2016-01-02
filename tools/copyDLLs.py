@@ -16,7 +16,6 @@ libsHome = os.path.join('C:', os.sep, 'lib')
 # These home directories may be overridden by cmd line args
 libraryRootDirs = {
 	'ANTTWEAKBAR_ROOT': os.path.join(libsHome, 'AntTweakBar_116', 'AntTweakBar'),
-	'GLEW_ROOT': os.path.join(libsHome, 'glew-1.12.0'),
 }
 
 # List of DLLs to copy for this project. Paths are listed in components to easily accomodate
@@ -24,7 +23,6 @@ libraryRootDirs = {
 # @todo Use python's path handling library for correctness
 commonDllList = [
 	['ANTTWEAKBAR_ROOT', ['lib'], 'AntTweakBar.dll' ],
-	['GLEW_ROOT', ['bin', 'Release', 'Win32'], 'glew32.dll' ],
 ]
 
 debugDllList = [
