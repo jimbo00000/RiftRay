@@ -1,4 +1,4 @@
-# RiftRay
+# RiftRay - [github.com/jimbo00000/RiftRay](https://github.com/jimbo00000/RiftRay)
 
 [Oculus Rift DK2](http://www.oculus.com/) enabled viewer for the worlds of [Shadertoy](https://shadertoy.com).  
 
