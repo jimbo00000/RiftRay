@@ -25,7 +25,7 @@ Gamepad and Hydra are supported, but optional. You can get by with only the HMD 
 - **Enter** - Enter shader/return to gallery  
 - **Escape** - Quit  
 - **WASD** - Movement  
-- **QE** - Movement(elevation)  
+- **QE13** - Movement(elevation), Yaw  
 - **Shift/Control** - Slow/fast movement  
 - **PgUp/PgDn** - Open/Close cinemascope(letterbox)  
 - **Tab** - Toggle Tweakbar pane  
