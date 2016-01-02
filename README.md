@@ -48,6 +48,7 @@ Gamepad and Hydra are supported, but optional. You can get by with only the HMD 
   - [GLSL Sandbox](http://glslsandbox.com/) - web app, similar to Shadertoy
   - [Synthclipse](http://synthclipse.sourceforge.net/user_guide/shadertoy.html) - plugin for Eclipse
   - [Julius Horsthuis' videos](http://www.julius-horsthuis.com/vr-projects/)
+  - [Mandelbulb VR](http://www.trapcode.com/journal/2015/12/18/mandelbulb-vr.html) - Peder Norrby, Trapcode
 
 
 ## Acknowledgments
