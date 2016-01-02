@@ -492,9 +492,11 @@ void displayHMD()
     }
 
 #ifdef USE_ANTTWEAKBAR
-    TwDraw();
+    if (g_tweakbarQuad.m_showQuadInWorld)
+    {
+        TwDraw();
+    }
 #endif
-
 }
 
 void exitVR()
