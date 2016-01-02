@@ -77,7 +77,7 @@ float m_chassisYaw = 0.f;
 float m_headSize = 1.f;
 glm::vec3 m_hmdRo;
 glm::vec3 m_hmdRd;
-const bool m_snapTurn = true;
+bool m_snapTurn = true;
 
 void initAnt()
 {
@@ -102,6 +102,8 @@ void initAnt()
         " min=0.05 max=1.0 step=0.005 group='Performance' ");
     TwAddVarRW(g_pMainTweakbar, "Cinemascope", TW_TYPE_FLOAT, &m_cinemaScope,
         " min=0.05 max=1.0 step=0.005 group='Performance' ");
+
+    TwAddVarRW(g_pMainTweakbar, "Snap Turn", TW_TYPE_BOOLCPP, &m_snapTurn, "  group='Controls' ");
 }
 
 ///@brief Can be called before GL context is initialized.
