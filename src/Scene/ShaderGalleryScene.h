@@ -76,6 +76,8 @@ public:
     glm::vec3* m_pChassisPos;
     float* m_pChassisYaw;
     float* m_pHeadSize;
+    glm::vec3 m_chassisPosInGallery;
+    float m_chassisYawInGallery;
 
 private: // Disallow copy ctor and assignment operator
     ShaderGalleryScene(const ShaderGalleryScene&);

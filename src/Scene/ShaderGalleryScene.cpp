@@ -27,6 +27,8 @@ ShaderGalleryScene::ShaderGalleryScene()
 , m_pChassisPos(NULL)
 , m_pChassisYaw(NULL)
 , m_pHeadSize(NULL)
+, m_chassisPosInGallery(0.f)
+, m_chassisYawInGallery(0.f)
 {
 }
 
@@ -280,9 +282,8 @@ void ShaderGalleryScene::_ToggleShaderWorld()
     if (GetActiveShaderToy() != NULL)
     {
         // Back into gallery
-        LOG_INFO("Back to gallery");
-        *m_pChassisPos = glm::vec3(0.f, 1.f, 0.f);
-        *m_pChassisYaw = 0.f; //m_chassisYawCached;
+        *m_pChassisPos = m_chassisPosInGallery;
+        *m_pChassisYaw = m_chassisYawInGallery;
         *m_pHeadSize = 1.f;
         SetActiveShaderToy(NULL);
         SetActiveShaderToyPane(NULL);
@@ -307,15 +308,15 @@ void ShaderGalleryScene::_ToggleShaderWorld()
 
     // Transitioning into shader world
     ///@todo Will we drop frames here? Clear to black if so.
-    LOG_INFO("Transition to shadertoy: %s", pST->GetSourceFile().c_str());
     SetActiveShaderToy(pST);
     SetActiveShaderToyPane(pP);
 
     // Return to the gallery in the same place we left it
+    m_chassisPosInGallery = *m_pChassisPos;
+    m_chassisYawInGallery = *m_pChassisYaw;
     *m_pChassisPos = pST->GetHeadPos();
     *m_pChassisYaw = static_cast<float>(M_PI);
     *m_pHeadSize = pST->GetHeadSize();
-    //m_chassisYawCached = m_chassisYaw;
 
 #ifdef USE_ANTTWEAKBAR
     const std::string titleStr = "title: " + pST->GetSourceFile();
