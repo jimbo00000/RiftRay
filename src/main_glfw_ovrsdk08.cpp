@@ -71,6 +71,7 @@ float m_cinemaScope = 0.f;
 int which_mouse_button = -1;
 int m_keyStates[GLFW_KEY_LAST];
 glm::vec3 m_keyboardMove(0.f);
+float m_keyboardYaw = 0.f;
 glm::vec3 m_chassisPos(0.f);
 float m_chassisYaw = 0.f;
 float m_headSize = 1.f;
@@ -577,6 +578,7 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
     const glm::vec3 up(0.f, 1.f, 0.f);
     const glm::vec3 right(1.f, 0.f, 0.f);
     glm::vec3 keyboardMove(0.0f, 0.0f, 0.0f);
+    float keyboardYaw = 0.f;
     if (m_keyStates['W'] != GLFW_RELEASE) { keyboardMove += forward; }
     if (m_keyStates['S'] != GLFW_RELEASE) { keyboardMove -= forward; }
     if (m_keyStates['A'] != GLFW_RELEASE) { keyboardMove -= right; }
@@ -587,6 +589,8 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
     if (m_keyStates[GLFW_KEY_DOWN] != GLFW_RELEASE) { keyboardMove -= forward; }
     if (m_keyStates[GLFW_KEY_LEFT] != GLFW_RELEASE) { keyboardMove -= right; }
     if (m_keyStates[GLFW_KEY_RIGHT] != GLFW_RELEASE) { keyboardMove += right; }
+    if (m_keyStates['1'] != GLFW_RELEASE) { keyboardYaw -= 1.f; }
+    if (m_keyStates['3'] != GLFW_RELEASE) { keyboardYaw += 1.f; }
 
     float mag = 1.0f;
     if (m_keyStates[GLFW_KEY_LEFT_SHIFT] != GLFW_RELEASE)
@@ -594,6 +598,7 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
     if (m_keyStates[GLFW_KEY_LEFT_CONTROL] != GLFW_RELEASE)
         mag *= 10.0f;
     m_keyboardMove = mag * keyboardMove;
+    m_keyboardYaw = mag * keyboardYaw;
 }
 
 void mouseDown(GLFWwindow* pWindow, int button, int action, int mods)
@@ -673,6 +678,13 @@ void timestep()
         makeMatrixFromPose(m_eyePoses[0], m_headSize);
     const glm::vec4 mv4 = moveTxfm * glm::vec4(move_dt, 0.f);
     m_chassisPos += glm::vec3(mv4);
+
+    // Yaw control
+    ///@todo "Snap turn" toggle
+    {
+        const float rotSpeed = 10.f;
+        m_chassisYaw += m_keyboardYaw * static_cast<float>(dt);
+    }
 }
 
 void resize(GLFWwindow* pWindow, int w, int h)
