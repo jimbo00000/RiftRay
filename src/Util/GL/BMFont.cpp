@@ -10,6 +10,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "StringFunctions.h"
 #include "TextureFunctions.h"
+#include "AppDirectories.h"
 
 BMFont::BMFont(const std::string& sourceFile)
 : m_chars()
@@ -118,7 +119,7 @@ void BMFont::initGL()
         ++it)
     {
         const std::string& tf = *it;
-        const std::string fp = "../textures/" + tf;
+        const std::string fp = HOME_DATA_DIR "textures/" + tf;
         if (hasEnding(tf, ".png"))
         {
             GLuint width = 0;

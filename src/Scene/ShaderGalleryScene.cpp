@@ -4,6 +4,7 @@
 #include "ShaderToyPane.h"
 #include "DirectoryFunctions.h"
 #include "Logger.h"
+#include "AppDirectories.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -36,7 +37,7 @@ void ShaderGalleryScene::LoadTextureLibrary()
 {
     Timer t;
     std::map<std::string, textureChannel>& texLib = m_texLibrary;
-    const std::string texdir("../textures/");
+    const std::string texdir(HOME_DATA_DIR "textures/");
     LoadShaderToyTexturesFromDirectory(texLib, texdir);
     std::cout << "Textures loaded in " << t.seconds() << " seconds." << std::endl;
 }

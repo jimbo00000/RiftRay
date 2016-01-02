@@ -33,6 +33,7 @@
 #include "HudQuad.h"
 #include "AntQuad.h"
 #include "MatrixFunctions.h"
+#include "AppDirectories.h"
 
 Timer g_timer;
 double g_lastFrameTime = 0.0;

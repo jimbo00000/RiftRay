@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "AppDirectories.h"
 #include <string>
 
 GLint getUniLoc(const GLuint program, const GLchar *name);
@@ -10,7 +11,7 @@ void  printProgramInfoLog(GLuint obj);
 
 const std::string GetShaderSourceFromFile(
     const char* filename,
-    const std::string path=std::string("../hardcoded_shaders/"));
+    const std::string path = std::string(HOME_DATA_DIR "hardcoded_shaders/"));
 const GLchar* GetShaderSourceFromTable(const char* filename);
 const std::string GetShaderSource(const char* filename);
 GLuint loadShaderFile(const char* filename, const unsigned long Type);

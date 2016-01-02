@@ -25,13 +25,14 @@
 #include <GL/glew.h>
 
 #include "Logger.h"
+#include "AppDirectories.h"
 
 PaneScene::PaneScene(bool chassisLocal)
 : m_pHmdRo(NULL)
 , m_pHmdRd(NULL)
 , m_paneShader()
 , m_fontShader()
-, m_font("../textures/arial.fnt")
+, m_font(HOME_DATA_DIR "textures/arial.fnt")
 , m_panes()
 , m_panePts()
 , m_mouseMotionCooldown()

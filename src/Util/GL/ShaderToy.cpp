@@ -11,8 +11,10 @@
 #include <sstream>
 #include <vector>
 
-std::string ShaderToy::s_shaderDir = "../shaders/";
-std::string ShaderToy::s_settingsDir = "../settings/";
+#include "AppDirectories.h"
+
+std::string ShaderToy::s_shaderDir = HOME_DATA_DIR "shaders/";
+std::string ShaderToy::s_settingsDir = HOME_DATA_DIR "settings/";
 
 ShaderToy::ShaderToy(const std::string& sourceFile)
 : m_sourceFile(sourceFile)
