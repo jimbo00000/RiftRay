@@ -336,7 +336,7 @@ void displayMonitor()
     if (g_pScene == NULL)
         return;
 
-    const glm::mat4 mview = glm::translate(glm::mat4(1.f), -getChassisWorldPos());
+    const glm::mat4 mview = makeWorldToChassisMatrix();
     const glm::ivec2 vp = g_mirrorWindowSz;
     const glm::mat4 persp = glm::perspective(
         90.f,
@@ -348,7 +348,7 @@ void displayMonitor()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glDisable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
-    g_pScene->RenderForOneEye(glm::value_ptr(mview), glm::value_ptr(persp));
+    g_pScene->RenderForOneEye(glm::value_ptr(glm::inverse(mview)), glm::value_ptr(persp));
 
     m_hmdRo = m_chassisPos;
     m_hmdRd = glm::vec3(0.f, 0.f, -1.f);
