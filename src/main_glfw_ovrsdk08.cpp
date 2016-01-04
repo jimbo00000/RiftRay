@@ -84,6 +84,14 @@ glm::vec3 m_joystickMove = glm::vec3(0.f);
 float m_joystickYaw = 0.f;
 
 
+void TogglePerfHud()
+{
+    int phm = static_cast<int>(m_perfHudMode);
+    ++phm %= static_cast<int>(ovrPerfHud_Count);
+    m_perfHudMode = static_cast<ovrPerfHudMode>(phm);
+    ovr_SetInt(m_Hmd, OVR_PERF_HUD_MODE, m_perfHudMode);
+}
+
 static void TW_CALL RecenterPoseCB(void*) { ovr_RecenterPose(m_Hmd); }
 
 void initAnt()
@@ -576,12 +584,7 @@ void keyboard(GLFWwindow* pWindow, int key, int codes, int action, int mods)
             break;
 
         case GLFW_KEY_BACKSPACE:
-            {
-                int phm = static_cast<int>(m_perfHudMode);
-                ++phm %= static_cast<int>(ovrPerfHud_Count);
-                m_perfHudMode = static_cast<ovrPerfHudMode>(phm);
-                ovr_SetInt(m_Hmd, OVR_PERF_HUD_MODE, m_perfHudMode);
-            }
+            TogglePerfHud();
             break;
 
         case GLFW_KEY_TAB:
