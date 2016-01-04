@@ -93,7 +93,10 @@ void TogglePerfHud()
 }
 
 static void TW_CALL RecenterPoseCB(void*) { ovr_RecenterPose(m_Hmd); }
+static void TW_CALL ResetPositionCB(void*) { m_chassisPos = glm::vec3(0.f, 1.f, 0.f); }
 static void TW_CALL TogglePerfHUDCB(void*) { TogglePerfHud(); }
+static void TW_CALL ToggleShaderWorldCB(void*) { g_gallery.ToggleShaderWorld(); }
+static void TW_CALL HideTweakbarCB(void*) { g_tweakbarQuad.m_showQuadInWorld = !g_tweakbarQuad.m_showQuadInWorld; }
 
 void initAnt()
 {
@@ -118,10 +121,14 @@ void initAnt()
         " min=0.05 max=1.0 step=0.005 group='Performance' ");
     TwAddVarRW(g_pMainTweakbar, "Cinemascope", TW_TYPE_FLOAT, &m_cinemaScope,
         " min=0.05 max=1.0 step=0.005 group='Performance' ");
-    TwAddButton(g_pMainTweakbar, "Toggle perf HUD", TogglePerfHUDCB, NULL, " group='Performance' ");
+    TwAddButton(g_pMainTweakbar, "Toggle Perf HUD", TogglePerfHUDCB, NULL, " group='Performance' ");
 
     TwAddVarRW(g_pMainTweakbar, "Snap Turn", TW_TYPE_BOOLCPP, &m_snapTurn, "  group='Controls' ");
+    TwAddButton(g_pMainTweakbar, "Reset Position", ResetPositionCB, NULL, " group='Controls' ");
     TwAddButton(g_pMainTweakbar, "Recenter Pose", RecenterPoseCB, NULL, " group='Controls' ");
+    TwAddButton(g_pMainTweakbar, "Hide Tweakbar", HideTweakbarCB, NULL, " group='Controls' ");
+
+    TwAddButton(g_pMainTweakbar, "Enter/exit Shader", ToggleShaderWorldCB, NULL, " group='Shader' ");
     TwAddVarRW(g_pMainTweakbar, "headSize", TW_TYPE_FLOAT, &m_headSize,
         " label='headSize' precision=4 min=0.0001 step=0.001 group='Shader' ");
 }
