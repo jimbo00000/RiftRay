@@ -83,6 +83,9 @@ int g_joystickIdx = -1;
 glm::vec3 m_joystickMove = glm::vec3(0.f);
 float m_joystickYaw = 0.f;
 
+
+static void TW_CALL RecenterPoseCB(void*) { ovr_RecenterPose(m_Hmd); }
+
 void initAnt()
 {
     ///@note Bad size errors will be thrown if this is not called before bar creation.
@@ -108,6 +111,9 @@ void initAnt()
         " min=0.05 max=1.0 step=0.005 group='Performance' ");
 
     TwAddVarRW(g_pMainTweakbar, "Snap Turn", TW_TYPE_BOOLCPP, &m_snapTurn, "  group='Controls' ");
+    TwAddButton(g_pMainTweakbar, "Recenter Pose", RecenterPoseCB, NULL, " group='Controls' ");
+    TwAddVarRW(g_pMainTweakbar, "headSize", TW_TYPE_FLOAT, &m_headSize,
+        " label='headSize' precision=4 min=0.0001 step=0.001 group='Shader' ");
 }
 
 ///@brief Can be called before GL context is initialized.
