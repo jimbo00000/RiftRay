@@ -93,6 +93,7 @@ void TogglePerfHud()
 }
 
 static void TW_CALL RecenterPoseCB(void*) { ovr_RecenterPose(m_Hmd); }
+static void TW_CALL TogglePerfHUDCB(void*) { TogglePerfHud(); }
 
 void initAnt()
 {
@@ -117,6 +118,7 @@ void initAnt()
         " min=0.05 max=1.0 step=0.005 group='Performance' ");
     TwAddVarRW(g_pMainTweakbar, "Cinemascope", TW_TYPE_FLOAT, &m_cinemaScope,
         " min=0.05 max=1.0 step=0.005 group='Performance' ");
+    TwAddButton(g_pMainTweakbar, "Toggle perf HUD", TogglePerfHUDCB, NULL, " group='Performance' ");
 
     TwAddVarRW(g_pMainTweakbar, "Snap Turn", TW_TYPE_BOOLCPP, &m_snapTurn, "  group='Controls' ");
     TwAddButton(g_pMainTweakbar, "Recenter Pose", RecenterPoseCB, NULL, " group='Controls' ");
