@@ -774,20 +774,22 @@ void joystick_XboxController(
             if (i == 13) // Dpad left
             {
                 m_fboScale *= f;
+                m_fboScale = std::max(.05f, m_fboScale);
             }
             if (i == 11) // Dpad right
             {
                 m_fboScale /= f;
+                m_fboScale = std::min(1.f, m_fboScale);
             }
             if (i == 10) // Dpad up
             {
-                m_cinemaScope -= 0.1f;
-                m_cinemaScope = std::max(0.f, m_cinemaScope);
+                m_cinemaScope += 0.1f;
+                m_cinemaScope = std::min(.95f, m_cinemaScope);
             }
             if (i == 12) // Dpad down
             {
-                m_cinemaScope += 0.1f;
-                m_cinemaScope = std::min(.95f, m_cinemaScope);
+                m_cinemaScope -= 0.1f;
+                m_cinemaScope = std::max(0.f, m_cinemaScope);
             }
             if (i == 4) // Left Bumper
             {
