@@ -135,6 +135,8 @@ void initAnt()
         " min=-10 max=10 step=0.05 group='Controls' ");
     TwAddVarRW(g_pMainTweakbar, "Chassis Pos Z", TW_TYPE_FLOAT, &m_chassisPos.z,
         " min=-10 max=10 step=0.05 group='Controls' ");
+    TwAddVarRW(g_pMainTweakbar, "Chassis Yaw", TW_TYPE_FLOAT, &m_chassisYaw,
+        " min=-10 max=10 step=0.05 group='Controls' ");
 
     TwAddButton(g_pMainTweakbar, "Enter/exit Shader", ToggleShaderWorldCB, NULL, " group='Shader' ");
     TwAddVarRW(g_pMainTweakbar, "headSize", TW_TYPE_FLOAT, &m_headSize,
