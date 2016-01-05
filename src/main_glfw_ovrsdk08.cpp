@@ -129,6 +129,13 @@ void initAnt()
     TwAddButton(g_pMainTweakbar, "Recenter Pose", RecenterPoseCB, NULL, " group='Controls' ");
     TwAddButton(g_pMainTweakbar, "Hide Tweakbar", HideTweakbarCB, NULL, " group='Controls' ");
 
+    TwAddVarRW(g_pMainTweakbar, "Chassis Pos X", TW_TYPE_FLOAT, &m_chassisPos.x,
+        " min=-10 max=10 step=0.05 group='Controls' ");
+    TwAddVarRW(g_pMainTweakbar, "Chassis Pos Y", TW_TYPE_FLOAT, &m_chassisPos.y,
+        " min=-10 max=10 step=0.05 group='Controls' ");
+    TwAddVarRW(g_pMainTweakbar, "Chassis Pos Z", TW_TYPE_FLOAT, &m_chassisPos.z,
+        " min=-10 max=10 step=0.05 group='Controls' ");
+
     TwAddButton(g_pMainTweakbar, "Enter/exit Shader", ToggleShaderWorldCB, NULL, " group='Shader' ");
     TwAddVarRW(g_pMainTweakbar, "headSize", TW_TYPE_FLOAT, &m_headSize,
         " label='headSize' precision=4 min=0.0001 step=0.001 group='Shader' ");
