@@ -26,6 +26,7 @@
 
 #include "Scene.h"
 #include "ShaderGalleryScene.h"
+#include "StringFunctions.h"
 
 #ifdef USE_ANTTWEAKBAR
 #  include <AntTweakBar.h>
@@ -78,11 +79,11 @@ float m_headSize = 1.f;
 glm::vec3 m_hmdRo;
 glm::vec3 m_hmdRd;
 bool m_snapTurn = true;
+bool g_loadShadertoysRecursive = false;
 
 int g_joystickIdx = -1;
 glm::vec3 m_joystickMove = glm::vec3(0.f);
 float m_joystickYaw = 0.f;
-
 
 void TogglePerfHud()
 {
@@ -138,7 +139,10 @@ void initAnt()
     TwAddVarRW(g_pMainTweakbar, "Chassis Yaw", TW_TYPE_FLOAT, &m_chassisYaw,
         " min=-10 max=10 step=0.05 group='Controls' ");
 
-    TwAddButton(g_pMainTweakbar, "Enter/exit Shader", ToggleShaderWorldCB, NULL, " group='Shader' ");
+    TwAddVarRW(g_pMainTweakbar, "Animated Thumbnails", TW_TYPE_BOOLCPP, &g_gallery.m_globalShadertoyState.animatedThumbnails, "  group='Gallery' ");
+    TwAddVarRW(g_pMainTweakbar, "Panes As Portals", TW_TYPE_BOOLCPP, &g_gallery.m_globalShadertoyState.panesAsPortals, "  group='Gallery' ");
+
+    TwAddButton(g_pMainTweakbar, "Enter/Exit Shader", ToggleShaderWorldCB, NULL, " group='Shader' ");
     TwAddVarRW(g_pMainTweakbar, "headSize", TW_TYPE_FLOAT, &m_headSize,
         " label='headSize' precision=4 min=0.0001 step=0.001 group='Shader' ");
     TwAddButton(g_pMainTweakbar, "Reset Timer", ResetTimerCB, &g_gallery,
@@ -964,10 +968,59 @@ void resize(GLFWwindow* pWindow, int w, int h)
     g_mirrorWindowSz.y = h;
 }
 
+void LoadConfigFile()
+{
+    const std::string cgfFile = "../RiftRay.cfg";
+
+    std::ifstream file;
+    file.open(cgfFile.c_str(), std::ios::in);
+    if (!file.is_open())
+        return;
+
+    std::string line;
+    while (std::getline(file, line))
+    {
+        const std::vector<std::string> toks = split(line, '=');
+        if (toks.size() < 2)
+            continue;
+        const std::string& t = toks[0];
+        if (!t.compare("DynamicallyScaleFBO"))
+        {
+            const int v = atoi(toks[1].c_str());
+            //g_dynamicallyScaleFBO = (v != 0);
+        }
+        else if (!t.compare("LoadShadertoysRecursively"))
+        {
+            const int v = atoi(toks[1].c_str());
+            g_loadShadertoysRecursive = (v != 0);
+        }
+        else if (!t.compare("FboMinimumScale"))
+        {
+            const float v = static_cast<float>(atof(toks[1].c_str()));
+            //m_fboMinScale = v;
+        }
+        else if (!t.compare("AnimatedThumbnails"))
+        {
+            const int at = static_cast<int>(atof(toks[1].c_str()));
+            g_gallery.m_globalShadertoyState.animatedThumbnails = (at != 0);
+        }
+        else if (!t.compare("PanesAsPortals"))
+        {
+            const int pp = static_cast<int>(atof(toks[1].c_str()));
+            g_gallery.m_globalShadertoyState.panesAsPortals = (pp != 0);
+        }
+        else if (!t.compare("ThumbnailFboSize"))
+        {
+            const int ts = static_cast<int>(atof(toks[1].c_str()));
+            g_gallery.m_paneDimensionPixels = ts;
+        }
+    }
+    file.close();
+}
+
 void StartShaderLoad()
 {
     g_gallery.LoadTextureLibrary();
-    const bool g_loadShadertoysRecursive = false;
     g_gallery.DiscoverShaders(g_loadShadertoysRecursive);
 
     ///@todo It would save some time to compile all these shaders in parallel on
@@ -1000,6 +1053,7 @@ void GLAPIENTRY myCallback(
 
 int main(int argc, char** argv)
 {
+    LoadConfigFile();
     initHMD();
 
     glfwSetErrorCallback(ErrorCallback);
