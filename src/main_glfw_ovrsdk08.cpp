@@ -97,6 +97,7 @@ static void TW_CALL ResetPositionCB(void*) { m_chassisPos = glm::vec3(0.f, 1.f, 
 static void TW_CALL TogglePerfHUDCB(void*) { TogglePerfHud(); }
 static void TW_CALL ToggleShaderWorldCB(void*) { g_gallery.ToggleShaderWorld(); }
 static void TW_CALL HideTweakbarCB(void*) { g_tweakbarQuad.m_showQuadInWorld = !g_tweakbarQuad.m_showQuadInWorld; }
+static void TW_CALL ResetTimerCB(void *clientData) { static_cast<ShaderGalleryScene *>(clientData)->ResetTimer(); }
 
 void initAnt()
 {
@@ -131,6 +132,8 @@ void initAnt()
     TwAddButton(g_pMainTweakbar, "Enter/exit Shader", ToggleShaderWorldCB, NULL, " group='Shader' ");
     TwAddVarRW(g_pMainTweakbar, "headSize", TW_TYPE_FLOAT, &m_headSize,
         " label='headSize' precision=4 min=0.0001 step=0.001 group='Shader' ");
+    TwAddButton(g_pMainTweakbar, "Reset Timer", ResetTimerCB, &g_gallery,
+        " label='Reset Timer' group='Shader' ");
 }
 
 ///@brief Can be called before GL context is initialized.
