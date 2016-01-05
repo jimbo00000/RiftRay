@@ -181,6 +181,7 @@ vec3 color(vec3 p, vec3 v){
 
 vec3 getSceneColor( in vec3 p, in vec3 v )
 {
+    p.x += iGlobalTime * 5.;
     return color(p,v);
 }
 
