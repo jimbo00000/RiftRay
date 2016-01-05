@@ -1137,6 +1137,7 @@ int main(int argc, char** argv)
         TwRefreshBar(g_pMainTweakbar);
         TwRefreshBar(g_pShaderTweakbar);
 #endif
+        g_gallery.RenderPrePass();
         displayHMD();
         glfwSwapBuffers(l_Window);
     }
