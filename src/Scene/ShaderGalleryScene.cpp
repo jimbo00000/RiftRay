@@ -277,6 +277,16 @@ static void TW_CALL ResetShaderVariablesCB(void *clientData)
 }
 #endif
 
+void ShaderGalleryScene::ResetPositionAndYaw()
+{
+    const ShaderToy* pST = GetActiveShaderToy();
+    if (pST == NULL)
+        return;
+
+    *m_pChassisPos = pST->GetHeadPos();
+    *m_pChassisYaw = static_cast<float>(M_PI);
+}
+
 void ShaderGalleryScene::_ToggleShaderWorld()
 {
     if (GetActiveShaderToy() != NULL)

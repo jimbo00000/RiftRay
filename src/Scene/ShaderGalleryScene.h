@@ -42,6 +42,7 @@ public:
     virtual void RearrangePanes();
     virtual void ResetTimer() { if(m_pActiveShaderToy) m_pActiveShaderToy->ResetTimer(); }
 
+    virtual void ResetPositionAndYaw();
     virtual void ToggleShaderWorld();
     virtual void SetActiveShaderToy(ShaderToy* pSt) { m_pActiveShaderToy = pSt; }
     virtual void SetActiveShaderToyPane(ShaderToyPane* pP) { m_pActiveShaderToyPane = pP; }

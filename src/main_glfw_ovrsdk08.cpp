@@ -93,7 +93,7 @@ void TogglePerfHud()
 }
 
 static void TW_CALL RecenterPoseCB(void*) { ovr_RecenterPose(m_Hmd); }
-static void TW_CALL ResetPositionCB(void*) { m_chassisPos = glm::vec3(0.f, 1.f, 0.f); }
+static void TW_CALL ResetPositionCB(void*) { m_chassisPos = glm::vec3(0.f, 1.f, 0.f); g_gallery.ResetPositionAndYaw(); }
 static void TW_CALL TogglePerfHUDCB(void*) { TogglePerfHud(); }
 static void TW_CALL ToggleShaderWorldCB(void*) { g_gallery.ToggleShaderWorld(); }
 static void TW_CALL HideTweakbarCB(void*) { g_tweakbarQuad.m_showQuadInWorld = !g_tweakbarQuad.m_showQuadInWorld; }
