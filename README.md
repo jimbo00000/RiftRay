@@ -63,7 +63,8 @@ Gamepad and Hydra are supported, but optional. You can get by with only the HMD 
   - [Synthclipse](http://synthclipse.sourceforge.net/user_guide/shadertoy.html) - plugin for Eclipse
   - [Julius Horsthuis' videos](http://www.julius-horsthuis.com/vr-projects/)
   - [Mandelbulb VR](http://www.trapcode.com/journal/2015/12/18/mandelbulb-vr.html) - Peder Norrby, Trapcode
-
+  - [Shdr](http://bkcore.com/blog/3d/shdr-online-glsl-shader-editor-viewer-validator.html) - Online GLSL shader editor, viewer and validator
+  - [ShaderShop](http://tobyschachman.com/Shadershop/) - shader manipulation interface  
 
 ## Acknowledgments
 
@@ -72,7 +73,7 @@ All shader code under shaders/shadertoy/ was written by the top developers in th
 ### Huge Thanks to:
 - BeautyPi: Iñigo Quilez and Pol Jeremias for [Shadertoy](https://shadertoy.com) and all the code and tutorials on his site [www.iquilezles.org](http://www.iquilezles.org/)  
 - All the members of [Shadertoy](https://shadertoy.com) for their beautiful GLSL code  
-- Mikael Hvidtfeldt Christensen for the blog [blog.hvidtfeldts.net](http://blog.hvidtfeldts.net/)  
+- Mikael Hvidtfeldt Christensen for this blog post [blog.hvidtfeldts.net](http://blog.hvidtfeldts.net/index.php/2014/01/combining-ray-tracing-and-polygons/)  
 - Micah Dedmon for Mac porting and packaging  
 - elmindreda for the awesome [Glfw3 framework](https://github.com/glfw/glfw)   
 - Palmer Luckey and Oculus for the [Oculus Rift and OVR SDK](http://www.oculusvr.com/)  
