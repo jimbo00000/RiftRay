@@ -309,12 +309,6 @@ void initVR()
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-glm::vec3 getChassisWorldPos()
-{
-    return //glm::vec3(0.f, 1.f, 1.f) + 
-        m_chassisPos;
-}
-
 glm::mat4 makeWorldToChassisMatrix()
 {
     return makeChassisMatrix_glm(m_chassisYaw, 0.f, 0.f, m_chassisPos);
