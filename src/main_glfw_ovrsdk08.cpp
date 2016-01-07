@@ -923,8 +923,8 @@ void mouseWheel(GLFWwindow* pWindow, double x, double y)
     {
         float cscope = m_cinemaScope;
         cscope += incr * delta;
-        cscope = std::max(0.0f, cscope);
-        cscope = std::min(0.95f, cscope);
+        cscope = std::max(0.05f, cscope);
+        cscope = std::min(1.f, cscope);
         m_cinemaScope = cscope;
     }
 }
