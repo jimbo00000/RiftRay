@@ -21,23 +21,32 @@
 //#define SHOW_RAY_COST
 
 //Colors
-#define SKY_COLOR_1 vec3(0.60,0.00,0.00)
-#define SKY_COLOR_2 vec3(1.00,0.50,0.00)
+// @var vec3 SKY_COLOR_1 0.60, 0.00, 0.00 color
+// @var vec3 SKY_COLOR_2 1.00, 0.50, 0.00 color
+uniform vec3 SKY_COLOR_1;
+uniform vec3 SKY_COLOR_2;
 
 #define SUN_COLOR_1 vec3(1.00, 0.00, 0.00)
 #define SUN_COLOR_2 vec3(1.00, 1.00, 0.00)
 
-#define GRID_COLOR_1 vec3(0.00, 0.05, 0.20)
-#define GRID_COLOR_2 vec3(1.00, 0.20, 0.60)
+// @var vec3 GRID_COLOR_1 0.00, 0.05, 0.20 color
+// @var vec3 GRID_COLOR_2 1.00, 0.20, 0.60 color
+uniform vec3 GRID_COLOR_1;
+uniform vec3 GRID_COLOR_2;
 
-#define WATER_COLOR vec3(0.50, 1.00, 2.90)
+// @var vec3 WATER_COLOR 0.50, 1.00, 2.90 color
+uniform vec3 WATER_COLOR;
 
 //Parameters
-#define GRID_SIZE 0.20
-#define GRID_LINE_SIZE 1.25
+// @var float GRID_SIZE 0.20 0.05 2.0 0.05
+// @var float GRID_LINE_SIZE 1.25 .25 15. .25
+uniform float GRID_SIZE;
+uniform float GRID_LINE_SIZE;
 
-#define WATER_LEVEL 0.20
-#define WATER_FOG_SIZE 0.05
+// @var float WATER_LEVEL 0.20 0. .5 .005
+// @var float WATER_FOG_SIZE 0.05 0. .3 .005
+uniform float WATER_LEVEL;
+uniform float WATER_FOG_SIZE;
 
 #define SUN_DIRECTION vec3( 0.10,-1.00,-0.03)
 
@@ -45,8 +54,10 @@
 #define CLOUD_BLUR 2.0
 #define CLOUD_SCALE vec2(0.04, 0.10)
 
-#define MOUNTAIN_SCALE 6.0
-#define MOUNTAIN_SHIFT 5.3
+// @var float MOUNTAIN_SCALE 6.0 0. 12. .25
+// @var float MOUNTAIN_SHIFT 5.3 0. 10. .1
+uniform float MOUNTAIN_SCALE;
+uniform float MOUNTAIN_SHIFT;
 
 //Color modes
 //vec3(#,#,#) Number of bits per channel
