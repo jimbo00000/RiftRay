@@ -48,7 +48,7 @@ void HudQuad::initGL(ovrHmd hmd, ovrSizei sz)
     layer.Viewport.Size = sz;
 
     layer.QuadPoseCenter.Orientation = //{ 0.f, 0.f, 0.f, 1.f };
-        {0.129206583, 0.0310291424, 0.000810863741, -0.991131783};
+        {0.129206583f, 0.0310291424f, 0.000810863741f, -0.991131783f};
     layer.QuadPoseCenter.Position = { 0.f, -.375f, -.75f };
 
     m_quadLocation.x = layer.QuadPoseCenter.Position.x;
