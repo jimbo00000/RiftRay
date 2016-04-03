@@ -1002,16 +1002,47 @@ void HandleRemote()
     ovr_GetInputState(g_session, ovrControllerType_Remote, &currentRemoteInputState);
     const unsigned int b = currentRemoteInputState.Buttons;
     const unsigned int b0 = lastRemoteInputState.Buttons;
-    if (b & ovrButton_Enter)
+    const int toggleShaderButton = ovrButton_Enter;
+    const int toggleMenuButton = ovrButton_Back;
+    if (b & toggleShaderButton)
     {
-        if (!(b0 & ovrButton_Enter))
+        if (!(b0 & toggleShaderButton))
         {
-            g_gallery.ToggleShaderWorld();
+            if (g_tweakbarQuad.m_showQuadInWorld == true)
+            {
+                g_tweakbarQuad.MouseClick(1);
+            }
+            else
+            {
+                g_gallery.ToggleShaderWorld();
+            }
         }
     }
-    else if (!(b & ovrButton_Enter))
+    else if (!(b & toggleShaderButton))
     {
-        if (b0 & ovrButton_Enter)
+        if (b0 & toggleShaderButton)
+        {
+            // Released button
+            if (g_tweakbarQuad.m_showQuadInWorld == true)
+            {
+                g_tweakbarQuad.MouseClick(0);
+            }
+            else
+            {
+            }
+        }
+    }
+
+    if (b & toggleMenuButton)
+    {
+        if (!(b0 & toggleMenuButton))
+        {
+            g_tweakbarQuad.m_showQuadInWorld = !g_tweakbarQuad.m_showQuadInWorld;
+        }
+    }
+    else if (!(b & toggleMenuButton))
+    {
+        if (b0 & toggleMenuButton)
         {
             // Released button
         }
