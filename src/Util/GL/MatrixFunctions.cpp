@@ -5,7 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #ifdef USE_OCULUSSDK
-#include <OVR.h>
+#include <OVR_CAPI.h>
 #endif
 
 glm::mat4 makeChassisMatrix_glm(
@@ -27,33 +27,43 @@ glm::mat4 makeChassisMatrix_glm(
 /// as close to render time as possible to reduce latency.
 glm::mat4 makeMatrixFromPose(const ovrPosef& eyePose, float headSize)
 {
-    const OVR::Vector3f& p = eyePose.Position;
-    const OVR::Quatf& q = eyePose.Orientation;
-    return glm::translate(glm::mat4(1.f), headSize*glm::vec3(p.x, p.y, p.z))
+    const ovrVector3f& p = eyePose.Position;
+    const ovrQuatf& q = eyePose.Orientation;
+    return glm::translate(glm::mat4(1.f), glm::vec3(p.x, p.y, p.z))
         * glm::mat4_cast(glm::quat(q.w, q.x, q.y, q.z));
+}
+
+glm::mat4 makeGlmMatrixFromOvrMatrix(const ovrMatrix4f& om)
+{
+    glm::mat4 gm;
+    memcpy(
+        glm::value_ptr(gm),
+        reinterpret_cast<const float*>(&om.M[0][0]),
+        16 * sizeof(float));
+    return glm::transpose(gm);
 }
 
 ///@return an equivalent OVR matrix to the given glm one.
 /// OVR uses DX's left-handed convention, so transpose is necessary.
-OVR::Matrix4f makeOVRMatrixFromGlmMatrix(const glm::mat4& glm_m)
+ovrMatrix4f makeOVRMatrixFromGlmMatrix(const glm::mat4& glm_m)
 {
-    OVR::Matrix4f ovr_m;
+    ovrMatrix4f ovr_m;
     memcpy(
         reinterpret_cast<float*>(&ovr_m.M[0][0]),
         glm::value_ptr(glm::transpose(glm_m)),
-        16*sizeof(float));
+        16 * sizeof(float));
     return ovr_m; // copied on return
 }
 
 ///@return the unit vector along negative z transformed by the given pose
 void GetHMDEyeRayPosAndDir(const ovrPosef& pose, glm::vec3& ro, glm::vec3& rd)
 {
-    const OVR::Matrix4f poseMtx(pose);
-    const OVR::Vector4f origin(0.f, 0.f, 0.f, 1.f);
-    const OVR::Vector4f lookFwd(0.f, 0.f, -1.f, 0.f);
-    const OVR::Vector4f ovrRo = poseMtx.Transform(origin);
-    const OVR::Vector4f ovrRd = poseMtx.Transform(lookFwd);
-    ro = glm::vec3(ovrRo.x, ovrRo.y, ovrRo.z);
-    rd = glm::vec3(ovrRd.x, ovrRd.y, ovrRd.z);
+    const glm::mat4 poseMtx = makeMatrixFromPose(pose, 1.f);
+    const glm::vec4 origin(0.f, 0.f, 0.f, 1.f);
+    const glm::vec4 lookFwd(0.f, 0.f, -1.f, 0.f);
+    const glm::vec4 o4 = poseMtx * origin;
+    const glm::vec4 d4 = poseMtx * lookFwd;
+    ro = glm::vec3(o4.x, o4.y, o4.z);
+    rd = glm::vec3(d4.x, d4.y, d4.z);
 }
 #endif
