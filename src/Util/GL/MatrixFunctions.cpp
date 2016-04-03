@@ -29,7 +29,7 @@ glm::mat4 makeMatrixFromPose(const ovrPosef& eyePose, float headSize)
 {
     const ovrVector3f& p = eyePose.Position;
     const ovrQuatf& q = eyePose.Orientation;
-    return glm::translate(glm::mat4(1.f), glm::vec3(p.x, p.y, p.z))
+    return glm::translate(glm::mat4(1.f), headSize * glm::vec3(p.x, p.y, p.z))
         * glm::mat4_cast(glm::quat(q.w, q.x, q.y, q.z));
 }
 

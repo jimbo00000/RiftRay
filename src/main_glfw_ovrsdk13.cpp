@@ -443,7 +443,7 @@ void displayHMD()
                 const ovrPosef& eyePose = m_eyePoses[eye];
                 const glm::mat4 mview =
                     makeWorldToChassisMatrix() *
-                    makeMatrixFromPose(eyePose);
+                    makeMatrixFromPose(eyePose, m_headSize);
                 const ovrMatrix4f ovrproj = ovrMatrix4f_Projection(hmdDesc.DefaultEyeFov[eye], 0.2f, 1000.0f, ovrProjection_None);
                 const glm::mat4 proj = makeGlmMatrixFromOvrMatrix(ovrproj);
                 g_pScene->RenderForOneEye(glm::value_ptr(glm::inverse(mview)), glm::value_ptr(proj));
@@ -1014,7 +1014,7 @@ void timestep()
     ovr_GetSessionStatus(g_session, &sessionStatus);
     if (sessionStatus.HmdPresent == false)
     {
-        moveTxfm *= makeMatrixFromPose(m_eyePoses[0]);
+        moveTxfm *= makeMatrixFromPose(m_eyePoses[0], m_headSize);
     }
 
     const glm::vec4 mv4 = moveTxfm * glm::vec4(move_dt, 0.f);
