@@ -995,6 +995,30 @@ void mouseWheel(GLFWwindow* pWindow, double x, double y)
     }
 }
 
+// OVR Remote controller input
+void HandleRemote()
+{
+    ovrInputState currentRemoteInputState;
+    ovr_GetInputState(g_session, ovrControllerType_Remote, &currentRemoteInputState);
+    const unsigned int b = currentRemoteInputState.Buttons;
+    const unsigned int b0 = lastRemoteInputState.Buttons;
+    if (b & ovrButton_Enter)
+    {
+        if (!(b0 & ovrButton_Enter))
+        {
+            g_gallery.ToggleShaderWorld();
+        }
+    }
+    else if (!(b & ovrButton_Enter))
+    {
+        if (b0 & ovrButton_Enter)
+        {
+            // Released button
+        }
+    }
+    lastRemoteInputState = currentRemoteInputState;
+}
+
 void timestep()
 {
     const double absT = g_timer.seconds();
@@ -1026,6 +1050,8 @@ void timestep()
         const float rotSpeed = 10.f;
         m_chassisYaw += (m_keyboardYaw + m_joystickYaw) * static_cast<float>(dt);
     }
+
+    HandleRemote();
 }
 
 void resize(GLFWwindow* pWindow, int w, int h)
