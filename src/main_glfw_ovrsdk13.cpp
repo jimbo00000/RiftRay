@@ -84,6 +84,7 @@ bool g_loadShadertoysRecursive = false;
 
 int g_joystickIdx = -1;
 glm::vec3 m_joystickMove = glm::vec3(0.f);
+glm::vec3 m_remoteMove = glm::vec3(0.f);
 float m_joystickYaw = 0.f;
 
 void TogglePerfHud()
@@ -1047,6 +1048,14 @@ void HandleRemote()
             // Released button
         }
     }
+
+    glm::vec3 remoteMove(0.0f, 0.0f, 0.0f);
+    if (b & ovrButton_Up) { remoteMove += glm::vec3(0.f, 0.f, -1.f); }
+    if (b & ovrButton_Down) { remoteMove += glm::vec3(0.f, 0.f, 1.f); }
+    if (b & ovrButton_Left) { remoteMove += glm::vec3(-1.f, 0.f, 0.f); }
+    if (b & ovrButton_Right) { remoteMove += glm::vec3(1.f, 0.f, 0.f); }
+    m_remoteMove = remoteMove;
+
     lastRemoteInputState = currentRemoteInputState;
 }
 
@@ -1061,7 +1070,7 @@ void timestep()
     }
 
     // Move in the direction the viewer is facing.
-    const glm::vec3 move_dt = (m_keyboardMove + m_joystickMove) * m_headSize * static_cast<float>(dt);
+    const glm::vec3 move_dt = (m_keyboardMove + m_joystickMove + m_remoteMove) * m_headSize * static_cast<float>(dt);
     glm::mat4 moveTxfm = makeWorldToChassisMatrix();
 
     // Move in the direction the viewer is facing if HMD is worn.
