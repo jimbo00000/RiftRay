@@ -6,62 +6,35 @@
 
 in vec2 vfUV;
 
+///////////////////////////////////////////////////////////////////////////////
+// Patch in the Rift's heading to raymarch shader writing out color and depth.
 // http://blog.hvidtfeldts.net/
+
 // Translate the origin to the camera's location in world space.
-vec3 getEyePoint( mat4 mvmtx )
+vec3 getEyePoint(mat4 mvmtx)
 {
-    return -(mvmtx[3].xyz) * mat3(mvmtx);
+    vec3 ro = -mvmtx[3].xyz;
+    return ro;
 }
 
-// Construct the usual eye ray frustum oriented down the negative z axis,
-// then transform it by the modelview matrix to go from camera to world space.
-vec3 getEyeDirection( vec2 uv, mat4 mvmtx )
+// Construct the usual eye ray frustum oriented down the negative z axis.
+// http://antongerdelan.net/opengl/raycasting.html
+vec3 getRayDirection(vec2 uv)
 {
-    float aspect = iResolution.x / iResolution.y;
-
-#ifdef USE_FULLDOME_PROJECTION
-    // Fulldome stereographic projection
-    // uv in [-1,1]
-    if (dot(uv,uv) > 1.)
-        discard;
-    float sumsq = uv.x*uv.x + uv.y*uv.y;
-    float denom = 1. + sumsq;
-    vec3 dir = vec3(
-        2.*uv.x/denom,
-        2.*uv.y/denom,
-        -1. + sumsq);
-#else
-    // Frustum perspective projection
-    vec3 dir = vec3(
-        uv.x * u_fov_y_scale*aspect,
-        uv.y * u_fov_y_scale,
-        -1.0);
-#endif
-    dir *= mat3(mvmtx);
-    return normalize(dir);
-}
-
-// Get a per-fragment location value in [-1,1].
-// Also apply a stereo tweak based on a uniform variable.
-vec2 getSamplerUV( vec2 fragCoord )
-{
-    vec2 uv = fragCoord.xy;
-    uv = -1.0 + 2.0*uv;
-    uv.x += u_eyeballCenterTweak;
-    return uv;
+    vec4 ray_clip = vec4(uv.x, uv.y, -1., 1.);
+    vec4 ray_eye = inverse(prmtx) * ray_clip;
+    return normalize(vec3(ray_eye.x, ray_eye.y, -1.));
 }
 
 void main()
 {
-#if 1
-    vec2 fc = vec2(.5) + .5*vfUV; //gl_FragCoord.xy / iResolution.xy;
-    fc.x = fract(fc.x);
-#else
-    vec2 fc = vfFragCoord;
-#endif
-    vec2 uv  = getSamplerUV( fc );
-    vec3 ro  = getEyePoint( mvmtx );
-    vec3 rd  = getEyeDirection( uv, mvmtx );
-    vec3 col = getSceneColor( ro, rd );
-    gl_FragColor = vec4(col, 1.0);
+    vec2 uv = vfUV;
+    vec3 ro = getEyePoint(mvmtx);
+    vec3 rd = getRayDirection(uv);
+
+    ro *= mat3(mvmtx);
+    rd *= mat3(mvmtx);
+
+    vec3 col = getSceneColor(ro, rd);
+    fragColor = vec4(col, 1.0);
 }
