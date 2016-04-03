@@ -1036,7 +1036,7 @@ void timestep()
     // Move in the direction the viewer is facing if HMD is worn.
     ovrSessionStatus sessionStatus;
     ovr_GetSessionStatus(g_session, &sessionStatus);
-    if (sessionStatus.HmdPresent == false)
+    if (sessionStatus.HmdMounted == true)
     {
         moveTxfm *= makeMatrixFromPose(m_eyePoses[0], m_headSize);
     }
