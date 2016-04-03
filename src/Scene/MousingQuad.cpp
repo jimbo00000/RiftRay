@@ -79,6 +79,7 @@ void MousingQuad::DrawToQuad()
     }
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    _FinalizeDrawToQuad();
 }
 
 void MousingQuad::DrawCursor()
