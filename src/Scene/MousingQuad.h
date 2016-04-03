@@ -20,8 +20,8 @@ public:
     MousingQuad();
     virtual ~MousingQuad();
 
-    virtual void initGL(ovrHmd hmd, ovrSizei sz);
-    virtual void exitGL(ovrHmd hmd);
+    virtual void initGL(ovrSession& session, ovrSizei sz);
+    virtual void exitGL(ovrSession& session);
     virtual void DrawToQuad();
     virtual void DrawCursor();
     virtual void MouseClick(int state);

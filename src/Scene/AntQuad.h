@@ -18,8 +18,8 @@ public:
     AntQuad();
     virtual ~AntQuad();
 
-    virtual void initGL(ovrHmd hmd, ovrSizei sz);
-    virtual void exitGL(ovrHmd hmd);
+    virtual void initGL(ovrSession& session, ovrSizei sz);
+    virtual void exitGL(ovrSession& session);
     virtual void DrawToQuad();
     virtual void MouseClick(int state);
     virtual void MouseMotion(int x, int y);

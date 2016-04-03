@@ -15,9 +15,9 @@ AntQuad::~AntQuad()
 {
 }
 
-void AntQuad::initGL(ovrHmd hmd, ovrSizei sz)
+void AntQuad::initGL(ovrSession& session, ovrSizei sz)
 {
-    MousingQuad::initGL(hmd, sz);
+    MousingQuad::initGL(session, sz);
 
 #ifdef USE_ANTTWEAKBAR
     ///@note This will override the Aux window's TwSize call.
@@ -26,9 +26,9 @@ void AntQuad::initGL(ovrHmd hmd, ovrSizei sz)
 #endif
 }
 
-void AntQuad::exitGL(ovrHmd hmd)
+void AntQuad::exitGL(ovrSession& session)
 {
-    MousingQuad::exitGL(hmd);
+    MousingQuad::exitGL(session);
 }
 
 void AntQuad::DrawToQuad()

@@ -10,8 +10,6 @@
 #include <GL/glew.h>
 
 #include <glm/glm.hpp>
-#include <OVR.h>
-#include <Kernel/OVR_Types.h> // Pull in OVR_OS_* defines 
 #include <OVR_CAPI.h>
 #include <OVR_CAPI_GL.h>
 #include "FBO.h"
@@ -23,11 +21,11 @@ public:
     HudQuad();
     virtual ~HudQuad();
 
-    virtual void initGL(ovrHmd hmd, ovrSizei sz);
-    virtual void exitGL(ovrHmd hmd);
+    virtual void initGL(ovrSession& session, ovrSizei sz);
+    virtual void exitGL(ovrSession& session);
     virtual void DrawToQuad();
     virtual void SetHoldingFlag(ovrPosef pose, bool f);
-    virtual ovrPosef GetPose() const { return m_layerQuad.QuadPoseCenter; }
+    virtual ovrPosef GetPose() const { return m_QuadPoseCenter; }
     virtual void SetHmdEyeRay(ovrPosef pose);
 
     virtual bool GetPaneRayIntersectionCoordinates(
@@ -37,15 +35,16 @@ public:
         glm::vec2& planePtOut, ///< [out] Intersection point in XY plane coordinates
         float& tParamOut); ///< [out] t parameter of ray intersection (ro + t*dt)
 
-    ovrLayerQuad m_layerQuad;
-    ovrSwapTextureSet* m_pQuadTex;
+    ovrPosef m_QuadPoseCenter;
+    ovrTextureSwapChain m_swapChain;
+    ovrSession m_session;
     bool m_showQuadInWorld;
 
 protected:
     void _PrepareToDrawToQuad() const;
+    void _FinalizeDrawToQuad();
 
     FBO m_fbo;
-    glm::vec3 m_quadLocation;
     glm::vec2 m_quadSize;
 
     // Movement state

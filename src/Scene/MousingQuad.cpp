@@ -20,9 +20,9 @@ MousingQuad::~MousingQuad()
 {
 }
 
-void MousingQuad::initGL(ovrHmd hmd, ovrSizei sz)
+void MousingQuad::initGL(ovrSession& session, ovrSizei sz)
 {
-    HudQuad::initGL(hmd, sz);
+    HudQuad::initGL(session, sz);
 
     m_cursorShader.initProgram("basic");
     m_cursorShader.bindVAO();
@@ -62,9 +62,9 @@ void MousingQuad::_InitPointerAttributes()
     glEnableVertexAttribArray(m_cursorShader.GetAttrLoc("vColor"));
 }
 
-void MousingQuad::exitGL(ovrHmd hmd)
+void MousingQuad::exitGL(ovrSession& session)
 {
-    HudQuad::exitGL(hmd);
+    HudQuad::exitGL(session);
 }
 
 void MousingQuad::DrawToQuad()
