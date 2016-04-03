@@ -115,7 +115,7 @@ INCLUDE_DIRECTORIES("src/Scene")
 
 ADD_LIBRARY( Util        ${UTIL_SOURCE_FILES} )
 ADD_LIBRARY( Scene       ${SCENE_SOURCE_FILES} )
-ADD_EXECUTABLE( ${PROJECT_NAME} src/main_glfw_ovrsdk08.cpp )
+ADD_EXECUTABLE( ${PROJECT_NAME} src/main_glfw_ovrsdk13.cpp )
 
 TARGET_LINK_LIBRARIES( ${PROJECT_NAME}
     Scene
