@@ -345,12 +345,7 @@ void displayMonitor()
     if (g_pScene == NULL)
         return;
 
-    glm::mat4 mview = makeWorldToChassisMatrix();
-    // This offset vector is an attempt to line up the monitor viewpoint
-    // with approximately the "center eye" of VR viewpoint.
-    const glm::vec3 sittingOffset(-.25f, .55f, 0.f);
-    mview = glm::translate(mview, sittingOffset);
-
+    const glm::mat4 mview = makeWorldToChassisMatrix();
     const glm::ivec2 vp = g_mirrorWindowSz;
     const glm::mat4 persp = glm::perspective(
         90.f,
