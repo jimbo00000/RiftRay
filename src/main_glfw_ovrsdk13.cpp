@@ -1062,12 +1062,21 @@ void HandleXboxController()
     const unsigned int b0 = lastXboxControllerInputState.Buttons;
     const int32_t Abut = ovrButton_A;
     const int32_t toggleShaderButton = ovrButton_Enter;
+    const int32_t toggleTweakbarButton = ovrButton_Back;
 
     if (b & toggleShaderButton)
     {
         if (!(b0 & toggleShaderButton))
         {
             g_gallery.ToggleShaderWorld();
+        }
+    }
+
+    if (b & toggleTweakbarButton)
+    {
+        if (!(b0 & toggleTweakbarButton))
+        {
+            g_tweakbarQuad.m_showQuadInWorld = !g_tweakbarQuad.m_showQuadInWorld;
         }
     }
 
