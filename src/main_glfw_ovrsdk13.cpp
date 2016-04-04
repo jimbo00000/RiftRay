@@ -1054,6 +1054,45 @@ void HandleRemote()
     lastRemoteInputState = currentRemoteInputState;
 }
 
+void HandleXboxController()
+{
+    ovrInputState currentXboxControllerInputState;
+    ovr_GetInputState(g_session, ovrControllerType_XBox, &currentXboxControllerInputState);
+    const unsigned int b = currentXboxControllerInputState.Buttons;
+    const unsigned int b0 = lastXboxControllerInputState.Buttons;
+    const int32_t Abut = ovrButton_A;
+    const int32_t toggleShaderButton = ovrButton_Enter;
+
+    if (b & toggleShaderButton)
+    {
+        if (!(b0 & toggleShaderButton))
+        {
+            g_gallery.ToggleShaderWorld();
+        }
+    }
+
+    if (b & Abut)
+    {
+        if (!(b0 & Abut))
+        {
+            g_tweakbarQuad.MouseClick(1);
+        }
+    }
+    else if (!(b & Abut))
+    {
+        if (b0 & Abut)
+        {
+            g_tweakbarQuad.MouseClick(0);
+        }
+    }
+
+    if ((b & ovrButton_Y) && !(b0 & ovrButton_Y))
+    {
+        g_tweakbarQuad.m_showQuadInWorld = !g_tweakbarQuad.m_showQuadInWorld;
+    }
+    lastXboxControllerInputState = currentXboxControllerInputState;
+}
+
 void timestep()
 {
     const double absT = g_timer.seconds();
@@ -1087,6 +1126,7 @@ void timestep()
     }
 
     HandleRemote();
+    HandleXboxController();
 }
 
 void resize(GLFWwindow* pWindow, int w, int h)
