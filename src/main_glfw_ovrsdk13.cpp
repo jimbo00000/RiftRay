@@ -1062,7 +1062,8 @@ void HandleXboxController()
     const unsigned int b0 = lastXboxControllerInputState.Buttons;
     const int32_t Abut = ovrButton_A;
     const int32_t toggleShaderButton = ovrButton_Enter;
-    const int32_t toggleTweakbarButton = ovrButton_Back;
+    const int32_t toggleTweakbarButton = ovrButton_Y;
+    const int32_t togglePerfHudButton = ovrButton_Back;
 
     if (b & toggleShaderButton)
     {
@@ -1095,10 +1096,15 @@ void HandleXboxController()
         }
     }
 
-    if ((b & ovrButton_Y) && !(b0 & ovrButton_Y))
+    if ((b & toggleTweakbarButton) && !(b0 & toggleTweakbarButton))
     {
         g_tweakbarQuad.m_showQuadInWorld = !g_tweakbarQuad.m_showQuadInWorld;
     }
+    if ((b & togglePerfHudButton) && !(b0 & togglePerfHudButton))
+    {
+        TogglePerfHud();
+    }
+
     lastXboxControllerInputState = currentXboxControllerInputState;
 }
 
