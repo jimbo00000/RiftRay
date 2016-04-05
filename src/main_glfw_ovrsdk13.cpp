@@ -874,10 +874,6 @@ void joystick_XboxController(
             {
                 g_tweakbarQuad.MouseClick(pressed ? 1 : 0);
             }
-            if (i == 9) // Right stick push
-            {
-                g_tweakbarQuad.MouseClick(pressed ? 1 : 0);
-            }
         }
     }
 }
@@ -1064,6 +1060,7 @@ void HandleXboxController()
     const int32_t toggleShaderButton = ovrButton_Enter;
     const int32_t toggleTweakbarButton = ovrButton_Y;
     const int32_t togglePerfHudButton = ovrButton_Back;
+    const int32_t holdTweakbarButton = ovrButton_RThumb;
 
     if (b & toggleShaderButton)
     {
@@ -1103,6 +1100,21 @@ void HandleXboxController()
     if ((b & togglePerfHudButton) && !(b0 & togglePerfHudButton))
     {
         TogglePerfHud();
+    }
+
+    if (b & holdTweakbarButton)
+    {
+        if (!(b0 & holdTweakbarButton))
+        {
+            g_tweakbarQuad.SetHoldingFlag(m_eyePoses[0], true);
+        }
+    }
+    else if (!(b & holdTweakbarButton))
+    {
+        if (b0 & holdTweakbarButton)
+        {
+            g_tweakbarQuad.SetHoldingFlag(m_eyePoses[0], false);
+        }
     }
 
     lastXboxControllerInputState = currentXboxControllerInputState;
