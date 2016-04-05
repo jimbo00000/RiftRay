@@ -11,7 +11,7 @@
 HudQuad::HudQuad()
 : m_QuadPoseCenter()
 , m_showQuadInWorld(true)
-, m_quadSize(.5f)
+, m_quadSize(1.f)
 , m_holding(false)
 , m_hitPtPositionAtGrab(0.f)
 , m_hitPtTParam(-1.f)
