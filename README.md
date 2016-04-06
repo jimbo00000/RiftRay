@@ -1,24 +1,38 @@
-# RiftRay - [github.com/jimbo00000/RiftRay](https://github.com/jimbo00000/RiftRay)
+# RiftRay
+#### [github.com/jimbo00000/RiftRay](https://github.com/jimbo00000/RiftRay)
 
-[Oculus Rift DK2](http://www.oculus.com/) enabled viewer for the worlds of [Shadertoy](https://shadertoy.com).  
+[Oculus Rift CV-1](http://www.oculus.com/) enabled viewer for the worlds of [Shadertoy](https://shadertoy.com).  
 
 
 ## Instructions  
-Tap the side of the Rift with one finger to dismiss the Health and Safety Warning and recenter your view. Gaze at a picture in the gallery and tap the Rift to be transported. Tap again to return to the gallery.  
+Press the remote's center button or the Xbox Controller's start button to enter a shadertoy. Press again to return to the gallery. Use the Xbox Controller's d-pad to adjust render resolution and cinemascope for image clarity or comfort.
 
 
 ## Features  
 - Floating AntTweakbar pane for live shader parameter editing  
 - Dynamic framebuffer scaling  
 - Vertical FOV adjustment(per developer guide section 8.5.4)   
-- Display mirroring  
+- Seamless VR/monitor transitions(thanks to CV1!)    
 
+
+## Related work
+  - [Shadertoy VR](http://www.reddit.com/r/oculus/comments/2q0ard/new_build_of_shadertoy_vr/) - Qt-enabled shader editing in VR  
+    - Part of Brad Davis(jherico)'s [Oculus Rift in Action]()
+  - [boxplorer2](https://code.google.com/p/boxplorer2/) - Marius Schilder  
+  - [Fragmentarium](http://syntopia.github.io/Fragmentarium/) - native cross-platform shader IDE
+  - [GLSL Sandbox](http://glslsandbox.com/) - web app, similar to Shadertoy
+  - [Synthclipse](http://synthclipse.sourceforge.net/user_guide/shadertoy.html) - plugin for Eclipse
+  - [Julius Horsthuis' videos](http://www.julius-horsthuis.com/vr-projects/)
+  - [Mandelbulb VR](http://www.trapcode.com/journal/2015/12/18/mandelbulb-vr.html) - Peder Norrby, Trapcode
+  - [Shdr](http://bkcore.com/blog/3d/shdr-online-glsl-shader-editor-viewer-validator.html) - Online GLSL shader editor, viewer and validator
+  - [ShaderShop](http://tobyschachman.com/Shadershop/) - shader manipulation interface  
 
 ## Controls  
-Gamepad and Hydra are supported, but optional. You can get by with only the HMD for input by tapping on it to select a shader in the gallery. To highlight a shader's thumbnail in the gallery, look straight at it or point the right Hydra controller at it.  
+Gamepad and Hydra are supported, but optional. To highlight a shader's thumbnail in the gallery, look at it or point the right Hydra controller at it.  
 
-#### HMD:  
-- **Tap on Headset** - Enter shader/return to gallery  
+#### Remote:  
+- **Center button** - Enter shader/return to gallery  
+- **Back button** - Toggle Tweakbar pane  
 
 #### Keyboard:  
 - **Space** - Recenter view  
@@ -42,6 +56,7 @@ Gamepad and Hydra are supported, but optional. You can get by with only the HMD 
 
 #### Xbox Controller:  
 - **Start** - Enter shader/return to gallery  
+- **Back** - Toggle Performance HUD
 - **Left analog stick** - Movement  
 - **Right analog stick** - Yaw  
 - **A** - Move up  
@@ -53,18 +68,6 @@ Gamepad and Hydra are supported, but optional. You can get by with only the HMD 
 - **Left Trigger** - Move quickly  
 - **Right Trigger** - Move slowly  
 - **Dpad** - Resolution, vFOV  
-
-## Related work
-  - [Shadertoy VR](http://www.reddit.com/r/oculus/comments/2q0ard/new_build_of_shadertoy_vr/) - Qt-enabled shader editing in VR  
-    - Part of Brad Davis(jherico)'s [Oculus Rift in Action]()
-  - [boxplorer2](https://code.google.com/p/boxplorer2/) - Marius Schilder  
-  - [Fragmentarium](http://syntopia.github.io/Fragmentarium/) - native cross-platform shader IDE
-  - [GLSL Sandbox](http://glslsandbox.com/) - web app, similar to Shadertoy
-  - [Synthclipse](http://synthclipse.sourceforge.net/user_guide/shadertoy.html) - plugin for Eclipse
-  - [Julius Horsthuis' videos](http://www.julius-horsthuis.com/vr-projects/)
-  - [Mandelbulb VR](http://www.trapcode.com/journal/2015/12/18/mandelbulb-vr.html) - Peder Norrby, Trapcode
-  - [Shdr](http://bkcore.com/blog/3d/shdr-online-glsl-shader-editor-viewer-validator.html) - Online GLSL shader editor, viewer and validator
-  - [ShaderShop](http://tobyschachman.com/Shadershop/) - shader manipulation interface  
 
 ## Acknowledgments
 
