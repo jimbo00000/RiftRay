@@ -1,3 +1,3 @@
 // version.h
 #pragma once
-const char* pRiftRayVersion = "3.0.1";
+const char* pRiftRayVersion = "3.1.0";
